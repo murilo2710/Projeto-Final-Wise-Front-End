@@ -1,0 +1,40 @@
+<main class="login-page">
+  <section class="login-panel">
+    <div class="brand">
+      <p>Sistema Odonto</p>
+      <h1>Entrar</h1>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="entrar()" novalidate>
+      <label>
+        <span>Email</span>
+        <input type="email" formControlName="email" autocomplete="email" />
+      </label>
+
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <p class="field-error">Informe um email valido.</p>
+      }
+
+      <label>
+        <span>Senha</span>
+        <input type="password" formControlName="senha" autocomplete="current-password" />
+      </label>
+
+      @if (form.controls.senha.touched && form.controls.senha.invalid) {
+        <p class="field-error">Informe a senha.</p>
+      }
+
+      @if (erro()) {
+        <p class="login-error">{{ erro() }}</p>
+      }
+
+      @if (sucesso()) {
+        <p class="login-success">{{ sucesso() }}</p>
+      }
+
+      <button type="submit" [disabled]="carregando()">
+        {{ carregando() ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+  </section>
+</main>
