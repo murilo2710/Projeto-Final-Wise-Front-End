@@ -16,11 +16,19 @@ export interface UsuarioLogado {
   perfil: PerfilUsuario;
 }
 
+export interface RegisterRequest {
+  nome: string;
+  cpf: string;
+  email: string;
+  senha: string;
+  perfil: PerfilUsuario;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly apiUrl = '/api/auth/login';
+  private readonly apiUrl = '/api/auth';
   private readonly storageKey = 'sistemaodonto.usuario';
 
   readonly usuario = signal<UsuarioLogado | null>(this.getUsuarioFromStorage());
@@ -28,12 +36,16 @@ export class AuthService {
   constructor(private readonly http: HttpClient) {}
 
   login(credenciais: LoginRequest) {
-    return this.http.post<UsuarioLogado>(this.apiUrl, credenciais).pipe(
+    return this.http.post<UsuarioLogado>(`${this.apiUrl}/login`, credenciais).pipe(
       tap((usuario) => {
         localStorage.setItem(this.storageKey, JSON.stringify(usuario));
         this.usuario.set(usuario);
       })
     );
+  }
+
+  register(dados: RegisterRequest) {
+    return this.http.post<UsuarioLogado>(`${this.apiUrl}/register`, dados);
   }
 
   logout(): void {

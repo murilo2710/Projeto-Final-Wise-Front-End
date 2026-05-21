@@ -33,7 +33,12 @@ export class Login {
     this.erro.set('');
     this.sucesso.set('');
 
-    this.authService.login(this.form.getRawValue()).subscribe({
+    const credenciais = this.form.getRawValue();
+
+    this.authService.login({
+      email: credenciais.email.trim(),
+      senha: credenciais.senha
+    }).subscribe({
       next: () => {
         this.carregando.set(false);
         this.sucesso.set('Login realizado com sucesso');
@@ -43,12 +48,33 @@ export class Login {
         console.error('Erro no login:', error);
 
         if (error.status === 0) {
-          this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando e se o proxy/CORS esta configurado.');
+          this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.');
           return;
         }
 
-        this.erro.set('Email ou senha invalidos');
+        if (error.status >= 500) {
+          this.erro.set('Erro interno no backend ao tentar fazer login. Verifique o console do Spring Boot.');
+          return;
+        }
+
+        this.erro.set(this.getMensagemErro(error));
       }
     });
+  }
+
+  private getMensagemErro(error: HttpErrorResponse): string {
+    if (typeof error.error === 'string' && error.error.trim()) {
+      return error.error;
+    }
+
+    if (error.error?.message) {
+      return error.error.message;
+    }
+
+    if (error.error?.erro) {
+      return error.error.erro;
+    }
+
+    return 'Email ou senha invalidos.';
   }
 }
