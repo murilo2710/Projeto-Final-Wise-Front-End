@@ -1,0 +1,119 @@
+<main class="dentistas-page">
+  <section class="topbar">
+    <div>
+      <p>Sistema Odonto</p>
+      <h1>CRUD de Dentistas</h1>
+    </div>
+
+    <button type="button" (click)="listarDentistas()" [disabled]="carregando()">
+      Recarregar lista
+    </button>
+  </section>
+
+  @if (erro()) {
+    <p class="alert alert-error">{{ erro() }}</p>
+  }
+
+  @if (sucesso()) {
+    <p class="alert alert-success">{{ sucesso() }}</p>
+  }
+
+  <section class="panel">
+    <h2>{{ dentistaEmEdicaoId() ? 'Editar dentista' : 'Criar dentista' }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+      <label>
+        <span>Nome *</span>
+        <input type="text" formControlName="nome" />
+      </label>
+
+      <label>
+        <span>CPF *</span>
+        <input type="text" formControlName="cpf" />
+      </label>
+
+      <label>
+        <span>Email *</span>
+        <input type="email" formControlName="email" />
+      </label>
+
+      <label>
+        <span>CRO *</span>
+        <input type="text" formControlName="cro" />
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" formControlName="ativo" />
+        <span>Ativo</span>
+      </label>
+
+      @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+        <p class="field-error">Nome e obrigatorio.</p>
+      }
+
+      @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+        <p class="field-error">CPF e obrigatorio.</p>
+      }
+
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <p class="field-error">Informe um email valido.</p>
+      }
+
+      @if (form.controls.cro.touched && form.controls.cro.hasError('required')) {
+        <p class="field-error">CRO e obrigatorio.</p>
+      }
+
+      <div class="actions">
+        <button type="submit" [disabled]="carregando()">
+          {{ dentistaEmEdicaoId() ? 'Atualizar' : 'Criar' }}
+        </button>
+
+        <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+          Limpar
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Dentistas cadastrados</h2>
+
+    @if (carregando()) {
+      <p>Carregando...</p>
+    } @else if (dentistas().length === 0) {
+      <p>Nenhum dentista encontrado.</p>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Email</th>
+              <th>CRO</th>
+              <th>Ativo</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (dentista of dentistas(); track dentista.id) {
+              <tr>
+                <td>{{ dentista.id }}</td>
+                <td>{{ dentista.nome }}</td>
+                <td>{{ dentista.cpf }}</td>
+                <td>{{ dentista.email }}</td>
+                <td>{{ dentista.cro }}</td>
+                <td>{{ dentista.ativo ? 'Sim' : 'Nao' }}</td>
+                <td class="row-actions">
+                  <button type="button" class="small" (click)="editar(dentista)">Editar</button>
+                  <button type="button" class="small danger" (click)="excluir(dentista)">Excluir</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>
