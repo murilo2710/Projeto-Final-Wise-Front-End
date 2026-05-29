@@ -1,0 +1,85 @@
+<main class="especialidades-page">
+  <section class="topbar">
+    <div>
+      <p>Sistema Odonto</p>
+      <h1>CRUD de Especialidades</h1>
+    </div>
+
+    <button type="button" (click)="listarEspecialidades()" [disabled]="carregando()">
+      Recarregar lista
+    </button>
+  </section>
+
+  @if (erro()) {
+    <p class="alert alert-error">{{ erro() }}</p>
+  }
+
+  @if (sucesso()) {
+    <p class="alert alert-success">{{ sucesso() }}</p>
+  }
+
+  <section class="panel">
+    <h2>{{ especialidadeEmEdicaoId() ? 'Editar especialidade' : 'Criar especialidade' }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+      <label>
+        <span>Nome *</span>
+        <input type="text" formControlName="nome" maxlength="100" />
+      </label>
+
+      @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+        <p class="field-error">Nome e obrigatorio.</p>
+      }
+
+      @if (form.controls.nome.touched && form.controls.nome.hasError('maxlength')) {
+        <p class="field-error">Nome deve ter no maximo 100 caracteres.</p>
+      }
+
+      <div class="actions">
+        <button type="submit" [disabled]="carregando()">
+          {{ especialidadeEmEdicaoId() ? 'Atualizar' : 'Criar' }}
+        </button>
+
+        <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+          Limpar
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Especialidades cadastradas</h2>
+
+    @if (carregando()) {
+      <p>Carregando...</p>
+    } @else if (especialidades().length === 0) {
+      <p>Nenhuma especialidade encontrada.</p>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (especialidade of especialidades(); track especialidade.id) {
+              <tr>
+                <td>{{ especialidade.id }}</td>
+                <td>{{ especialidade.nome }}</td>
+                <td class="row-actions">
+                  <button type="button" class="small" (click)="editar(especialidade)">Editar</button>
+                  <button type="button" class="small danger" (click)="excluir(especialidade)">
+                    Excluir
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>
