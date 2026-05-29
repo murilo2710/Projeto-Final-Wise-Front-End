@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { Consultas } from './components/consultas/consultas';
 import { Dentistas } from './components/dentistas/dentistas';
 import { Especialidades } from './components/especialidades/especialidades';
 import { Login } from './components/login/login';
@@ -10,6 +11,7 @@ export const routes: Routes = [
   { path: 'pacientes', component: Pacientes },
   { path: 'dentistas', component: Dentistas },
   { path: 'especialidades', component: Especialidades },
+  { path: 'consultas', component: Consultas },
   { path: '', pathMatch: 'full', redirectTo: 'pacientes' },
   { path: '**', redirectTo: 'pacientes' }
 ];
