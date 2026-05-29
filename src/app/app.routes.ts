@@ -5,6 +5,7 @@ import { Dentistas } from './components/dentistas/dentistas';
 import { Especialidades } from './components/especialidades/especialidades';
 import { Login } from './components/login/login';
 import { Pacientes } from './components/pacientes/pacientes';
+import { Usuarios } from './components/usuarios/usuarios';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -12,6 +13,7 @@ export const routes: Routes = [
   { path: 'dentistas', component: Dentistas },
   { path: 'especialidades', component: Especialidades },
   { path: 'consultas', component: Consultas },
+  { path: 'usuarios', component: Usuarios },
   { path: '', pathMatch: 'full', redirectTo: 'pacientes' },
   { path: '**', redirectTo: 'pacientes' }
 ];
