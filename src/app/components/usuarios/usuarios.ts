@@ -82,6 +82,9 @@ export class Usuarios implements OnInit {
 
   protected editar(usuario: UsuarioResponse): void {
     this.usuarioEmEdicaoId.set(usuario.id);
+    this.form.controls.senha.clearValidators();
+    this.form.controls.senha.addValidators([Validators.minLength(6)]);
+    this.form.controls.senha.updateValueAndValidity();
     this.form.setValue({
       nome: usuario.nome,
       cpf: usuario.cpf,
@@ -113,6 +116,9 @@ export class Usuarios implements OnInit {
   }
 
   protected limparFormulario(): void {
+    this.form.controls.senha.clearValidators();
+    this.form.controls.senha.addValidators([Validators.required, Validators.minLength(6)]);
+    this.form.controls.senha.updateValueAndValidity();
     this.form.reset({
       nome: '',
       cpf: '',
@@ -140,15 +146,21 @@ export class Usuarios implements OnInit {
   private getUsuarioDoFormulario(): UsuarioRequest {
     const usuario = this.form.getRawValue();
     const cpfSomenteDigitos = usuario.cpf.replace(/\D/g, '');
+    const senha = usuario.senha.trim();
 
-    return {
+    const payload: UsuarioRequest = {
       nome: usuario.nome.trim(),
       cpf: cpfSomenteDigitos,
       email: usuario.email.trim(),
-      senha: usuario.senha.trim(),
       perfil: usuario.perfil,
       ativo: usuario.ativo
     };
+
+    if (senha) {
+      payload.senha = senha;
+    }
+
+    return payload;
   }
 
   private limparMensagens(): void {

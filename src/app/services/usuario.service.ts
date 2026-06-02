@@ -7,7 +7,7 @@ export interface UsuarioRequest {
   nome: string;
   cpf: string;
   email: string;
-  senha: string;
+  senha?: string;
   perfil: PerfilUsuario;
   ativo: boolean;
 }
