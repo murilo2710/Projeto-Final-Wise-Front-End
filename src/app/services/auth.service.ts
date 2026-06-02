@@ -14,7 +14,11 @@ export interface UsuarioLogado {
   nome: string;
   email: string;
   perfil: PerfilUsuario;
+  token: string;
+  tipoToken: string;
 }
+
+interface AuthResponse extends UsuarioLogado {}
 
 export interface RegisterRequest {
   nome: string;
@@ -30,16 +34,17 @@ export interface RegisterRequest {
 export class AuthService {
   private readonly apiUrl = '/api/auth';
   private readonly storageKey = 'sistemaodonto.usuario';
+  private readonly tokenStorageKey = 'sistemaodonto.token';
+  private readonly tokenTypeStorageKey = 'sistemaodonto.tipoToken';
 
   readonly usuario = signal<UsuarioLogado | null>(this.getUsuarioFromStorage());
 
   constructor(private readonly http: HttpClient) {}
 
   login(credenciais: LoginRequest) {
-    return this.http.post<UsuarioLogado>(`${this.apiUrl}/login`, credenciais).pipe(
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credenciais).pipe(
       tap((usuario) => {
-        localStorage.setItem(this.storageKey, JSON.stringify(usuario));
-        this.usuario.set(usuario);
+        this.salvarSessao(usuario);
       })
     );
   }
@@ -49,12 +54,44 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.storageKey);
+    this.limparSessao();
+  }
+
+  limparSessao(): void {
     this.usuario.set(null);
+    this.limparStorage();
   }
 
   estaLogado(): boolean {
-    return this.usuario() !== null;
+    return !!this.getToken();
+  }
+
+  getToken(): string {
+    return localStorage.getItem(this.tokenStorageKey) ?? this.usuario()?.token ?? '';
+  }
+
+  getTipoToken(): string {
+    return localStorage.getItem(this.tokenTypeStorageKey) ?? this.usuario()?.tipoToken ?? 'Bearer';
+  }
+
+  temPerfil(perfil: PerfilUsuario): boolean {
+    return this.usuario()?.perfil === perfil;
+  }
+
+  private salvarSessao(response: AuthResponse): void {
+    const usuario: UsuarioLogado = {
+      id: response.id,
+      nome: response.nome,
+      email: response.email,
+      perfil: response.perfil,
+      token: response.token,
+      tipoToken: response.tipoToken || 'Bearer'
+    };
+
+    localStorage.setItem(this.storageKey, JSON.stringify(usuario));
+    localStorage.setItem(this.tokenStorageKey, usuario.token);
+    localStorage.setItem(this.tokenTypeStorageKey, usuario.tipoToken);
+    this.usuario.set(usuario);
   }
 
   private getUsuarioFromStorage(): UsuarioLogado | null {
@@ -65,10 +102,28 @@ export class AuthService {
     }
 
     try {
-      return JSON.parse(usuarioSalvo) as UsuarioLogado;
+      const usuario = JSON.parse(usuarioSalvo) as UsuarioLogado;
+      const token = localStorage.getItem(this.tokenStorageKey) ?? usuario.token;
+
+      if (!token) {
+        this.limparStorage();
+        return null;
+      }
+
+      return {
+        ...usuario,
+        token,
+        tipoToken: localStorage.getItem(this.tokenTypeStorageKey) ?? usuario.tipoToken ?? 'Bearer'
+      };
     } catch {
-      localStorage.removeItem(this.storageKey);
+      this.limparStorage();
       return null;
     }
+  }
+
+  private limparStorage(): void {
+    localStorage.removeItem(this.storageKey);
+    localStorage.removeItem(this.tokenStorageKey);
+    localStorage.removeItem(this.tokenTypeStorageKey);
   }
 }

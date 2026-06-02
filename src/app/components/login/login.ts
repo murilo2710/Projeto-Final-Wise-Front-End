@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -13,13 +14,14 @@ import { AuthService } from '../../services/auth.service';
 export class Login {
   private readonly authService = inject(AuthService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly router = inject(Router);
 
   protected readonly carregando = signal(false);
   protected readonly erro = signal('');
   protected readonly sucesso = signal('');
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    email: ['admin@teste.com', [Validators.required, Validators.email]],
+    email: ['dentista.teste@odontoflow.com', [Validators.required, Validators.email]],
     senha: ['123456', [Validators.required]]
   });
 
@@ -42,6 +44,7 @@ export class Login {
       next: () => {
         this.carregando.set(false);
         this.sucesso.set('Login realizado com sucesso');
+        this.router.navigate(['/dashboard']);
       },
       error: (error: HttpErrorResponse) => {
         this.carregando.set(false);
