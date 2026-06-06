@@ -1,0 +1,84 @@
+<main class="dashboard-page">
+  <section class="topbar">
+    <div>
+      <p>Sistema Odonto</p>
+      <h1>Dashboard</h1>
+    </div>
+
+    <button type="button" (click)="carregarDashboard()" [disabled]="carregando()">
+      Recarregar
+    </button>
+  </section>
+
+  @if (erro()) {
+    <p class="alert alert-error">{{ erro() }}</p>
+  }
+
+  @if (carregando()) {
+    <section class="panel">
+      <p>Carregando...</p>
+    </section>
+  } @else if (dashboard()) {
+    <section class="metrics-grid">
+      <article>
+        <span>Total</span>
+        <strong>{{ dashboard()?.totalConsultas }}</strong>
+      </article>
+      <article>
+        <span>Agendadas</span>
+        <strong>{{ dashboard()?.totalAgendadas }}</strong>
+      </article>
+      <article>
+        <span>Canceladas</span>
+        <strong>{{ dashboard()?.totalCanceladas }}</strong>
+      </article>
+      <article>
+        <span>Finalizadas</span>
+        <strong>{{ dashboard()?.totalFinalizadas }}</strong>
+      </article>
+      <article>
+        <span>Pacientes com consulta</span>
+        <strong>{{ dashboard()?.totalPacientesComConsulta }}</strong>
+      </article>
+      <article>
+        <span>Dentistas com consulta</span>
+        <strong>{{ dashboard()?.totalDentistasComConsulta }}</strong>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Proximas consultas</h2>
+
+      @if (getProximasConsultas().length === 0) {
+        <p>Nenhuma consulta futura encontrada.</p>
+      } @else {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Paciente</th>
+                <th>Dentista</th>
+                <th>Descricao</th>
+                <th>Inicio</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (consulta of getProximasConsultas(); track consulta.id) {
+                <tr>
+                  <td>{{ consulta.id }}</td>
+                  <td>{{ consulta.pacienteId }}</td>
+                  <td>{{ consulta.dentistaId }}</td>
+                  <td>{{ consulta.descricao }}</td>
+                  <td>{{ formatarData(consulta.dataInicio) }}</td>
+                  <td>{{ consulta.status }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</main>
