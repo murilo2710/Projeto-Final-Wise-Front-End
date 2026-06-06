@@ -7,7 +7,6 @@ import {
   ConsultaService,
   StatusConsulta
 } from '../../services/consulta.service';
-import { AuthService } from '../../services/auth.service';
 import { DentistaResponse, DentistaService } from '../../services/dentista.service';
 import { PacienteResponse, PacienteService } from '../../services/paciente.service';
 
@@ -19,7 +18,6 @@ import { PacienteResponse, PacienteService } from '../../services/paciente.servi
 })
 export class Consultas implements OnInit {
   private readonly consultaService = inject(ConsultaService);
-  private readonly authService = inject(AuthService);
   private readonly pacienteService = inject(PacienteService);
   private readonly dentistaService = inject(DentistaService);
   private readonly formBuilder = inject(FormBuilder);
@@ -31,16 +29,17 @@ export class Consultas implements OnInit {
   protected readonly erro = signal('');
   protected readonly sucesso = signal('');
   protected readonly consultaEmEdicaoId = signal<number | null>(null);
-  protected readonly statusEdicao = signal<StatusConsulta>('AGENDADA');
   protected readonly consultaCancelamentoId = signal<number | null>(null);
   protected readonly motivoCancelamento = signal('');
+  protected readonly statusOptions: StatusConsulta[] = ['AGENDADA', 'CANCELADA', 'FINALIZADA'];
 
   protected readonly form = this.formBuilder.nonNullable.group({
     pacienteId: [0, [Validators.required, Validators.min(1)]],
     dentistaId: [0, [Validators.required, Validators.min(1)]],
     descricao: ['', [Validators.required]],
     dataInicio: ['', [Validators.required]],
-    dataFim: ['', [Validators.required]]
+    dataFim: ['', [Validators.required]],
+    status: ['AGENDADA' as StatusConsulta, [Validators.required]]
   });
 
   ngOnInit(): void {
@@ -105,13 +104,13 @@ export class Consultas implements OnInit {
 
   protected editar(consulta: ConsultaResponse): void {
     this.consultaEmEdicaoId.set(consulta.id);
-    this.statusEdicao.set(consulta.status);
     this.form.setValue({
       pacienteId: consulta.pacienteId,
       dentistaId: consulta.dentistaId,
       descricao: consulta.descricao,
       dataInicio: this.toDateTimeLocal(consulta.dataInicio),
-      dataFim: this.toDateTimeLocal(consulta.dataFim)
+      dataFim: this.toDateTimeLocal(consulta.dataFim),
+      status: consulta.status
     });
     this.fecharCancelamento();
     this.limparMensagens();
@@ -179,9 +178,9 @@ export class Consultas implements OnInit {
       dentistaId: 0,
       descricao: '',
       dataInicio: '',
-      dataFim: ''
+      dataFim: '',
+      status: 'AGENDADA'
     });
-    this.statusEdicao.set('AGENDADA');
     this.consultaEmEdicaoId.set(null);
   }
 
@@ -195,37 +194,20 @@ export class Consultas implements OnInit {
     return dentista ? `${dentista.nome} (#${dentista.id})` : `ID ${id}`;
   }
 
-  protected getUsuarioLogadoLabel(): string {
-    const usuario = this.authService.usuario();
-    return usuario ? `${usuario.nome} (#${usuario.id})` : 'Nao identificado';
-  }
-
-  protected getUsuarioRegistroLabel(consulta: ConsultaResponse): string {
-    if (consulta.usuarioNome?.trim()) {
-      return `${consulta.usuarioNome} (#${consulta.usuarioId})`;
-    }
-
-    return `ID ${consulta.usuarioId}`;
-  }
-
   protected atualizarMotivoCancelamento(valor: string): void {
     this.motivoCancelamento.set(valor);
   }
 
   private getConsultaDoFormulario() {
     const consulta = this.form.getRawValue();
-    const usuarioLogado = this.authService.usuario();
-    const usuarioId = usuarioLogado?.id ?? 0;
-    const emEdicao = this.consultaEmEdicaoId() !== null;
 
     return {
       pacienteId: Number(consulta.pacienteId),
       dentistaId: Number(consulta.dentistaId),
-      usuarioId,
       descricao: consulta.descricao.trim(),
       dataInicio: this.toIsoDateTime(consulta.dataInicio),
       dataFim: this.toIsoDateTime(consulta.dataFim),
-      status: emEdicao ? this.statusEdicao() : 'AGENDADA'
+      status: consulta.status
     };
   }
 
