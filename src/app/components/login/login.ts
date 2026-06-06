@@ -21,8 +21,8 @@ export class Login {
   protected readonly sucesso = signal('');
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    email: ['dentista.teste@odontoflow.com', [Validators.required, Validators.email]],
-    senha: ['123456', [Validators.required]]
+    email: ['', [Validators.required, Validators.email]],
+    senha: ['', [Validators.required]]
   });
 
   protected entrar(): void {
