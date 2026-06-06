@@ -42,6 +42,15 @@
         <input type="text" formControlName="cro" />
       </label>
 
+      <label>
+        <span>Especialidades</span>
+        <select formControlName="especialidadeIds" multiple>
+          @for (especialidade of especialidades(); track especialidade.id) {
+            <option [ngValue]="especialidade.id">{{ especialidade.nome }}</option>
+          }
+        </select>
+      </label>
+
       <label class="checkbox-label">
         <input type="checkbox" formControlName="ativo" />
         <span>Ativo</span>
@@ -92,6 +101,7 @@
               <th>CPF</th>
               <th>Email</th>
               <th>CRO</th>
+              <th>Especialidades</th>
               <th>Ativo</th>
               <th>Acoes</th>
             </tr>
@@ -104,10 +114,19 @@
                 <td>{{ dentista.cpf }}</td>
                 <td>{{ dentista.email }}</td>
                 <td>{{ dentista.cro }}</td>
+                <td>{{ getNomesEspecialidades(dentista.especialidadeIds) }}</td>
                 <td>{{ dentista.ativo ? 'Sim' : 'Nao' }}</td>
                 <td class="row-actions">
                   <button type="button" class="small" (click)="editar(dentista)">Editar</button>
-                  <button type="button" class="small danger" (click)="excluir(dentista)">Excluir</button>
+                  <button
+                    type="button"
+                    class="small"
+                    [class.danger]="dentista.ativo"
+                    [class.success]="!dentista.ativo"
+                    (click)="alternarAtivo(dentista)"
+                  >
+                    {{ dentista.ativo ? 'Desativar' : 'Reativar' }}
+                  </button>
                 </td>
               </tr>
             }

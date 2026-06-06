@@ -3,6 +3,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { DentistaResponse, DentistaService } from '../../services/dentista.service';
+import {
+  EspecialidadeResponse,
+  EspecialidadeService
+} from '../../services/especialidade.service';
 
 @Component({
   selector: 'app-dentistas',
@@ -12,9 +16,11 @@ import { DentistaResponse, DentistaService } from '../../services/dentista.servi
 })
 export class Dentistas implements OnInit {
   private readonly dentistaService = inject(DentistaService);
+  private readonly especialidadeService = inject(EspecialidadeService);
   private readonly formBuilder = inject(FormBuilder);
 
   protected readonly dentistas = signal<DentistaResponse[]>([]);
+  protected readonly especialidades = signal<EspecialidadeResponse[]>([]);
   protected readonly carregando = signal(false);
   protected readonly erro = signal('');
   protected readonly sucesso = signal('');
@@ -25,11 +31,21 @@ export class Dentistas implements OnInit {
     cpf: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     cro: ['', [Validators.required]],
-    ativo: [true]
+    ativo: [true],
+    especialidadeIds: [[] as number[]]
   });
 
   ngOnInit(): void {
+    this.carregarEspecialidades();
     this.listarDentistas();
+  }
+
+  private carregarEspecialidades(): void {
+    this.especialidadeService.listar().subscribe({
+      next: (especialidades) =>
+        this.especialidades.set([...especialidades].sort((a, b) => a.nome.localeCompare(b.nome))),
+      error: () => this.erro.set('Nao foi possivel carregar especialidades para selecao.')
+    });
   }
 
   protected listarDentistas(preservarMensagem = false): void {
@@ -80,13 +96,16 @@ export class Dentistas implements OnInit {
       cpf: dentista.cpf,
       email: dentista.email,
       cro: dentista.cro,
-      ativo: dentista.ativo
+      ativo: dentista.ativo,
+      especialidadeIds: dentista.especialidadeIds ?? []
     });
     this.limparMensagens();
   }
 
-  protected excluir(dentista: DentistaResponse): void {
-    const confirmado = window.confirm(`Excluir o dentista ${dentista.nome}?`);
+  protected alternarAtivo(dentista: DentistaResponse): void {
+    const novoStatus = !dentista.ativo;
+    const acao = novoStatus ? 'reativar' : 'desativar';
+    const confirmado = window.confirm(`Deseja ${acao} o dentista ${dentista.nome}?`);
 
     if (!confirmado) {
       return;
@@ -95,9 +114,9 @@ export class Dentistas implements OnInit {
     this.carregando.set(true);
     this.limparMensagens();
 
-    this.dentistaService.excluir(dentista.id).subscribe({
+    this.dentistaService.atualizar(dentista.id, { ...dentista, ativo: novoStatus }).subscribe({
       next: () => {
-        this.sucesso.set('Dentista excluido com sucesso.');
+        this.sucesso.set(novoStatus ? 'Dentista reativado com sucesso.' : 'Dentista desativado com sucesso.');
         this.listarDentistas(true);
       },
       error: (error: HttpErrorResponse) => this.tratarErro(error)
@@ -110,9 +129,20 @@ export class Dentistas implements OnInit {
       cpf: '',
       email: '',
       cro: '',
-      ativo: true
+      ativo: true,
+      especialidadeIds: []
     });
     this.dentistaEmEdicaoId.set(null);
+  }
+
+  protected getNomesEspecialidades(ids: number[]): string {
+    if (!ids?.length) {
+      return '-';
+    }
+
+    return ids
+      .map((id) => this.especialidades().find((especialidade) => especialidade.id === id)?.nome ?? `ID ${id}`)
+      .join(', ');
   }
 
   private getDentistaDoFormulario() {
@@ -123,7 +153,8 @@ export class Dentistas implements OnInit {
       cpf: dentista.cpf.trim(),
       email: dentista.email.trim(),
       cro: dentista.cro.trim(),
-      ativo: dentista.ativo
+      ativo: dentista.ativo,
+      especialidadeIds: dentista.especialidadeIds.map(Number)
     };
   }
 

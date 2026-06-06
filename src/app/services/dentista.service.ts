@@ -7,6 +7,7 @@ export interface DentistaRequest {
   email: string;
   cro: string;
   ativo: boolean;
+  especialidadeIds: number[];
 }
 
 export interface DentistaResponse extends DentistaRequest {
