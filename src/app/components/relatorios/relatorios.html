@@ -1,0 +1,134 @@
+<main class="relatorios-page">
+  <section class="topbar">
+    <div>
+      <p>Sistema Odonto</p>
+      <h1>Relatorios de Consultas</h1>
+    </div>
+  </section>
+
+  @if (erro()) {
+    <p class="alert alert-error">{{ erro() }}</p>
+  }
+
+  @if (sucesso()) {
+    <p class="alert alert-success">{{ sucesso() }}</p>
+  }
+
+  <section class="panel">
+    <h2>Filtros</h2>
+
+    <form [formGroup]="form" (ngSubmit)="buscarRelatorio()" novalidate>
+      <label>
+        <span>Paciente</span>
+        <select formControlName="pacienteId">
+          <option [ngValue]="0">Todos</option>
+          @for (paciente of pacientes(); track paciente.id) {
+            <option [ngValue]="paciente.id">{{ paciente.nome }} (#{{ paciente.id }})</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        <span>Dentista</span>
+        <select formControlName="dentistaId">
+          <option [ngValue]="0">Todos</option>
+          @for (dentista of dentistas(); track dentista.id) {
+            <option [ngValue]="dentista.id">{{ dentista.nome }} (#{{ dentista.id }})</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        <span>Especialidade</span>
+        <select formControlName="especialidadeId">
+          <option [ngValue]="0">Todas</option>
+          @for (especialidade of especialidades(); track especialidade.id) {
+            <option [ngValue]="especialidade.id">{{ especialidade.nome }}</option>
+          }
+        </select>
+      </label>
+
+      @if (isAdmin()) {
+        <label>
+          <span>Usuario</span>
+          <select formControlName="usuarioId">
+            <option [ngValue]="0">Todos</option>
+            @for (usuario of usuarios(); track usuario.id) {
+              <option [ngValue]="usuario.id">{{ usuario.nome }} (#{{ usuario.id }})</option>
+            }
+          </select>
+        </label>
+      }
+
+      <label>
+        <span>Status</span>
+        <select formControlName="status">
+          <option value="">Todos</option>
+          @for (status of statusOptions; track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        <span>Data inicio</span>
+        <input type="datetime-local" formControlName="dataInicio" />
+      </label>
+
+      <label>
+        <span>Data fim</span>
+        <input type="datetime-local" formControlName="dataFim" />
+      </label>
+
+      <div class="actions">
+        <button type="submit" [disabled]="carregando()">
+          {{ carregando() ? 'Buscando...' : 'Buscar' }}
+        </button>
+        <button type="button" class="secondary" (click)="limparFiltros()" [disabled]="carregando()">
+          Limpar
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Resultado</h2>
+
+    @if (carregando()) {
+      <p>Carregando...</p>
+    } @else if (consultas().length === 0) {
+      <p>Nenhuma consulta encontrada.</p>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Paciente</th>
+              <th>Dentista</th>
+              <th>Descricao</th>
+              <th>Inicio</th>
+              <th>Fim</th>
+              <th>Status</th>
+              <th>Motivo Cancelamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (consulta of consultas(); track consulta.id) {
+              <tr>
+                <td>{{ consulta.id }}</td>
+                <td>{{ getNomePaciente(consulta.pacienteId) }}</td>
+                <td>{{ getNomeDentista(consulta.dentistaId) }}</td>
+                <td>{{ consulta.descricao }}</td>
+                <td>{{ formatarData(consulta.dataInicio) }}</td>
+                <td>{{ formatarData(consulta.dataFim) }}</td>
+                <td>{{ consulta.status }}</td>
+                <td>{{ consulta.motivoCancelamento || '-' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>
