@@ -1,137 +1,147 @@
-<main class="usuarios-page">
-  <section class="topbar">
-    <div>
-      <p>Sistema Odonto</p>
-      <h1>CRUD de Usuarios</h1>
-    </div>
-
-    <button type="button" (click)="listarUsuarios()" [disabled]="carregando()">Recarregar lista</button>
-  </section>
-
-  @if (erro()) {
-    <p class="alert alert-error">{{ erro() }}</p>
-  }
-
-  @if (sucesso()) {
-    <p class="alert alert-success">{{ sucesso() }}</p>
-  }
-
-  <section class="panel">
-    <h2>{{ usuarioEmEdicaoId() ? 'Editar usuario' : 'Criar usuario' }}</h2>
-
-    <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-      <label>
-        <span>Nome *</span>
-        <input type="text" formControlName="nome" />
-      </label>
-
-      <label>
-        <span>CPF *</span>
-        <input type="text" formControlName="cpf" />
-      </label>
-
-      <label>
-        <span>Email *</span>
-        <input type="email" formControlName="email" />
-      </label>
-
-      <label>
-        <span>Senha *</span>
-        <input type="password" formControlName="senha" />
-      </label>
-
-      <label>
-        <span>Perfil *</span>
-        <select formControlName="perfil">
-          @for (perfil of perfis; track perfil) {
-            <option [value]="perfil">{{ perfil }}</option>
-          }
-        </select>
-      </label>
-
-      <label class="checkbox-label">
-        <input type="checkbox" formControlName="ativo" />
-        <span>Ativo</span>
-      </label>
-
-      @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-        <p class="field-error">Nome e obrigatorio.</p>
-      }
-
-      @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-        <p class="field-error">CPF e obrigatorio.</p>
-      }
-
-      @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
-        <p class="field-error">CPF deve ter 11 digitos numericos.</p>
-      }
-
-      @if (form.controls.email.touched && form.controls.email.invalid) {
-        <p class="field-error">Informe um email valido.</p>
-      }
-
-      @if (form.controls.senha.touched && form.controls.senha.hasError('required')) {
-        <p class="field-error">Senha e obrigatoria ao criar usuario.</p>
-      }
-
-      @if (form.controls.senha.touched && form.controls.senha.hasError('minlength')) {
-        <p class="field-error">Senha deve ter ao menos 6 caracteres.</p>
-      }
-
-      <div class="actions">
-        <button type="submit" [disabled]="carregando()">
-          {{ usuarioEmEdicaoId() ? 'Atualizar' : 'Criar' }}
-        </button>
-        <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
-          Limpar
-        </button>
+<app-layout>
+  <div class="odonto-page">
+    <section class="page-header">
+      <div>
+        <span class="page-header__eyebrow">Administracao</span>
+        <h1>Usuarios</h1>
+        <p class="page-header__sub">Controle acessos, perfis e status dos usuarios do sistema.</p>
       </div>
-    </form>
-  </section>
+    </section>
 
-  <section class="panel">
-    <h2>Usuarios cadastrados</h2>
-
-    @if (carregando()) {
-      <p>Carregando...</p>
-    } @else if (usuarios().length === 0) {
-      <p>Nenhum usuario encontrado.</p>
-    } @else {
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>CPF</th>
-              <th>Perfil</th>
-              <th>Ativo</th>
-              <th>Data Criacao</th>
-              <th>Ultimo Login</th>
-              <th>Acoes</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (usuario of usuarios(); track usuario.id) {
-              <tr>
-                <td>{{ usuario.id }}</td>
-                <td>{{ usuario.nome }}</td>
-                <td>{{ usuario.email }}</td>
-                <td>{{ usuario.cpf }}</td>
-                <td>{{ usuario.perfil }}</td>
-                <td>{{ usuario.ativo ? 'Sim' : 'Nao' }}</td>
-                <td>{{ formatarData(usuario.dataCriacao) }}</td>
-                <td>{{ formatarData(usuario.ultimoLogin) }}</td>
-                <td class="row-actions">
-                  <button type="button" class="small" (click)="editar(usuario)">Editar</button>
-                  <button type="button" class="small danger" (click)="excluir(usuario)">Excluir</button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+    @if (erro()) {
+      <p class="alert alert-error">{{ erro() }}</p>
     }
-  </section>
-</main>
+
+    @if (sucesso()) {
+      <p class="alert alert-success">{{ sucesso() }}</p>
+    }
+
+    <section class="panel">
+      <h2>{{ usuarioEmEdicaoId() ? 'Editar usuario' : 'Cadastrar usuario' }}</h2>
+
+      <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+        <label>
+          <span>Nome *</span>
+          <input type="text" formControlName="nome" />
+        </label>
+
+        <label>
+          <span>CPF *</span>
+          <input type="text" formControlName="cpf" />
+        </label>
+
+        <label>
+          <span>Email *</span>
+          <input type="email" formControlName="email" />
+        </label>
+
+        <label>
+          <span>Senha *</span>
+          <input type="password" formControlName="senha" />
+        </label>
+
+        <label>
+          <span>Perfil *</span>
+          <select formControlName="perfil">
+            @for (perfil of perfis; track perfil) {
+              <option [value]="perfil">{{ perfil }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="switch-label">
+          <input type="checkbox" formControlName="ativo" />
+          <span class="switch-track"></span>
+          <span>Ativo</span>
+        </label>
+
+        @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+          <p class="field-error">Nome e obrigatorio.</p>
+        }
+
+        @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+          <p class="field-error">CPF e obrigatorio.</p>
+        }
+
+        @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
+          <p class="field-error">CPF deve ter 11 digitos numericos.</p>
+        }
+
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="field-error">Informe um email valido.</p>
+        }
+
+        @if (form.controls.senha.touched && form.controls.senha.hasError('required')) {
+          <p class="field-error">Senha e obrigatoria ao criar usuario.</p>
+        }
+
+        @if (form.controls.senha.touched && form.controls.senha.hasError('minlength')) {
+          <p class="field-error">Senha deve ter ao menos 6 caracteres.</p>
+        }
+
+        <div class="actions">
+          <button type="submit" [disabled]="carregando()">
+            {{ usuarioEmEdicaoId() ? 'Atualizar' : 'Criar' }}
+          </button>
+          <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+            Limpar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Usuarios cadastrados</h2>
+
+      @if (carregando()) {
+        <p class="loading-text">Carregando usuarios...</p>
+      } @else if (usuarios().length === 0) {
+        <div class="empty-state">
+          <span class="empty-state__icon">+</span>
+          <strong>Nenhum usuario cadastrado</strong>
+          <p>Adicione usuarios para liberar acessos administrativos ou de dentistas.</p>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>CPF</th>
+                <th>Perfil</th>
+                <th>Ativo</th>
+                <th>Data criacao</th>
+                <th>Ultimo login</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (usuario of usuarios(); track usuario.id) {
+                <tr>
+                  <td>#{{ usuario.id }}</td>
+                  <td>{{ usuario.nome }}</td>
+                  <td>{{ usuario.email }}</td>
+                  <td>{{ usuario.cpf }}</td>
+                  <td><span class="badge">{{ usuario.perfil }}</span></td>
+                  <td>
+                    <span class="badge" [class.badge-danger]="!usuario.ativo">
+                      {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
+                    </span>
+                  </td>
+                  <td>{{ formatarData(usuario.dataCriacao) }}</td>
+                  <td>{{ formatarData(usuario.ultimoLogin) }}</td>
+                  <td class="row-actions">
+                    <button type="button" class="small" (click)="editar(usuario)">Editar</button>
+                    <button type="button" class="small danger" (click)="excluir(usuario)">Excluir</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </div>
+</app-layout>

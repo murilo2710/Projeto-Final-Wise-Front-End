@@ -18,12 +18,7 @@ export const routes: Routes = [
   { path: 'especialidades', component: Especialidades, canActivate: [authGuard] },
   { path: 'consultas', component: Consultas, canActivate: [authGuard] },
   { path: 'relatorios', component: Relatorios, canActivate: [authGuard] },
-  {
-    path: 'usuarios',
-    component: Usuarios,
-    canActivate: [authGuard],
-    data: { perfis: ['ADMIN'] }
-  },
+  { path: 'usuarios', component: Usuarios, canActivate: [authGuard] },
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
   { path: '**', redirectTo: 'dashboard' }
 ];

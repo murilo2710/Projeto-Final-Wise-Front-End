@@ -8,10 +8,11 @@ import {
   UsuarioResponse,
   UsuarioService
 } from '../../services/usuario.service';
+import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 
 @Component({
   selector: 'app-usuarios',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AppLayoutComponent],
   templateUrl: './usuarios.html',
   styleUrl: './usuarios.css'
 })
