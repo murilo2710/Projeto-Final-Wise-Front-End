@@ -1,112 +1,115 @@
-<main class="pacientes-page">
-  <section class="topbar">
-    <div>
-      <p>Sistema Odonto</p>
-      <h1>CRUD de Pacientes</h1>
-    </div>
-
-    <button type="button" (click)="listarPacientes()" [disabled]="carregando()">
-      Recarregar lista
-    </button>
-  </section>
-
-  @if (erro()) {
-    <p class="alert alert-error">{{ erro() }}</p>
-  }
-
-  @if (sucesso()) {
-    <p class="alert alert-success">{{ sucesso() }}</p>
-  }
-
-  <section class="panel">
-    <h2>{{ pacienteEmEdicaoId() ? 'Editar paciente' : 'Criar paciente' }}</h2>
-
-    <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-      <label>
-        <span>Nome *</span>
-        <input type="text" formControlName="nome" />
-      </label>
-
-      <label>
-        <span>Email *</span>
-        <input type="email" formControlName="email" />
-      </label>
-
-      <label>
-        <span>CPF *</span>
-        <input type="text" formControlName="cpf" maxlength="14" />
-      </label>
-
-      <label>
-        <span>Telefone</span>
-        <input type="text" formControlName="telefone" />
-      </label>
-
-      @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-        <p class="field-error">Nome e obrigatorio.</p>
-      }
-
-      @if (form.controls.email.touched && form.controls.email.invalid) {
-        <p class="field-error">Informe um email valido.</p>
-      }
-
-      @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-        <p class="field-error">CPF e obrigatorio.</p>
-      }
-
-      @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {
-        <p class="field-error">CPF deve ter no maximo 14 caracteres.</p>
-      }
-
-      <div class="actions">
-        <button type="submit" [disabled]="carregando()">
-          {{ pacienteEmEdicaoId() ? 'Atualizar' : 'Criar' }}
-        </button>
-
-        <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
-          Limpar
-        </button>
+<app-layout>
+  <div class="odonto-page">
+    <section class="page-header">
+      <div>
+        <span class="page-header__eyebrow">Gestao</span>
+        <h1>Pacientes</h1>
+        <p class="page-header__sub">Cadastre, edite e acompanhe os pacientes da clinica.</p>
       </div>
-    </form>
-  </section>
+    </section>
 
-  <section class="panel">
-    <h2>Pacientes cadastrados</h2>
-
-    @if (carregando()) {
-      <p>Carregando...</p>
-    } @else if (pacientes().length === 0) {
-      <p>Nenhum paciente encontrado.</p>
-    } @else {
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>CPF</th>
-              <th>Telefone</th>
-              <th>Acoes</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (paciente of pacientes(); track paciente.id) {
-              <tr>
-                <td>{{ paciente.id }}</td>
-                <td>{{ paciente.nome }}</td>
-                <td>{{ paciente.email }}</td>
-                <td>{{ paciente.cpf }}</td>
-                <td>{{ paciente.telefone || '-' }}</td>
-                <td class="row-actions">
-                  <button type="button" class="small" (click)="editar(paciente)">Editar</button>
-                  <button type="button" class="small danger" (click)="excluir(paciente)">Excluir</button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+    @if (erro()) {
+      <p class="alert alert-error">{{ erro() }}</p>
     }
-  </section>
-</main>
+
+    @if (sucesso()) {
+      <p class="alert alert-success">{{ sucesso() }}</p>
+    }
+
+    <section class="panel">
+      <h2>{{ pacienteEmEdicaoId() ? 'Editar paciente' : 'Cadastrar paciente' }}</h2>
+
+      <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+        <label>
+          <span>Nome *</span>
+          <input type="text" formControlName="nome" />
+        </label>
+
+        <label>
+          <span>Email *</span>
+          <input type="email" formControlName="email" />
+        </label>
+
+        <label>
+          <span>CPF *</span>
+          <input type="text" formControlName="cpf" maxlength="14" />
+        </label>
+
+        <label>
+          <span>Telefone</span>
+          <input type="text" formControlName="telefone" />
+        </label>
+
+        @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+          <p class="field-error">Nome e obrigatorio.</p>
+        }
+
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="field-error">Informe um email valido.</p>
+        }
+
+        @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+          <p class="field-error">CPF e obrigatorio.</p>
+        }
+
+        @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {
+          <p class="field-error">CPF deve ter no maximo 14 caracteres.</p>
+        }
+
+        <div class="actions">
+          <button type="submit" [disabled]="carregando()">
+            {{ pacienteEmEdicaoId() ? 'Atualizar' : 'Criar' }}
+          </button>
+
+          <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+            Limpar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Pacientes cadastrados</h2>
+
+      @if (carregando()) {
+        <p class="loading-text">Carregando pacientes...</p>
+      } @else if (pacientes().length === 0) {
+        <div class="empty-state">
+          <span class="empty-state__icon">+</span>
+          <strong>Nenhum paciente cadastrado</strong>
+          <p>Quando novos pacientes forem criados, eles aparecerao aqui para consulta e edicao.</p>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Acoes</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (paciente of pacientes(); track paciente.id) {
+                <tr>
+                  <td>#{{ paciente.id }}</td>
+                  <td>{{ paciente.nome }}</td>
+                  <td>{{ paciente.email }}</td>
+                  <td>{{ paciente.cpf }}</td>
+                  <td>{{ paciente.telefone || '-' }}</td>
+                  <td class="row-actions">
+                    <button type="button" class="small" (click)="editar(paciente)">Editar</button>
+                    <button type="button" class="small danger" (click)="excluir(paciente)">Excluir</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </div>
+</app-layout>
