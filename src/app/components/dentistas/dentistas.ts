@@ -7,10 +7,11 @@ import {
   EspecialidadeResponse,
   EspecialidadeService
 } from '../../services/especialidade.service';
+import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 
 @Component({
   selector: 'app-dentistas',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AppLayoutComponent],
   templateUrl: './dentistas.html',
   styleUrl: './dentistas.css'
 })
