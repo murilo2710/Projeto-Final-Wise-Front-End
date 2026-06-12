@@ -1,3 +1,6 @@
+@import './app/shared/styles/odonto-page.css';
+@import './app/shared/styles/dashboard-page.css';
+
 /* Lufga Font Family */
 @font-face {
   font-family: "Lufga";

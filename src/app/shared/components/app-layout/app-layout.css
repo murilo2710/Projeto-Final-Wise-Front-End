@@ -1,0 +1,23 @@
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 18px 24px 48px;
+  background: #ffffff;
+  color: #0c0c0c;
+  font-family: "Lufga", sans-serif;
+  box-sizing: border-box;
+}
+
+.app-layout__content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .app-layout {
+    gap: 12px;
+    padding: 20px 14px 36px;
+  }
+}
