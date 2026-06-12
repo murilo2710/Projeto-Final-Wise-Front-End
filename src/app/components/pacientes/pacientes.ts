@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { PacienteResponse, PacienteService } from '../../services/paciente.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-pacientes',
@@ -14,6 +15,7 @@ import { AppLayoutComponent } from '../../shared/components/app-layout/app-layou
 export class Pacientes implements OnInit {
   private readonly pacienteService = inject(PacienteService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly alertService = inject(AlertService);
 
   protected readonly pacientes = signal<PacienteResponse[]>([]);
   protected readonly carregando = signal(false);
@@ -84,8 +86,12 @@ export class Pacientes implements OnInit {
     this.limparMensagens();
   }
 
-  protected excluir(paciente: PacienteResponse): void {
-    const confirmado = window.confirm(`Excluir o paciente ${paciente.nome}?`);
+  protected async excluir(paciente: PacienteResponse): Promise<void> {
+    const confirmado = await this.alertService.confirmar(
+      'Excluir paciente?',
+      `Deseja excluir o paciente ${paciente.nome}?`,
+      'Excluir'
+    );
 
     if (!confirmado) {
       return;

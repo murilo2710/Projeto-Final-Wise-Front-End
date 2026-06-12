@@ -10,6 +10,7 @@ import {
 import { DentistaResponse, DentistaService } from '../../services/dentista.service';
 import { PacienteResponse, PacienteService } from '../../services/paciente.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-consultas',
@@ -22,6 +23,7 @@ export class Consultas implements OnInit {
   private readonly pacienteService = inject(PacienteService);
   private readonly dentistaService = inject(DentistaService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly alertService = inject(AlertService);
 
   protected readonly consultas = signal<ConsultaResponse[]>([]);
   protected readonly pacientes = signal<PacienteResponse[]>([]);
@@ -154,8 +156,12 @@ export class Consultas implements OnInit {
     });
   }
 
-  protected excluir(consulta: ConsultaResponse): void {
-    const confirmado = window.confirm(`Excluir a consulta #${consulta.id}?`);
+  protected async excluir(consulta: ConsultaResponse): Promise<void> {
+    const confirmado = await this.alertService.confirmar(
+      'Excluir consulta?',
+      `Deseja excluir a consulta #${consulta.id}?`,
+      'Excluir'
+    );
 
     if (!confirmado) {
       return;

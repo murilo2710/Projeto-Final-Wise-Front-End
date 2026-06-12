@@ -7,6 +7,7 @@ import {
   EspecialidadeService
 } from '../../services/especialidade.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-especialidades',
@@ -17,6 +18,7 @@ import { AppLayoutComponent } from '../../shared/components/app-layout/app-layou
 export class Especialidades implements OnInit {
   private readonly especialidadeService = inject(EspecialidadeService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly alertService = inject(AlertService);
 
   protected readonly especialidades = signal<EspecialidadeResponse[]>([]);
   protected readonly carregando = signal(false);
@@ -83,8 +85,12 @@ export class Especialidades implements OnInit {
     this.limparMensagens();
   }
 
-  protected excluir(especialidade: EspecialidadeResponse): void {
-    const confirmado = window.confirm(`Excluir a especialidade ${especialidade.nome}?`);
+  protected async excluir(especialidade: EspecialidadeResponse): Promise<void> {
+    const confirmado = await this.alertService.confirmar(
+      'Excluir especialidade?',
+      `Deseja excluir a especialidade ${especialidade.nome}?`,
+      'Excluir'
+    );
 
     if (!confirmado) {
       return;

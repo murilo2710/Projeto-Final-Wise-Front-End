@@ -8,6 +8,7 @@ import {
   EspecialidadeService
 } from '../../services/especialidade.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-dentistas',
@@ -19,6 +20,7 @@ export class Dentistas implements OnInit {
   private readonly dentistaService = inject(DentistaService);
   private readonly especialidadeService = inject(EspecialidadeService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly alertService = inject(AlertService);
 
   protected readonly dentistas = signal<DentistaResponse[]>([]);
   protected readonly especialidades = signal<EspecialidadeResponse[]>([]);
@@ -103,10 +105,14 @@ export class Dentistas implements OnInit {
     this.limparMensagens();
   }
 
-  protected alternarAtivo(dentista: DentistaResponse): void {
+  protected async alternarAtivo(dentista: DentistaResponse): Promise<void> {
     const novoStatus = !dentista.ativo;
     const acao = novoStatus ? 'reativar' : 'desativar';
-    const confirmado = window.confirm(`Deseja ${acao} o dentista ${dentista.nome}?`);
+    const confirmado = await this.alertService.confirmar(
+      `${novoStatus ? 'Reativar' : 'Desativar'} dentista?`,
+      `Deseja ${acao} o dentista ${dentista.nome}?`,
+      novoStatus ? 'Reativar' : 'Desativar'
+    );
 
     if (!confirmado) {
       return;

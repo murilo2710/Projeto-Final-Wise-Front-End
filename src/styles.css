@@ -87,3 +87,58 @@ app-root {
 *::-webkit-scrollbar {
   display: none;
 }
+
+.odonto-alert {
+  border: 1px solid #e6e6e6;
+  border-radius: 26px;
+  padding: 26px;
+  background: #ffffff;
+  box-shadow: 0 22px 70px rgba(5, 150, 105, 0.14);
+  color: #0c0c0c;
+  font-family: "Lufga", sans-serif;
+}
+
+.odonto-alert__title {
+  color: #0c0c0c;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.odonto-alert__text {
+  color: #6b6b6b;
+  font-size: 0.92rem;
+}
+
+.odonto-alert__actions {
+  gap: 10px;
+}
+
+.odonto-alert__button {
+  min-width: 120px;
+  min-height: 42px;
+  border: 1px solid #059669;
+  border-radius: 999px;
+  cursor: pointer;
+  font: 700 0.9rem "Lufga", sans-serif;
+  padding: 0 18px;
+}
+
+.odonto-alert__button--confirm {
+  background: #059669;
+  color: #ffffff;
+}
+
+.odonto-alert__button--confirm:hover {
+  background: #047857;
+  border-color: #047857;
+}
+
+.odonto-alert__button--cancel {
+  background: #ffffff;
+  color: #059669;
+}
+
+.odonto-alert__button--cancel:hover {
+  background: rgba(5, 150, 105, 0.08);
+}

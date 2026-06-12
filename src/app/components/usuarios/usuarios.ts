@@ -9,6 +9,7 @@ import {
   UsuarioService
 } from '../../services/usuario.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -19,6 +20,7 @@ import { AppLayoutComponent } from '../../shared/components/app-layout/app-layou
 export class Usuarios implements OnInit {
   private readonly usuarioService = inject(UsuarioService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly alertService = inject(AlertService);
 
   protected readonly usuarios = signal<UsuarioResponse[]>([]);
   protected readonly carregando = signal(false);
@@ -97,8 +99,12 @@ export class Usuarios implements OnInit {
     this.limparMensagens();
   }
 
-  protected excluir(usuario: UsuarioResponse): void {
-    const confirmado = window.confirm(`Excluir o usuario ${usuario.nome}?`);
+  protected async excluir(usuario: UsuarioResponse): Promise<void> {
+    const confirmado = await this.alertService.confirmar(
+      'Excluir usuario?',
+      `Deseja excluir o usuario ${usuario.nome}?`,
+      'Excluir'
+    );
 
     if (!confirmado) {
       return;

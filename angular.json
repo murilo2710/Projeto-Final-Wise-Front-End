@@ -24,6 +24,9 @@
                 "input": "public"
               }
             ],
+            "allowedCommonJsDependencies": [
+              "sweetalert2"
+            ],
             "styles": [
               "src/styles.css"
             ]
