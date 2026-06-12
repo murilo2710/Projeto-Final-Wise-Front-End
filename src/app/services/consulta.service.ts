@@ -19,8 +19,9 @@ export interface CancelarConsultaRequest {
 
 export interface ConsultaResponse extends ConsultaRequest {
   motivoCancelamento: string | null;
+  dataRegistro?: string;
   usuarioNome?: string;
-  usuarioId?: number;
+  usuarioId: number;
   id: number;
 }
 
