@@ -6,10 +6,11 @@ import {
   EspecialidadeResponse,
   EspecialidadeService
 } from '../../services/especialidade.service';
+import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 
 @Component({
   selector: 'app-especialidades',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AppLayoutComponent],
   templateUrl: './especialidades.html',
   styleUrl: './especialidades.css'
 })
