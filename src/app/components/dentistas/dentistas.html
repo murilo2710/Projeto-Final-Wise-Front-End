@@ -49,12 +49,6 @@
           </select>
         </label>
 
-        <label class="switch-label">
-          <input type="checkbox" formControlName="ativo" />
-          <span class="switch-track"></span>
-          <span>Ativo</span>
-        </label>
-
         @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
           <p class="field-error">Nome e obrigatorio.</p>
         }
@@ -86,13 +80,43 @@
     <section class="panel">
       <h2>Dentistas cadastrados</h2>
 
+      <div class="filter-tabs" role="group" aria-label="Filtro de dentistas por status">
+        <button
+          type="button"
+          class="filter-tab"
+          [class.active]="filtroStatus() === 'ATIVOS'"
+          (click)="alterarFiltroStatus('ATIVOS')"
+        >
+          Ativos
+          <span>{{ getTotalPorFiltro('ATIVOS') }}</span>
+        </button>
+        <button
+          type="button"
+          class="filter-tab"
+          [class.active]="filtroStatus() === 'INATIVOS'"
+          (click)="alterarFiltroStatus('INATIVOS')"
+        >
+          Inativos
+          <span>{{ getTotalPorFiltro('INATIVOS') }}</span>
+        </button>
+        <button
+          type="button"
+          class="filter-tab"
+          [class.active]="filtroStatus() === 'TODOS'"
+          (click)="alterarFiltroStatus('TODOS')"
+        >
+          Todos
+          <span>{{ getTotalPorFiltro('TODOS') }}</span>
+        </button>
+      </div>
+
       @if (carregando()) {
         <p class="loading-text">Carregando dentistas...</p>
-      } @else if (dentistas().length === 0) {
+      } @else if (getDentistasFiltrados().length === 0) {
         <div class="empty-state">
           <span class="empty-state__icon">+</span>
-          <strong>Nenhum dentista cadastrado</strong>
-          <p>Cadastre profissionais para vincular especialidades e consultas.</p>
+          <strong>Nenhum dentista nesta aba</strong>
+          <p>Use os filtros para alternar entre dentistas ativos, inativos e todos os registros.</p>
         </div>
       } @else {
         <div class="table-wrapper">
@@ -110,14 +134,14 @@
               </tr>
             </thead>
             <tbody>
-              @for (dentista of dentistas(); track dentista.id) {
+              @for (dentista of getDentistasFiltrados(); track dentista.id) {
                 <tr>
                   <td>#{{ dentista.id }}</td>
                   <td>{{ dentista.nome }}</td>
                   <td>{{ dentista.cpf }}</td>
                   <td>{{ dentista.email }}</td>
                   <td>{{ dentista.cro }}</td>
-                  <td>{{ getNomesEspecialidades(dentista.especialidadeIds) }}</td>
+                  <td>{{ getNomesEspecialidades(dentista) }}</td>
                   <td>
                     <span class="badge" [class.badge-danger]="!dentista.ativo">
                       {{ dentista.ativo ? 'Ativo' : 'Inativo' }}

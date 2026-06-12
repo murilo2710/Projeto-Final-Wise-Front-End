@@ -10,6 +10,8 @@ import {
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { AlertService } from '../../shared/services/alert.service';
 
+type FiltroStatusDentista = 'ATIVOS' | 'INATIVOS' | 'TODOS';
+
 @Component({
   selector: 'app-dentistas',
   imports: [ReactiveFormsModule, AppLayoutComponent],
@@ -28,6 +30,7 @@ export class Dentistas implements OnInit {
   protected readonly erro = signal('');
   protected readonly sucesso = signal('');
   protected readonly dentistaEmEdicaoId = signal<number | null>(null);
+  protected readonly filtroStatus = signal<FiltroStatusDentista>('ATIVOS');
 
   protected readonly form = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required]],
@@ -100,7 +103,7 @@ export class Dentistas implements OnInit {
       email: dentista.email,
       cro: dentista.cro,
       ativo: dentista.ativo,
-      especialidadeIds: dentista.especialidadeIds ?? []
+      especialidadeIds: this.getEspecialidadeIds(dentista)
     });
     this.limparMensagens();
   }
@@ -121,7 +124,14 @@ export class Dentistas implements OnInit {
     this.carregando.set(true);
     this.limparMensagens();
 
-    this.dentistaService.atualizar(dentista.id, { ...dentista, ativo: novoStatus }).subscribe({
+    this.dentistaService.atualizar(dentista.id, {
+      nome: dentista.nome,
+      cpf: dentista.cpf,
+      email: dentista.email,
+      cro: dentista.cro,
+      ativo: novoStatus,
+      especialidadeIds: this.getEspecialidadeIds(dentista)
+    }).subscribe({
       next: () => {
         this.sucesso.set(novoStatus ? 'Dentista reativado com sucesso.' : 'Dentista desativado com sucesso.');
         this.listarDentistas(true);
@@ -142,13 +152,39 @@ export class Dentistas implements OnInit {
     this.dentistaEmEdicaoId.set(null);
   }
 
-  protected getNomesEspecialidades(ids: number[]): string {
-    if (!ids?.length) {
+  protected getDentistasFiltrados(): DentistaResponse[] {
+    const filtro = this.filtroStatus();
+
+    if (filtro === 'TODOS') {
+      return this.dentistas();
+    }
+
+    return this.dentistas().filter((dentista) =>
+      filtro === 'ATIVOS' ? dentista.ativo : !dentista.ativo
+    );
+  }
+
+  protected alterarFiltroStatus(filtro: FiltroStatusDentista): void {
+    this.filtroStatus.set(filtro);
+  }
+
+  protected getTotalPorFiltro(filtro: FiltroStatusDentista): number {
+    if (filtro === 'TODOS') {
+      return this.dentistas().length;
+    }
+
+    return this.dentistas().filter((dentista) =>
+      filtro === 'ATIVOS' ? dentista.ativo : !dentista.ativo
+    ).length;
+  }
+
+  protected getNomesEspecialidades(dentista: DentistaResponse): string {
+    if (!dentista.especialidades?.length) {
       return '-';
     }
 
-    return ids
-      .map((id) => this.especialidades().find((especialidade) => especialidade.id === id)?.nome ?? `ID ${id}`)
+    return dentista.especialidades
+      .map((especialidade) => especialidade.nome)
       .join(', ');
   }
 
@@ -163,6 +199,10 @@ export class Dentistas implements OnInit {
       ativo: dentista.ativo,
       especialidadeIds: dentista.especialidadeIds.map(Number)
     };
+  }
+
+  private getEspecialidadeIds(dentista: DentistaResponse): number[] {
+    return dentista.especialidades?.map((especialidade) => especialidade.id) ?? [];
   }
 
   private limparMensagens(): void {

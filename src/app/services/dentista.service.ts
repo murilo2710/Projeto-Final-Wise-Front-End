@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+import { EspecialidadeResponse } from './especialidade.service';
+
 export interface DentistaRequest {
   nome: string;
   cpf: string;
@@ -10,8 +12,15 @@ export interface DentistaRequest {
   especialidadeIds: number[];
 }
 
-export interface DentistaResponse extends DentistaRequest {
+export interface DentistaResponse {
   id: number;
+  nome: string;
+  cpf: string;
+  email: string;
+  cro: string;
+  ativo: boolean;
+  dataCriacao: string;
+  especialidades: EspecialidadeResponse[];
 }
 
 @Injectable({

@@ -370,6 +370,47 @@ tbody tr:last-child td {
   font-weight: 600;
 }
 
+.filter-tabs {
+  display: inline-flex;
+  gap: 6px;
+  margin: 0 0 18px;
+  border: 1px solid #e6e6e6;
+  border-radius: 999px;
+  padding: 5px;
+  background: #ffffff;
+}
+
+.odonto-page button.filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  border-color: transparent;
+  background: transparent;
+  color: #6b6b6b;
+  font-size: 0.82rem;
+}
+
+.odonto-page button.filter-tab.active {
+  border-color: #059669;
+  background: #059669;
+  color: #ffffff;
+}
+
+.filter-tab span {
+  display: inline-grid;
+  min-width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 0.74rem;
+}
+
+.filter-tab.active span {
+  background: rgba(255, 255, 255, 0.22);
+}
+
 .cancel-panel {
   margin-bottom: 18px;
   border-radius: 22px;
@@ -400,7 +441,8 @@ tbody tr:last-child td {
   }
 
   .actions,
-  .row-actions {
+  .row-actions,
+  .filter-tabs {
     align-items: stretch;
     flex-direction: column;
   }
