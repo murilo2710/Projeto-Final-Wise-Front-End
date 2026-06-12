@@ -16,10 +16,11 @@ import {
 } from '../../services/especialidade.service';
 import { PacienteResponse, PacienteService } from '../../services/paciente.service';
 import { UsuarioResponse, UsuarioService } from '../../services/usuario.service';
+import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 
 @Component({
   selector: 'app-relatorios',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AppLayoutComponent],
   templateUrl: './relatorios.html',
   styleUrl: './relatorios.css'
 })
