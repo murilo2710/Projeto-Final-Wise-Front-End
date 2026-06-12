@@ -9,10 +9,11 @@ import {
 } from '../../services/consulta.service';
 import { DentistaResponse, DentistaService } from '../../services/dentista.service';
 import { PacienteResponse, PacienteService } from '../../services/paciente.service';
+import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 
 @Component({
   selector: 'app-consultas',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AppLayoutComponent],
   templateUrl: './consultas.html',
   styleUrl: './consultas.css'
 })
@@ -194,8 +195,24 @@ export class Consultas implements OnInit {
     return dentista ? `${dentista.nome} (#${dentista.id})` : `ID ${id}`;
   }
 
+  protected consultasAgendadas(): number {
+    return this.contarPorStatus('AGENDADA');
+  }
+
+  protected consultasFinalizadas(): number {
+    return this.contarPorStatus('FINALIZADA');
+  }
+
+  protected consultasCanceladas(): number {
+    return this.contarPorStatus('CANCELADA');
+  }
+
   protected atualizarMotivoCancelamento(valor: string): void {
     this.motivoCancelamento.set(valor);
+  }
+
+  private contarPorStatus(status: StatusConsulta): number {
+    return this.consultas().filter((consulta) => consulta.status === status).length;
   }
 
   private getConsultaDoFormulario() {
