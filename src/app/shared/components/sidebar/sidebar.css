@@ -1,0 +1,121 @@
+.sidebar {
+  position: sticky;
+  top: 18px;
+  width: 72px;
+  height: calc(100vh - 36px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 10px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  border: 1px solid #e6e6e6;
+  border-radius: 28px;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-logo:hover {
+  transform: translateY(-1px);
+}
+
+.sidebar-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.sidebar-divider {
+  width: 32px;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.sidebar-spacer {
+  flex: 1 1 auto;
+  min-height: 8px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: transparent;
+  border-radius: 16px;
+  cursor: pointer;
+  color: #0c0c0c;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-item:hover {
+  background-color: #ececec;
+  color: #0c0c0c;
+}
+
+.sidebar-item.active {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  box-shadow:
+    0 8px 5px rgba(0, 0, 0, 0.06),
+    0 3px 3px rgba(0, 0, 0, 0.10),
+    0 1px 2px rgba(5, 150, 105, 0.18);
+}
+
+.sidebar-item--danger {
+  color: #ef4444;
+}
+
+.sidebar-item--danger:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+}
+
+.sidebar-profile {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+.sidebar-profile svg {
+  width: 24px;
+  height: 24px;
+}
