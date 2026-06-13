@@ -110,6 +110,24 @@
   font-weight: 700;
 }
 
+.panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.panel-heading h2 {
+  margin-bottom: 6px;
+}
+
+.panel-heading p {
+  margin: 0;
+  color: #6b6b6b;
+  font-size: 0.9rem;
+}
+
 .odonto-page form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -370,6 +388,29 @@ tbody tr:last-child td {
   font-weight: 600;
 }
 
+.section-tabs {
+  display: inline-flex;
+  width: fit-content;
+  gap: 6px;
+  border: 1px solid #e6e6e6;
+  border-radius: 999px;
+  padding: 5px;
+  background: #ffffff;
+}
+
+.odonto-page button.section-tab {
+  min-height: 38px;
+  border-color: transparent;
+  background: transparent;
+  color: #6b6b6b;
+}
+
+.odonto-page button.section-tab.active {
+  border-color: #059669;
+  background: #059669;
+  color: #ffffff;
+}
+
 .filter-tabs {
   display: inline-flex;
   gap: 6px;
@@ -411,6 +452,111 @@ tbody tr:last-child td {
   background: rgba(255, 255, 255, 0.22);
 }
 
+.chart-mode-tabs {
+  display: inline-flex;
+  gap: 6px;
+  margin-bottom: 18px;
+  border: 1px solid #e6e6e6;
+  border-radius: 999px;
+  padding: 5px;
+  background: #ffffff;
+}
+
+.inventory-filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.inventory-filter-select {
+  width: min(280px, 100%);
+}
+
+.movement-filters {
+  justify-content: flex-start;
+  margin-top: 22px;
+}
+
+.movement-table {
+  min-width: 940px;
+}
+
+.dashboard-lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.compact-table {
+  min-width: 620px;
+}
+
+.empty-state.compact {
+  min-height: 150px;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.chart-box {
+  min-width: 0;
+  border: 1px solid #e6e6e6;
+  border-radius: 20px;
+  padding: 18px;
+  background: #ffffff;
+}
+
+.chart-box--wide {
+  grid-column: 1 / -1;
+}
+
+.chart-box__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.chart-box__header span {
+  display: block;
+  margin-bottom: 4px;
+  color: #6b6b6b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chart-box__header h3 {
+  margin: 0;
+  color: #0c0c0c;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.chart-box__header strong {
+  display: grid;
+  min-width: 42px;
+  height: 32px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(5, 150, 105, 0.1);
+  color: #047857;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.chart-canvas {
+  position: relative;
+  height: 320px;
+}
+
 .cancel-panel {
   margin-bottom: 18px;
   border-radius: 22px;
@@ -422,6 +568,18 @@ tbody tr:last-child td {
 @media (max-width: 980px) {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-lists {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-box--wide {
+    grid-column: auto;
   }
 }
 
@@ -442,9 +600,20 @@ tbody tr:last-child td {
 
   .actions,
   .row-actions,
-  .filter-tabs {
+  .filter-tabs,
+  .inventory-filters,
+  .chart-mode-tabs,
+  .section-tabs {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .section-tabs {
+    width: 100%;
+  }
+
+  .inventory-filter-select {
+    width: 100%;
   }
 
   .odonto-page button {

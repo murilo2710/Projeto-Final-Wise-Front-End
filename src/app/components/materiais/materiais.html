@@ -1,0 +1,508 @@
+<app-layout>
+  <div class="odonto-page">
+    <section class="page-header">
+      <div>
+        <span class="page-header__eyebrow">Estoque</span>
+        <h1>Materiais</h1>
+        <p class="page-header__sub">Controle materiais, especialidades vinculadas e alertas de baixo estoque.</p>
+      </div>
+    </section>
+
+    <div class="section-tabs" role="tablist" aria-label="Navegacao interna de estoque">
+      <button
+        type="button"
+        class="section-tab"
+        [class.active]="abaAtiva() === 'DASHBOARD'"
+        (click)="alterarAba('DASHBOARD')"
+      >
+        Dashboard
+      </button>
+      <button
+        type="button"
+        class="section-tab"
+        [class.active]="abaAtiva() === 'MATERIAIS'"
+        (click)="alterarAba('MATERIAIS')"
+      >
+        Materiais
+      </button>
+      <button
+        type="button"
+        class="section-tab"
+        [class.active]="abaAtiva() === 'MOVIMENTACOES'"
+        (click)="alterarAba('MOVIMENTACOES')"
+      >
+        Movimentacoes
+      </button>
+    </div>
+
+    @if (erro()) {
+      <p class="alert alert-error">{{ erro() }}</p>
+    }
+
+    @if (sucesso()) {
+      <p class="alert alert-success">{{ sucesso() }}</p>
+    }
+
+    @if (abaAtiva() === 'DASHBOARD') {
+      @if (carregandoDashboard()) {
+        <section class="panel">
+          <p class="loading-text">Carregando dashboard de estoque...</p>
+        </section>
+      } @else if (dashboard(); as resumo) {
+        <section class="stats-grid">
+          <div class="stat-card">
+            <span>Total de materiais</span>
+            <strong>{{ resumo.totalMateriais }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>Ativos</span>
+            <strong>{{ resumo.totalMateriaisAtivos }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>Inativos</span>
+            <strong>{{ resumo.totalMateriaisInativos }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>Baixo estoque</span>
+            <strong>{{ resumo.totalMateriaisBaixoEstoque }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>Total movimentacoes</span>
+            <strong>{{ resumo.totalMovimentacoes }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>Entradas</span>
+            <strong>{{ resumo.totalEntradas }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>Saidas</span>
+            <strong>{{ resumo.totalSaidas }}</strong>
+          </div>
+          <div class="stat-card">
+            <span>Ajustes</span>
+            <strong>{{ resumo.totalAjustes }}</strong>
+          </div>
+        </section>
+
+        <div class="dashboard-lists">
+          <section class="panel">
+            <h2>Materiais em baixo estoque</h2>
+
+            @if (resumo.materiaisBaixoEstoque.length === 0) {
+              <div class="empty-state compact">
+                <span class="empty-state__icon">+</span>
+                <strong>Nenhum material em baixo estoque</strong>
+                <p>Os materiais estao acima da quantidade minima cadastrada.</p>
+              </div>
+            } @else {
+              <div class="table-wrapper">
+                <table class="compact-table">
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Atual</th>
+                      <th>Minima</th>
+                      <th>Unidade</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (material of resumo.materiaisBaixoEstoque; track material.id) {
+                      <tr>
+                        <td>{{ material.nome }}</td>
+                        <td>{{ material.quantidadeAtual }}</td>
+                        <td>{{ material.quantidadeMinima }}</td>
+                        <td>{{ material.unidadeMedida }}</td>
+                        <td>
+                          <span class="badge badge-warning">Baixo estoque</span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </section>
+
+          <section class="panel">
+            <h2>Ultimas movimentacoes</h2>
+
+            @if (resumo.ultimasMovimentacoes.length === 0) {
+              <div class="empty-state compact">
+                <span class="empty-state__icon">+</span>
+                <strong>Nenhuma movimentacao recente</strong>
+                <p>As entradas, saidas e ajustes aparecerao aqui.</p>
+              </div>
+            } @else {
+              <div class="table-wrapper">
+                <table class="compact-table">
+                  <thead>
+                    <tr>
+                      <th>Material</th>
+                      <th>Tipo</th>
+                      <th>Qtd.</th>
+                      <th>Anterior</th>
+                      <th>Atual</th>
+                      <th>Usuario</th>
+                      <th>Data</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (movimentacao of resumo.ultimasMovimentacoes; track movimentacao.id) {
+                      <tr>
+                        <td>{{ movimentacao.materialNome }}</td>
+                        <td>
+                          <span
+                            class="badge"
+                            [class.badge-danger]="movimentacao.tipo === 'SAIDA'"
+                            [class.badge-warning]="movimentacao.tipo === 'AJUSTE'"
+                          >
+                            {{ movimentacao.tipo }}
+                          </span>
+                        </td>
+                        <td>{{ movimentacao.quantidade }}</td>
+                        <td>{{ movimentacao.estoqueAnterior }}</td>
+                        <td>{{ movimentacao.estoqueAtual }}</td>
+                        <td>{{ movimentacao.usuarioNome }}</td>
+                        <td>{{ formatarData(movimentacao.dataMovimentacao) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </section>
+        </div>
+      }
+    }
+
+    @if (abaAtiva() === 'MATERIAIS') {
+      <section class="panel">
+        <h2>{{ materialEmEdicaoId() ? 'Editar material' : 'Cadastrar material' }}</h2>
+
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label>
+            <span>Nome *</span>
+            <input type="text" formControlName="nome" />
+          </label>
+
+          <label>
+            <span>Unidade de medida *</span>
+            <select formControlName="unidadeMedida">
+              @for (unidade of unidadesMedida; track unidade) {
+                <option [value]="unidade">{{ unidade }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="full">
+            <span>Descricao *</span>
+            <input type="text" formControlName="descricao" />
+          </label>
+
+          <label>
+            <span>Quantidade atual *</span>
+            <input type="number" formControlName="quantidadeAtual" min="0" />
+          </label>
+
+          <label>
+            <span>Quantidade minima *</span>
+            <input type="number" formControlName="quantidadeMinima" min="0" />
+          </label>
+
+          <label>
+            <span>Especialidades</span>
+            <select formControlName="especialidadeIds" multiple>
+              @for (especialidade of especialidades(); track especialidade.id) {
+                <option [ngValue]="especialidade.id">{{ especialidade.nome }}</option>
+              }
+            </select>
+          </label>
+
+          @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+            <p class="field-error">Nome e obrigatorio.</p>
+          }
+
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
+            <p class="field-error">Descricao e obrigatoria.</p>
+          }
+
+          @if (form.controls.unidadeMedida.touched && form.controls.unidadeMedida.hasError('required')) {
+            <p class="field-error">Unidade de medida e obrigatoria.</p>
+          }
+
+          @if (form.controls.quantidadeAtual.touched && form.controls.quantidadeAtual.invalid) {
+            <p class="field-error">Quantidade atual deve ser zero ou maior.</p>
+          }
+
+          @if (form.controls.quantidadeMinima.touched && form.controls.quantidadeMinima.invalid) {
+            <p class="field-error">Quantidade minima deve ser zero ou maior.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">
+              {{ materialEmEdicaoId() ? 'Atualizar' : 'Criar' }}
+            </button>
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Limpar
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Materiais cadastrados</h2>
+
+        <div class="inventory-filters">
+          <div class="filter-tabs" role="group" aria-label="Filtro de materiais por status">
+            <button
+              type="button"
+              class="filter-tab"
+              [class.active]="filtroStatus() === 'TODOS'"
+              (click)="alterarFiltroStatus('TODOS')"
+            >
+              Todos
+            </button>
+            <button
+              type="button"
+              class="filter-tab"
+              [class.active]="filtroStatus() === 'ATIVOS'"
+              (click)="alterarFiltroStatus('ATIVOS')"
+            >
+              Ativos
+            </button>
+            <button
+              type="button"
+              class="filter-tab"
+              [class.active]="filtroStatus() === 'INATIVOS'"
+              (click)="alterarFiltroStatus('INATIVOS')"
+            >
+              Inativos
+            </button>
+            <button
+              type="button"
+              class="filter-tab"
+              [class.active]="filtroStatus() === 'BAIXO_ESTOQUE'"
+              (click)="alterarFiltroStatus('BAIXO_ESTOQUE')"
+            >
+              Baixo estoque
+            </button>
+          </div>
+
+          <label class="inventory-filter-select">
+            <span>Por especialidade</span>
+            <select [value]="filtroEspecialidadeId()" (change)="alterarFiltroEspecialidade($any($event.target).value)">
+              <option value="0">Todas</option>
+              @for (especialidade of especialidades(); track especialidade.id) {
+                <option [value]="especialidade.id">{{ especialidade.nome }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        @if (carregando()) {
+          <p class="loading-text">Carregando materiais...</p>
+        } @else if (materiais().length === 0) {
+          <div class="empty-state">
+            <span class="empty-state__icon">+</span>
+            <strong>Nenhum material encontrado</strong>
+            <p>Cadastre materiais ou ajuste os filtros para visualizar o estoque.</p>
+          </div>
+        } @else {
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Unidade</th>
+                  <th>Qtd. atual</th>
+                  <th>Qtd. minima</th>
+                  <th>Especialidades</th>
+                  <th>Status</th>
+                  <th>Estoque</th>
+                  <th>Acoes</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (material of materiais(); track material.id) {
+                  <tr>
+                    <td>#{{ material.id }}</td>
+                    <td>{{ material.nome }}</td>
+                    <td>{{ material.unidadeMedida }}</td>
+                    <td>{{ material.quantidadeAtual }}</td>
+                    <td>{{ material.quantidadeMinima }}</td>
+                    <td>{{ getNomesEspecialidades(material) }}</td>
+                    <td>
+                      <span class="badge" [class.badge-danger]="!material.ativo">
+                        {{ material.ativo ? 'Ativo' : 'Inativo' }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (material.baixoEstoque) {
+                        <span class="badge badge-warning">Baixo estoque</span>
+                      } @else {
+                        <span class="badge">OK</span>
+                      }
+                    </td>
+                    <td class="row-actions">
+                      <button type="button" class="small" (click)="editar(material)">Editar</button>
+                      <button
+                        type="button"
+                        class="small"
+                        [class.danger]="material.ativo"
+                        [class.success]="!material.ativo"
+                        (click)="alternarAtivo(material)"
+                      >
+                        {{ material.ativo ? 'Inativar' : 'Ativar' }}
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+    }
+
+    @if (abaAtiva() === 'MOVIMENTACOES') {
+      <section class="panel">
+        <h2>Movimentacoes de estoque</h2>
+
+        <form [formGroup]="movimentacaoForm" (ngSubmit)="registrarMovimentacao()" novalidate>
+          <label>
+            <span>Material *</span>
+            <select formControlName="materialId">
+              <option [ngValue]="0">Selecione um material</option>
+              @for (material of materiaisSelect(); track material.id) {
+                <option [ngValue]="material.id">{{ material.nome }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Tipo *</span>
+            <select formControlName="tipo">
+              @for (tipo of tiposMovimentacao; track tipo) {
+                <option [value]="tipo">{{ tipo }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Quantidade *</span>
+            <input type="number" formControlName="quantidade" min="0" />
+          </label>
+
+          <label>
+            <span>Motivo *</span>
+            <input type="text" formControlName="motivo" />
+          </label>
+
+          @if (movimentacaoForm.controls.materialId.touched && movimentacaoForm.controls.materialId.invalid) {
+            <p class="field-error">Selecione um material.</p>
+          }
+
+          @if (movimentacaoForm.controls.tipo.touched && movimentacaoForm.controls.tipo.hasError('required')) {
+            <p class="field-error">Tipo de movimentacao e obrigatorio.</p>
+          }
+
+          @if (movimentacaoForm.controls.quantidade.touched && movimentacaoForm.controls.quantidade.invalid) {
+            <p class="field-error">Quantidade deve ser zero ou maior.</p>
+          }
+
+          @if (movimentacaoForm.controls.motivo.touched && movimentacaoForm.controls.motivo.hasError('required')) {
+            <p class="field-error">Motivo e obrigatorio.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregandoMovimentacoes()">Registrar movimentacao</button>
+            <button
+              type="button"
+              class="secondary"
+              (click)="limparMovimentacaoFormulario()"
+              [disabled]="carregandoMovimentacoes()"
+            >
+              Limpar
+            </button>
+          </div>
+        </form>
+
+        <div class="inventory-filters movement-filters">
+          <label class="inventory-filter-select">
+            <span>Tipo</span>
+            <select [value]="filtroMovimentacaoTipo()" (change)="alterarFiltroMovimentacaoTipo($any($event.target).value)">
+              <option value="">Todos</option>
+              @for (tipo of tiposMovimentacao; track tipo) {
+                <option [value]="tipo">{{ tipo }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="inventory-filter-select">
+            <span>Material</span>
+            <select
+              [value]="filtroMovimentacaoMaterialId()"
+              (change)="alterarFiltroMovimentacaoMaterial($any($event.target).value)"
+            >
+              <option value="0">Todos</option>
+              @for (material of materiaisSelect(); track material.id) {
+                <option [value]="material.id">{{ material.nome }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        @if (carregandoMovimentacoes()) {
+          <p class="loading-text">Carregando movimentacoes...</p>
+        } @else if (getMovimentacoesFiltradas().length === 0) {
+          <div class="empty-state">
+            <span class="empty-state__icon">+</span>
+            <strong>Nenhuma movimentacao encontrada</strong>
+            <p>Registre entradas, saidas ou ajustes para acompanhar o historico do estoque.</p>
+          </div>
+        } @else {
+          <div class="table-wrapper">
+            <table class="movement-table">
+              <thead>
+                <tr>
+                  <th>Material</th>
+                  <th>Tipo</th>
+                  <th>Quantidade</th>
+                  <th>Anterior</th>
+                  <th>Atual</th>
+                  <th>Usuario</th>
+                  <th>Motivo</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (movimentacao of getMovimentacoesFiltradas(); track movimentacao.id) {
+                  <tr>
+                    <td>{{ movimentacao.materialNome }}</td>
+                    <td>
+                      <span
+                        class="badge"
+                        [class.badge-danger]="movimentacao.tipo === 'SAIDA'"
+                        [class.badge-warning]="movimentacao.tipo === 'AJUSTE'"
+                      >
+                        {{ movimentacao.tipo }}
+                      </span>
+                    </td>
+                    <td>{{ movimentacao.quantidade }}</td>
+                    <td>{{ movimentacao.estoqueAnterior }}</td>
+                    <td>{{ movimentacao.estoqueAtual }}</td>
+                    <td>{{ movimentacao.usuarioNome }}</td>
+                    <td>{{ movimentacao.motivo }}</td>
+                    <td>{{ formatarData(movimentacao.dataMovimentacao) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+    }
+  </div>
+</app-layout>
