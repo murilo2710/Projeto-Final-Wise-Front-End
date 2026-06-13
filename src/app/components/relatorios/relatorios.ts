@@ -252,7 +252,7 @@ export class Relatorios implements OnInit, AfterViewInit, OnDestroy {
       'Horas por paciente',
       porPaciente,
       ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'],
-      'bar'
+      'polarArea'
     );
     this.dentistaChart = this.renderizarGrafico(
       this.dentistaChart,
@@ -268,7 +268,7 @@ export class Relatorios implements OnInit, AfterViewInit, OnDestroy {
       'Horas por especialidade',
       porEspecialidade,
       ['#d97706', '#f59e0b', '#fbbf24', '#fcd34d', '#fde68a'],
-      'polarArea'
+      'bar'
     );
   }
 
