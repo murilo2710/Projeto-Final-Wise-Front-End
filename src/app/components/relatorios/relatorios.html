@@ -141,5 +141,75 @@
         </div>
       }
     </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Graficos de horas</h2>
+          <p>{{ getTotalHoras() }} hora(s) de consulta no resultado filtrado.</p>
+          <p>{{ getDescricaoModoHoras() }}</p>
+        </div>
+      </div>
+
+      <div class="chart-mode-tabs" role="group" aria-label="Modo de calculo dos graficos">
+        <button
+          type="button"
+          class="filter-tab"
+          [class.active]="modoHoras() === 'OCUPADAS'"
+          (click)="alterarModoHoras('OCUPADAS')"
+        >
+          Horas ocupadas
+        </button>
+        <button
+          type="button"
+          class="filter-tab"
+          [class.active]="modoHoras() === 'REALIZADAS'"
+          (click)="alterarModoHoras('REALIZADAS')"
+        >
+          Horas realizadas
+        </button>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-box">
+          <div class="chart-box__header">
+            <div>
+              <span>Pacientes</span>
+              <h3>Horas por paciente</h3>
+            </div>
+            <strong>{{ getQuantidadePacientesGrafico() }}</strong>
+          </div>
+          <div class="chart-canvas">
+            <canvas #pacienteChart></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box__header">
+            <div>
+              <span>Profissionais</span>
+              <h3>Horas por dentista</h3>
+            </div>
+            <strong>{{ getQuantidadeDentistasGrafico() }}</strong>
+          </div>
+          <div class="chart-canvas">
+            <canvas #dentistaChart></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box chart-box--wide">
+          <div class="chart-box__header">
+            <div>
+              <span>Especialidades</span>
+              <h3>Horas por especialidade vinculada</h3>
+            </div>
+            <strong>{{ getQuantidadeEspecialidadesGrafico() }}</strong>
+          </div>
+          <div class="chart-canvas">
+            <canvas #especialidadeChart></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </app-layout>
