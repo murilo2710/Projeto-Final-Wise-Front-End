@@ -69,6 +69,7 @@ body {
   width: 100%;
   height: 100%;
   font-family: "Lufga", sans-serif;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -103,11 +104,13 @@ app-root {
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: 0;
+  line-height: 1.25;
 }
 
 .odonto-alert__text {
   color: #6b6b6b;
   font-size: 0.92rem;
+  line-height: 1.45;
 }
 
 .odonto-alert__actions {
@@ -121,7 +124,8 @@ app-root {
   border-radius: 999px;
   cursor: pointer;
   font: 700 0.9rem "Lufga", sans-serif;
-  padding: 0 18px;
+  line-height: 1.35;
+  padding: 10px 18px;
 }
 
 .odonto-alert__button--confirm {

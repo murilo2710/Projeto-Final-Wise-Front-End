@@ -17,6 +17,7 @@
   background: transparent;
   color: var(--text);
   font-family: "Lufga", sans-serif;
+  line-height: 1.45;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -68,13 +69,15 @@
 
 .alert {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   margin: 0;
   border-radius: 14px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   font-size: 0.9rem;
   font-weight: 500;
+  line-height: 1.45;
+  overflow: visible;
 }
 
 .alert svg {
@@ -153,6 +156,7 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.06em;
+  line-height: 1.35;
   text-transform: uppercase;
   color: var(--text-secondary);
 }
@@ -169,6 +173,7 @@
   margin-top: auto;
   font-size: 12px;
   font-weight: 400;
+  line-height: 1.4;
   color: var(--text-secondary);
 }
 
@@ -440,10 +445,11 @@
   display: inline-flex;
   align-items: center;
   border-radius: 100px;
-  padding: 4px 12px;
+  padding: 6px 12px;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  line-height: 1.2;
 }
 
 .badge-agendada {
