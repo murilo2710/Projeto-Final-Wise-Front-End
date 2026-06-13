@@ -154,20 +154,26 @@
 .odonto-page input,
 .odonto-page select {
   width: 100%;
-  min-height: 46px;
+  min-height: 52px;
   border: 1px solid #dedede;
   border-radius: 16px;
-  padding: 0 14px;
+  padding: 13px 14px;
   background: #ffffff;
   color: #0c0c0c;
   font: inherit;
+  line-height: 1.35;
   box-sizing: border-box;
   outline: none;
+}
+
+.odonto-page input {
+  appearance: none;
 }
 
 .odonto-page select[multiple] {
   min-height: 120px;
   padding: 10px 14px;
+  line-height: 1.45;
 }
 
 .odonto-page input:focus,

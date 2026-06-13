@@ -50,17 +50,30 @@ export class Pacientes implements OnInit {
     });
   }
 
-  protected salvar(): void {
+  protected async salvar(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    const paciente = this.getPacienteDoFormulario();
+    const id = this.pacienteEmEdicaoId();
+
+    if (id) {
+      const confirmado = await this.alertService.confirmar(
+        'Atualizar paciente?',
+        'Deseja salvar as alteracoes deste paciente?',
+        'Atualizar'
+      );
+
+      if (!confirmado) {
+        return;
+      }
+    }
+
     this.carregando.set(true);
     this.limparMensagens();
 
-    const paciente = this.getPacienteDoFormulario();
-    const id = this.pacienteEmEdicaoId();
     const requisicao = id
       ? this.pacienteService.atualizar(id, paciente)
       : this.pacienteService.criar(paciente);

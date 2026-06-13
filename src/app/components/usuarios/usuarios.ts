@@ -58,17 +58,30 @@ export class Usuarios implements OnInit {
     });
   }
 
-  protected salvar(): void {
+  protected async salvar(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    const usuario = this.getUsuarioDoFormulario();
+    const id = this.usuarioEmEdicaoId();
+
+    if (id) {
+      const confirmado = await this.alertService.confirmar(
+        'Atualizar usuario?',
+        'Deseja salvar as alteracoes deste usuario, incluindo perfil e status?',
+        'Atualizar'
+      );
+
+      if (!confirmado) {
+        return;
+      }
+    }
+
     this.carregando.set(true);
     this.limparMensagens();
 
-    const usuario = this.getUsuarioDoFormulario();
-    const id = this.usuarioEmEdicaoId();
     const requisicao = id
       ? this.usuarioService.atualizar(id, usuario)
       : this.usuarioService.criar(usuario);

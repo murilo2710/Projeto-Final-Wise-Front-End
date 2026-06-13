@@ -80,17 +80,30 @@ export class Consultas implements OnInit {
     });
   }
 
-  protected salvar(): void {
+  protected async salvar(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    const consulta = this.getConsultaDoFormulario();
+    const id = this.consultaEmEdicaoId();
+
+    if (id) {
+      const confirmado = await this.alertService.confirmar(
+        'Atualizar consulta?',
+        'Deseja salvar as alteracoes desta consulta?',
+        'Atualizar'
+      );
+
+      if (!confirmado) {
+        return;
+      }
+    }
+
     this.carregando.set(true);
     this.limparMensagens();
 
-    const consulta = this.getConsultaDoFormulario();
-    const id = this.consultaEmEdicaoId();
     const requisicao = id
       ? this.consultaService.atualizar(id, consulta)
       : this.consultaService.criar(consulta);

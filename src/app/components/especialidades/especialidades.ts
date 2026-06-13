@@ -50,17 +50,30 @@ export class Especialidades implements OnInit {
     });
   }
 
-  protected salvar(): void {
+  protected async salvar(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    const especialidade = this.getEspecialidadeDoFormulario();
+    const id = this.especialidadeEmEdicaoId();
+
+    if (id) {
+      const confirmado = await this.alertService.confirmar(
+        'Atualizar especialidade?',
+        'Deseja salvar as alteracoes desta especialidade?',
+        'Atualizar'
+      );
+
+      if (!confirmado) {
+        return;
+      }
+    }
+
     this.carregando.set(true);
     this.limparMensagens();
 
-    const especialidade = this.getEspecialidadeDoFormulario();
-    const id = this.especialidadeEmEdicaoId();
     const requisicao = id
       ? this.especialidadeService.atualizar(id, especialidade)
       : this.especialidadeService.criar(especialidade);

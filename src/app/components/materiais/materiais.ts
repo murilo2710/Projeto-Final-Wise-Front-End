@@ -140,17 +140,30 @@ export class Materiais implements OnInit {
     });
   }
 
-  protected salvar(): void {
+  protected async salvar(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    const material = this.getMaterialDoFormulario();
+    const id = this.materialEmEdicaoId();
+
+    if (id) {
+      const confirmado = await this.alertService.confirmar(
+        'Atualizar material?',
+        'Deseja salvar as alteracoes deste material, incluindo especialidades vinculadas?',
+        'Atualizar'
+      );
+
+      if (!confirmado) {
+        return;
+      }
+    }
+
     this.carregando.set(true);
     this.limparMensagens();
 
-    const material = this.getMaterialDoFormulario();
-    const id = this.materialEmEdicaoId();
     const requisicao = id
       ? this.materialService.atualizar(id, material)
       : this.materialService.criar(material);

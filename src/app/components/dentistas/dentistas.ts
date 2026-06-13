@@ -70,17 +70,30 @@ export class Dentistas implements OnInit {
     });
   }
 
-  protected salvar(): void {
+  protected async salvar(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    const dentista = this.getDentistaDoFormulario();
+    const id = this.dentistaEmEdicaoId();
+
+    if (id) {
+      const confirmado = await this.alertService.confirmar(
+        'Atualizar dentista?',
+        'Deseja salvar as alteracoes deste dentista, incluindo especialidades vinculadas?',
+        'Atualizar'
+      );
+
+      if (!confirmado) {
+        return;
+      }
+    }
+
     this.carregando.set(true);
     this.limparMensagens();
 
-    const dentista = this.getDentistaDoFormulario();
-    const id = this.dentistaEmEdicaoId();
     const requisicao = id
       ? this.dentistaService.atualizar(id, dentista)
       : this.dentistaService.criar(dentista);
