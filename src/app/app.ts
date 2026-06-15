@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 
 import { NotificacaoToastsComponent } from './shared/components/notificacao-toasts/notificacao-toasts';
 import { NotificacaoRealtimeService } from './shared/services/notificacao-realtime.service';
-import { ThemeService } from './shared/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +11,6 @@ import { ThemeService } from './shared/services/theme.service';
   styleUrl: './app.css'
 })
 export class App {
-  private readonly themeService = inject(ThemeService);
   private readonly notificacaoRealtimeService = inject(NotificacaoRealtimeService);
   protected readonly title = signal('Projeto-Final-Wise-Front-End');
 }

@@ -13,7 +13,8 @@
   background-color: #f5f5f5;
   border: 1px solid #e6e6e6;
   border-radius: 28px;
-  overflow-y: auto;
+  overflow: visible;
+  z-index: 20;
 }
 
 .sidebar-logo {
@@ -118,4 +119,57 @@
 .sidebar-profile svg {
   width: 24px;
   height: 24px;
+}
+
+.sidebar-logo,
+.sidebar-item,
+.sidebar-profile {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  padding: 7px 11px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.28);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 50;
+}
+
+[data-tooltip]::before {
+  content: "";
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  border: 6px solid transparent;
+  border-right-color: #10b981;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 50;
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:hover::before,
+[data-tooltip]:focus-visible::after,
+[data-tooltip]:focus-visible::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
 }
