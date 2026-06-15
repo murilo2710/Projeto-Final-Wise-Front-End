@@ -1,3 +1,14 @@
+.odonto-page input[readonly] {
+  background: #f3f4f6;
+  color: #4b5563;
+  cursor: not-allowed;
+}
+
+.odonto-page input[readonly]:focus {
+  border-color: #dedede;
+  box-shadow: none;
+}
+
 .specialty-field {
   position: relative;
 }

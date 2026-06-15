@@ -20,19 +20,47 @@
       <h2>{{ dentistaEmEdicaoId() ? 'Editar dentista' : 'Cadastrar dentista' }}</h2>
 
       <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+        @if (!dentistaEmEdicaoId()) {
+          <label class="switch-label full">
+            <input
+              type="checkbox"
+              [checked]="vincularUsuarioExistente()"
+              (change)="alternarVinculoUsuario($any($event.target).checked)"
+            />
+            <span class="switch-track"></span>
+            <span>Vincular usuario existente?</span>
+          </label>
+
+          @if (vincularUsuarioExistente()) {
+            <label class="full">
+              <span>Usuario dentista *</span>
+              <select [value]="usuarioVinculadoId()" (change)="selecionarUsuarioVinculado($any($event.target).value)">
+                <option value="0">Selecione um usuario dentista ativo</option>
+                @for (usuario of usuariosDentistas(); track usuario.id) {
+                  <option [value]="usuario.id">{{ usuario.nome }} - {{ usuario.email }}</option>
+                }
+              </select>
+            </label>
+
+            @if (usuarioVinculadoId() <= 0) {
+              <p class="field-error">Selecione um usuario dentista para preencher nome, CPF e email.</p>
+            }
+          }
+        }
+
         <label>
           <span>Nome *</span>
-          <input type="text" formControlName="nome" />
+          <input type="text" formControlName="nome" [readonly]="camposUsuarioBloqueados()" />
         </label>
 
         <label>
           <span>CPF *</span>
-          <input type="text" formControlName="cpf" />
+          <input type="text" formControlName="cpf" [readonly]="camposUsuarioBloqueados()" />
         </label>
 
         <label>
           <span>Email *</span>
-          <input type="email" formControlName="email" />
+          <input type="email" formControlName="email" [readonly]="camposUsuarioBloqueados()" />
         </label>
 
         <label>

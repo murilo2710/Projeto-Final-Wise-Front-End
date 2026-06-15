@@ -7,6 +7,7 @@ import {
   EspecialidadeResponse,
   EspecialidadeService
 } from '../../services/especialidade.service';
+import { UsuarioResponse, UsuarioService } from '../../services/usuario.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { AlertService } from '../../shared/services/alert.service';
 
@@ -21,17 +22,21 @@ type FiltroStatusDentista = 'ATIVOS' | 'INATIVOS' | 'TODOS';
 export class Dentistas implements OnInit {
   private readonly dentistaService = inject(DentistaService);
   private readonly especialidadeService = inject(EspecialidadeService);
+  private readonly usuarioService = inject(UsuarioService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly alertService = inject(AlertService);
 
   protected readonly dentistas = signal<DentistaResponse[]>([]);
   protected readonly especialidades = signal<EspecialidadeResponse[]>([]);
+  protected readonly usuariosDentistas = signal<UsuarioResponse[]>([]);
   protected readonly carregando = signal(false);
   protected readonly erro = signal('');
   protected readonly sucesso = signal('');
   protected readonly dentistaEmEdicaoId = signal<number | null>(null);
   protected readonly filtroStatus = signal<FiltroStatusDentista>('ATIVOS');
   protected readonly especialidadesDropdownAberto = signal(false);
+  protected readonly vincularUsuarioExistente = signal(false);
+  protected readonly usuarioVinculadoId = signal(0);
 
   protected readonly form = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required]],
@@ -44,6 +49,7 @@ export class Dentistas implements OnInit {
 
   ngOnInit(): void {
     this.carregarEspecialidades();
+    this.carregarUsuariosDentistas();
     this.listarDentistas();
   }
 
@@ -52,6 +58,18 @@ export class Dentistas implements OnInit {
       next: (especialidades) =>
         this.especialidades.set([...especialidades].sort((a, b) => a.nome.localeCompare(b.nome))),
       error: () => this.erro.set('Nao foi possivel carregar especialidades para selecao.')
+    });
+  }
+
+  private carregarUsuariosDentistas(): void {
+    this.usuarioService.listar().subscribe({
+      next: (usuarios) =>
+        this.usuariosDentistas.set(
+          usuarios
+            .filter((usuario) => usuario.perfil === 'DENTISTA' && usuario.ativo)
+            .sort((a, b) => a.nome.localeCompare(b.nome))
+        ),
+      error: () => this.erro.set('Nao foi possivel carregar usuarios dentistas para vinculo.')
     });
   }
 
@@ -72,6 +90,11 @@ export class Dentistas implements OnInit {
   }
 
   protected async salvar(): Promise<void> {
+    if (this.vinculoUsuarioObrigatorioInvalido()) {
+      this.erro.set('Selecione um usuario dentista para vincular.');
+      return;
+    }
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -110,6 +133,7 @@ export class Dentistas implements OnInit {
   }
 
   protected editar(dentista: DentistaResponse): void {
+    this.desativarVinculoUsuario();
     this.dentistaEmEdicaoId.set(dentista.id);
     this.form.setValue({
       nome: dentista.nome,
@@ -166,6 +190,57 @@ export class Dentistas implements OnInit {
     });
     this.dentistaEmEdicaoId.set(null);
     this.especialidadesDropdownAberto.set(false);
+    this.desativarVinculoUsuario();
+  }
+
+  protected alternarVinculoUsuario(valor: boolean): void {
+    if (this.dentistaEmEdicaoId()) {
+      return;
+    }
+
+    this.vincularUsuarioExistente.set(valor);
+    this.usuarioVinculadoId.set(0);
+
+    this.form.patchValue({
+      nome: '',
+      cpf: '',
+      email: ''
+    });
+  }
+
+  protected selecionarUsuarioVinculado(usuarioId: string): void {
+    const id = Number(usuarioId);
+    const usuario = this.usuariosDentistas().find((item) => item.id === id);
+
+    this.usuarioVinculadoId.set(id);
+
+    if (!usuario) {
+      this.form.patchValue({
+        nome: '',
+        cpf: '',
+        email: ''
+      });
+      return;
+    }
+
+    this.form.patchValue({
+      nome: usuario.nome,
+      cpf: usuario.cpf,
+      email: usuario.email
+    });
+  }
+
+  protected camposUsuarioBloqueados(): boolean {
+    return this.vincularUsuarioExistente() && !this.dentistaEmEdicaoId();
+  }
+
+  private vinculoUsuarioObrigatorioInvalido(): boolean {
+    return this.camposUsuarioBloqueados() && this.usuarioVinculadoId() <= 0;
+  }
+
+  private desativarVinculoUsuario(): void {
+    this.vincularUsuarioExistente.set(false);
+    this.usuarioVinculadoId.set(0);
   }
 
   protected alternarEspecialidadesDropdown(): void {
