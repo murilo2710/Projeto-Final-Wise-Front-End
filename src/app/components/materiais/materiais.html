@@ -49,36 +49,36 @@
           <p class="loading-text">Carregando dashboard de estoque...</p>
         </section>
       } @else if (dashboard(); as resumo) {
-        <section class="stats-grid">
-          <div class="stat-card">
+        <section class="inventory-stats-grid">
+          <div class="inventory-stat-card">
             <span>Total de materiais</span>
             <strong>{{ resumo.totalMateriais }}</strong>
           </div>
-          <div class="stat-card">
+          <div class="inventory-stat-card">
             <span>Ativos</span>
             <strong>{{ resumo.totalMateriaisAtivos }}</strong>
           </div>
-          <div class="stat-card">
+          <div class="inventory-stat-card">
             <span>Inativos</span>
             <strong>{{ resumo.totalMateriaisInativos }}</strong>
           </div>
-          <div class="stat-card">
+          <div class="inventory-stat-card">
             <span>Baixo estoque</span>
             <strong>{{ resumo.totalMateriaisBaixoEstoque }}</strong>
           </div>
-          <div class="stat-card">
+          <div class="inventory-stat-card">
             <span>Total movimentacoes</span>
             <strong>{{ resumo.totalMovimentacoes }}</strong>
           </div>
-          <div class="stat-card">
+          <div class="inventory-stat-card">
             <span>Entradas</span>
             <strong>{{ resumo.totalEntradas }}</strong>
           </div>
-          <div class="stat-card">
+          <div class="inventory-stat-card">
             <span>Saidas</span>
             <strong>{{ resumo.totalSaidas }}</strong>
           </div>
-          <div class="stat-card">
+          <div class="inventory-stat-card">
             <span>Ajustes</span>
             <strong>{{ resumo.totalAjustes }}</strong>
           </div>
