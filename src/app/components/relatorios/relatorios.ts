@@ -182,6 +182,22 @@ export class Relatorios implements OnInit, AfterViewInit, OnDestroy {
     return this.agruparHorasPorEspecialidade().length;
   }
 
+  protected consultasAgendadas(): number {
+    return this.contarPorStatus('AGENDADA');
+  }
+
+  protected consultasFinalizadas(): number {
+    return this.contarPorStatus('FINALIZADA');
+  }
+
+  protected consultasCanceladas(): number {
+    return this.contarPorStatus('CANCELADA');
+  }
+
+  private contarPorStatus(status: StatusConsulta): number {
+    return this.consultas().filter((consulta) => consulta.status === status).length;
+  }
+
   private carregarFiltros(): void {
     this.pacienteService.listar().subscribe({
       next: (pacientes) => {

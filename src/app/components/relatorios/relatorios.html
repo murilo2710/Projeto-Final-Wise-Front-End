@@ -16,6 +16,25 @@
       <p class="alert alert-success">{{ sucesso() }}</p>
     }
 
+    <section class="report-stats-grid">
+      <article class="report-stat-card">
+        <span>Total no relatorio</span>
+        <strong>{{ consultas().length }}</strong>
+      </article>
+      <article class="report-stat-card">
+        <span>Agendadas</span>
+        <strong>{{ consultasAgendadas() }}</strong>
+      </article>
+      <article class="report-stat-card">
+        <span>Finalizadas</span>
+        <strong>{{ consultasFinalizadas() }}</strong>
+      </article>
+      <article class="report-stat-card">
+        <span>Canceladas</span>
+        <strong>{{ consultasCanceladas() }}</strong>
+      </article>
+    </section>
+
     <section class="panel">
       <h2>Filtros</h2>
 

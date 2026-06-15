@@ -156,6 +156,16 @@ export class Consultas implements OnInit {
       return;
     }
 
+    const confirmado = await this.alertService.confirmar(
+      'Cancelar consulta?',
+      `Deseja cancelar a consulta #${consultaId}? Esta acao registrara o motivo informado.`,
+      'Cancelar consulta'
+    );
+
+    if (!confirmado) {
+      return;
+    }
+
     this.carregando.set(true);
     this.limparMensagens();
 
@@ -214,24 +224,8 @@ export class Consultas implements OnInit {
     return dentista ? `${dentista.nome} (#${dentista.id})` : `ID ${id}`;
   }
 
-  protected consultasAgendadas(): number {
-    return this.contarPorStatus('AGENDADA');
-  }
-
-  protected consultasFinalizadas(): number {
-    return this.contarPorStatus('FINALIZADA');
-  }
-
-  protected consultasCanceladas(): number {
-    return this.contarPorStatus('CANCELADA');
-  }
-
   protected atualizarMotivoCancelamento(valor: string): void {
     this.motivoCancelamento.set(valor);
-  }
-
-  private contarPorStatus(status: StatusConsulta): number {
-    return this.consultas().filter((consulta) => consulta.status === status).length;
   }
 
   private getConsultaDoFormulario() {
