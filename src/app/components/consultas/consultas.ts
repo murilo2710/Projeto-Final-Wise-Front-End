@@ -143,7 +143,7 @@ export class Consultas implements OnInit {
     this.motivoCancelamento.set('');
   }
 
-  protected confirmarCancelamento(): void {
+  protected async confirmarCancelamento(): Promise<void> {
     const consultaId = this.consultaCancelamentoId();
     const motivo = this.motivoCancelamento().trim();
 
