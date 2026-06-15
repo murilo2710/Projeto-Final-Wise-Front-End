@@ -1,0 +1,34 @@
+<div class="toast-stack" aria-live="polite" aria-atomic="false">
+  @for (notificacao of toastService.notificacoes(); track notificacao.id) {
+    <article
+      class="toast-card"
+      [class.toast-card--success]="notificacao.tipo === 'SUCESSO'"
+      [class.toast-card--info]="notificacao.tipo === 'INFO'"
+      [class.toast-card--warning]="notificacao.tipo === 'ALERTA'"
+    >
+      <div class="toast-card__icon">
+        @if (notificacao.tipo === 'SUCESSO') {
+          <span>✓</span>
+        } @else if (notificacao.tipo === 'ALERTA') {
+          <span>!</span>
+        } @else {
+          <span>i</span>
+        }
+      </div>
+
+      <div class="toast-card__content">
+        <strong>{{ notificacao.titulo }}</strong>
+        <p>{{ notificacao.mensagem }}</p>
+      </div>
+
+      <button
+        type="button"
+        class="toast-card__close"
+        (click)="toastService.remover(notificacao.id)"
+        aria-label="Fechar notificacao"
+      >
+        ×
+      </button>
+    </article>
+  }
+</div>
