@@ -40,13 +40,41 @@
           <input type="text" formControlName="cro" />
         </label>
 
-        <label>
+        <label class="specialty-field">
           <span>Especialidades</span>
-          <select formControlName="especialidadeIds" multiple>
-            @for (especialidade of especialidades(); track especialidade.id) {
-              <option [ngValue]="especialidade.id">{{ especialidade.nome }}</option>
+          <div class="specialty-dropdown">
+            <button
+              type="button"
+              class="specialty-dropdown__trigger"
+              (click)="alternarEspecialidadesDropdown()"
+              [attr.aria-expanded]="especialidadesDropdownAberto()"
+            >
+              <span>{{ getResumoEspecialidadesSelecionadas() }}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+
+            @if (especialidadesDropdownAberto()) {
+              <div class="specialty-dropdown__menu">
+                @if (especialidades().length === 0) {
+                  <p class="specialty-dropdown__empty">Nenhuma especialidade cadastrada.</p>
+                } @else {
+                  @for (especialidade of especialidades(); track especialidade.id) {
+                    <label class="specialty-option">
+                      <input
+                        type="checkbox"
+                        [checked]="especialidadeSelecionada(especialidade.id)"
+                        (change)="alternarEspecialidade(especialidade.id)"
+                      />
+                      <span>{{ especialidade.nome }}</span>
+                    </label>
+                  }
+                }
+              </div>
             }
-          </select>
+          </div>
         </label>
 
         @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {

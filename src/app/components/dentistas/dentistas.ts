@@ -31,6 +31,7 @@ export class Dentistas implements OnInit {
   protected readonly sucesso = signal('');
   protected readonly dentistaEmEdicaoId = signal<number | null>(null);
   protected readonly filtroStatus = signal<FiltroStatusDentista>('ATIVOS');
+  protected readonly especialidadesDropdownAberto = signal(false);
 
   protected readonly form = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required]],
@@ -118,6 +119,7 @@ export class Dentistas implements OnInit {
       ativo: dentista.ativo,
       especialidadeIds: this.getEspecialidadeIds(dentista)
     });
+    this.especialidadesDropdownAberto.set(false);
     this.limparMensagens();
   }
 
@@ -163,6 +165,47 @@ export class Dentistas implements OnInit {
       especialidadeIds: []
     });
     this.dentistaEmEdicaoId.set(null);
+    this.especialidadesDropdownAberto.set(false);
+  }
+
+  protected alternarEspecialidadesDropdown(): void {
+    this.especialidadesDropdownAberto.update((aberto) => !aberto);
+  }
+
+  protected fecharEspecialidadesDropdown(): void {
+    this.especialidadesDropdownAberto.set(false);
+  }
+
+  protected alternarEspecialidade(especialidadeId: number): void {
+    const selecionadas = this.form.controls.especialidadeIds.value;
+    const novasEspecialidades = selecionadas.includes(especialidadeId)
+      ? selecionadas.filter((id) => id !== especialidadeId)
+      : [...selecionadas, especialidadeId];
+
+    this.form.controls.especialidadeIds.setValue(novasEspecialidades);
+    this.form.controls.especialidadeIds.markAsDirty();
+  }
+
+  protected especialidadeSelecionada(especialidadeId: number): boolean {
+    return this.form.controls.especialidadeIds.value.includes(especialidadeId);
+  }
+
+  protected getResumoEspecialidadesSelecionadas(): string {
+    const selecionadas = this.form.controls.especialidadeIds.value;
+
+    if (selecionadas.length === 0) {
+      return 'Selecione uma ou mais especialidades';
+    }
+
+    const nomes = this.especialidades()
+      .filter((especialidade) => selecionadas.includes(especialidade.id))
+      .map((especialidade) => especialidade.nome);
+
+    if (nomes.length <= 2) {
+      return nomes.join(', ');
+    }
+
+    return `${nomes.length} especialidades selecionadas`;
   }
 
   protected getDentistasFiltrados(): DentistaResponse[] {
