@@ -1,0 +1,369 @@
+<app-layout>
+  <div class="odonto-page admin-page">
+    <section class="page-header">
+      <div>
+        <span class="page-header__eyebrow">Administracao</span>
+        <h1>Painel administrativo</h1>
+        <p class="page-header__sub">Gerencie usuarios, acompanhe estatisticas e monitore atividades do sistema.</p>
+      </div>
+    </section>
+
+    <div class="section-tabs" role="tablist" aria-label="Navegacao administrativa">
+      <button
+        type="button"
+        class="section-tab"
+        [class.active]="secaoAtiva() === 'visao'"
+        (click)="selecionarSecao('visao')"
+      >
+        Visao geral
+      </button>
+      <button
+        type="button"
+        class="section-tab"
+        [class.active]="secaoAtiva() === 'usuarios'"
+        (click)="selecionarSecao('usuarios')"
+      >
+        Usuarios
+      </button>
+      <button
+        type="button"
+        class="section-tab"
+        [class.active]="secaoAtiva() === 'logs'"
+        (click)="selecionarSecao('logs')"
+      >
+        Logs
+      </button>
+    </div>
+
+    @if (erro()) {
+      <p class="alert alert-error">{{ erro() }}</p>
+    }
+
+    @if (sucesso()) {
+      <p class="alert alert-success">{{ sucesso() }}</p>
+    }
+
+    @switch (secaoAtiva()) {
+      @case ('visao') {
+        <section class="stats-grid">
+          <article class="stat-card">
+            <span>Total de usuarios</span>
+            <strong>{{ formatarNumero(getTotalDashboard(['totalUsuarios'], totalUsuarios())) }}</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Usuarios ativos</span>
+            <strong>{{ formatarNumero(getTotalDashboard(['totalUsuariosAtivos'], usuariosAtivos())) }}</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Usuarios inativos</span>
+            <strong>{{ formatarNumero(getTotalDashboard(['totalUsuariosInativos'], usuariosInativos())) }}</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Administradores</span>
+            <strong>{{ formatarNumero(getTotalDashboard(['totalAdministradores'], totalAdmins())) }}</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Dentistas</span>
+            <strong>{{ formatarNumero(getTotalDashboard(['totalDentistas'], totalDentistas())) }}</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Consultas</span>
+            <strong>{{ formatarNumero(getTotalDashboard(['totalConsultas'], 0)) }}</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Consultas finalizadas</span>
+            <strong>{{ formatarNumero(getTotalDashboard(['totalConsultasFinalizadas'], 0)) }}</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Logs registrados</span>
+            <strong>{{ formatarNumero(getTotalDashboard(['totalLogs', 'totalAtividades'], logs().length)) }}</strong>
+          </article>
+        </section>
+
+        <section class="dashboard-lists">
+          <article class="panel">
+            <h2>Resumo de perfis</h2>
+            <div class="summary-list">
+              <div class="summary-item">
+                <div>
+                  <span>Administradores</span>
+                  <strong>{{ formatarNumero(totalAdmins()) }}</strong>
+                </div>
+                <div class="summary-bar">
+                  <span [style.width.%]="totalUsuarios() ? (totalAdmins() / totalUsuarios()) * 100 : 0"></span>
+                </div>
+              </div>
+
+              <div class="summary-item">
+                <div>
+                  <span>Dentistas</span>
+                  <strong>{{ formatarNumero(totalDentistas()) }}</strong>
+                </div>
+                <div class="summary-bar">
+                  <span [style.width.%]="totalUsuarios() ? (totalDentistas() / totalUsuarios()) * 100 : 0"></span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <h2>Ultimos logs</h2>
+
+            @if (logs().length === 0) {
+              <div class="empty-state compact">
+                <span class="empty-state__icon">!</span>
+                <strong>Nenhum log encontrado</strong>
+                <p>As atividades administrativas aparecerao aqui quando o backend retornar registros.</p>
+              </div>
+            } @else {
+              <ul class="admin-log-list">
+                @for (log of logs().slice(0, 5); track log.id) {
+                  <li>
+                    <strong>{{ log.tipo }}</strong>
+                    <span>{{ log.descricao }}</span>
+                    <small>{{ tempoRelativo(log.dataHora) }}</small>
+                  </li>
+                }
+              </ul>
+            }
+          </article>
+        </section>
+      }
+
+      @case ('usuarios') {
+        <section class="panel">
+          <h2>{{ usuarioEmEdicaoId() ? 'Editar usuario' : 'Cadastrar usuario' }}</h2>
+
+          <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+            <label>
+              <span>Nome *</span>
+              <input type="text" formControlName="nome" />
+            </label>
+
+            <label>
+              <span>CPF *</span>
+              <input type="text" formControlName="cpf" />
+            </label>
+
+            <label>
+              <span>Email *</span>
+              <input type="email" formControlName="email" />
+            </label>
+
+            <label>
+              <span>Senha *</span>
+              <input type="password" formControlName="senha" />
+            </label>
+
+            <label>
+              <span>Perfil *</span>
+              <select formControlName="perfil">
+                @for (perfil of perfis; track perfil) {
+                  <option [value]="perfil">{{ perfil }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="switch-label">
+              <input type="checkbox" formControlName="ativo" />
+              <span class="switch-track"></span>
+              <span>Ativo</span>
+            </label>
+
+            @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+              <p class="field-error">Nome e obrigatorio.</p>
+            }
+
+            @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+              <p class="field-error">CPF e obrigatorio.</p>
+            }
+
+            @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
+              <p class="field-error">CPF deve ter 11 digitos numericos.</p>
+            }
+
+            @if (form.controls.email.touched && form.controls.email.invalid) {
+              <p class="field-error">Informe um email valido.</p>
+            }
+
+            @if (form.controls.senha.touched && form.controls.senha.hasError('required')) {
+              <p class="field-error">Senha e obrigatoria ao criar usuario.</p>
+            }
+
+            @if (form.controls.senha.touched && form.controls.senha.hasError('minlength')) {
+              <p class="field-error">Senha deve ter ao menos 6 caracteres.</p>
+            }
+
+            <div class="actions">
+              <button type="submit" [disabled]="carregando()">
+                {{ usuarioEmEdicaoId() ? 'Atualizar' : 'Criar' }}
+              </button>
+              <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+                Limpar
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h2>Usuarios cadastrados</h2>
+
+          @if (carregando()) {
+            <p class="loading-text">Carregando usuarios...</p>
+          } @else if (usuarios().length === 0) {
+            <div class="empty-state">
+              <span class="empty-state__icon">+</span>
+              <strong>Nenhum usuario cadastrado</strong>
+              <p>Adicione usuarios para liberar acessos administrativos ou de dentistas.</p>
+            </div>
+          } @else {
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>CPF</th>
+                    <th>Perfil</th>
+                    <th>Ativo</th>
+                    <th>Data criacao</th>
+                    <th>Ultimo login</th>
+                    <th>Acoes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (usuario of usuarios(); track usuario.id) {
+                    <tr>
+                      <td>#{{ usuario.id }}</td>
+                      <td>{{ usuario.nome }}</td>
+                      <td>{{ usuario.email }}</td>
+                      <td>{{ usuario.cpf }}</td>
+                      <td><span class="badge">{{ usuario.perfil }}</span></td>
+                      <td>
+                        <span class="badge" [class.badge-danger]="!usuario.ativo">
+                          {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
+                        </span>
+                      </td>
+                      <td>{{ formatarData(usuario.dataCriacao) }}</td>
+                      <td>{{ formatarData(usuario.ultimoLogin) }}</td>
+                      <td class="row-actions">
+                        <button type="button" class="small" (click)="editar(usuario)">Editar</button>
+                        <button type="button" class="small danger" (click)="excluir(usuario)">Excluir</button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      }
+
+      @case ('logs') {
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Logs de atividade</h2>
+              <p>Filtre os registros retornados pelo endpoint administrativo.</p>
+            </div>
+            <button type="button" class="secondary" (click)="carregarLogs()" [disabled]="carregandoLogs()">
+              Atualizar
+            </button>
+          </div>
+
+          <div class="admin-log-filters">
+            <label>
+              <span>Usuario</span>
+              <input
+                type="text"
+                [value]="filtroLogUsuario()"
+                (input)="atualizarFiltroLogUsuario($any($event.target).value)"
+                placeholder="Nome do usuario"
+              />
+            </label>
+
+            <label>
+              <span>Tipo</span>
+              <select [value]="filtroLogTipo()" (change)="atualizarFiltroLogTipo($any($event.target).value)">
+                <option value="">Todos</option>
+                @for (tipo of tiposLog(); track tipo) {
+                  <option [value]="tipo">{{ tipo }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span>Recurso</span>
+              <select [value]="filtroLogRecurso()" (change)="atualizarFiltroLogRecurso($any($event.target).value)">
+                <option value="">Todos</option>
+                @for (recurso of recursosLog(); track recurso) {
+                  <option [value]="recurso">{{ recurso }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span>Data</span>
+              <input
+                type="date"
+                [value]="filtroLogData()"
+                (input)="atualizarFiltroLogData($any($event.target).value)"
+              />
+            </label>
+
+            <div class="actions admin-log-filters__actions">
+              <button type="button" class="secondary" (click)="limparFiltrosLogs()">Limpar filtros</button>
+            </div>
+          </div>
+
+          @if (carregandoLogs()) {
+            <p class="loading-text">Carregando logs...</p>
+          } @else if (logsFiltrados().length === 0) {
+            <div class="empty-state">
+              <span class="empty-state__icon">!</span>
+              <strong>Nenhum log encontrado</strong>
+              <p>Ajuste os filtros ou aguarde novas atividades do sistema.</p>
+            </div>
+          } @else {
+            <ul class="timeline">
+              @for (log of logsFiltrados(); track log.id) {
+                <li class="timeline-item">
+                  <span class="timeline-marker" [class]="getLogClasse(log)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <polyline points="12 7 12 12 15 14" />
+                    </svg>
+                  </span>
+
+                  <div class="timeline-content">
+                    <div class="timeline-top">
+                      <span class="badge" [class]="getLogClasse(log)">{{ log.recurso }}</span>
+                      <span class="timeline-acao">{{ log.tipo }}</span>
+                      <span class="timeline-tempo">{{ tempoRelativo(log.dataHora) }}</span>
+                    </div>
+
+                    <p class="timeline-desc">{{ log.descricao }}</p>
+
+                    <div class="timeline-meta">
+                      <span>Por {{ log.usuario }}</span>
+                      <span>{{ formatarData(log.dataHora) }}</span>
+                    </div>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    }
+  </div>
+</app-layout>

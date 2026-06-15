@@ -8,7 +8,7 @@ import { Login } from './components/login/login';
 import { Materiais } from './components/materiais/materiais';
 import { Pacientes } from './components/pacientes/pacientes';
 import { Relatorios } from './components/relatorios/relatorios';
-import { Usuarios } from './components/usuarios/usuarios';
+import { Admin } from './components/admin/admin';
 import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
@@ -20,7 +20,8 @@ export const routes: Routes = [
   { path: 'materiais', component: Materiais, canActivate: [authGuard] },
   { path: 'consultas', component: Consultas, canActivate: [authGuard] },
   { path: 'relatorios', component: Relatorios, canActivate: [authGuard] },
-  { path: 'usuarios', component: Usuarios, canActivate: [authGuard], data: { perfis: ['ADMIN'] } },
+  { path: 'admin', component: Admin, canActivate: [authGuard], data: { perfis: ['ADMIN'] } },
+  { path: 'usuarios', pathMatch: 'full', redirectTo: 'admin' },
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
   { path: '**', redirectTo: 'dashboard' }
 ];
