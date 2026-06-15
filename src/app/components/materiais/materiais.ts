@@ -43,6 +43,7 @@ export class Materiais implements OnInit {
   protected readonly materialEmEdicaoId = signal<number | null>(null);
   protected readonly filtroStatus = signal<FiltroStatusMaterial>('TODOS');
   protected readonly filtroEspecialidadeId = signal(0);
+  protected readonly especialidadesDropdownAberto = signal(false);
   protected readonly filtroMovimentacaoMaterialId = signal(0);
   protected readonly filtroMovimentacaoTipo = signal<TipoMovimentacaoEstoque | ''>('');
   protected readonly unidadesMedida = ['UNIDADE', 'CAIXA', 'PACOTE', 'ML', 'L', 'G', 'KG'];
@@ -213,6 +214,7 @@ export class Materiais implements OnInit {
       ativo: material.ativo,
       especialidadeIds: this.getEspecialidadeIds(material)
     });
+    this.especialidadesDropdownAberto.set(false);
     this.limparMensagens();
   }
 
@@ -257,6 +259,43 @@ export class Materiais implements OnInit {
       especialidadeIds: []
     });
     this.materialEmEdicaoId.set(null);
+    this.especialidadesDropdownAberto.set(false);
+  }
+
+  protected alternarEspecialidadesDropdown(): void {
+    this.especialidadesDropdownAberto.update((aberto) => !aberto);
+  }
+
+  protected alternarEspecialidade(especialidadeId: number): void {
+    const selecionadas = this.form.controls.especialidadeIds.value;
+    const novasEspecialidades = selecionadas.includes(especialidadeId)
+      ? selecionadas.filter((id) => id !== especialidadeId)
+      : [...selecionadas, especialidadeId];
+
+    this.form.controls.especialidadeIds.setValue(novasEspecialidades);
+    this.form.controls.especialidadeIds.markAsDirty();
+  }
+
+  protected especialidadeSelecionada(especialidadeId: number): boolean {
+    return this.form.controls.especialidadeIds.value.includes(especialidadeId);
+  }
+
+  protected getResumoEspecialidadesSelecionadas(): string {
+    const selecionadas = this.form.controls.especialidadeIds.value;
+
+    if (selecionadas.length === 0) {
+      return 'Selecione uma ou mais especialidades';
+    }
+
+    const nomes = this.especialidades()
+      .filter((especialidade) => selecionadas.includes(especialidade.id))
+      .map((especialidade) => especialidade.nome);
+
+    if (nomes.length <= 2) {
+      return nomes.join(', ');
+    }
+
+    return `${nomes.length} especialidades selecionadas`;
   }
 
   protected limparMovimentacaoFormulario(): void {
