@@ -55,7 +55,7 @@
           </label>
 
           <label>
-            <span>Data inicio *</span>
+            <span>Data início *</span>
             <input type="datetime-local" formControlName="dataInicio" />
           </label>
 
@@ -72,6 +72,13 @@
               }
             </select>
           </label>
+
+          @if (deveExibirMotivoCancelamento()) {
+            <label class="full">
+              <span>Motivo do cancelamento *</span>
+              <input type="text" formControlName="motivoCancelamento" />
+            </label>
+          }
 
           @if (form.controls.pacienteId.touched && form.controls.pacienteId.invalid) {
             <p class="field-error">Selecione um paciente.</p>
@@ -97,6 +104,10 @@
             <p class="field-error">Status é obrigatório.</p>
           }
 
+          @if (form.controls.motivoCancelamento.touched && motivoCancelamentoObrigatorioInvalido()) {
+            <p class="field-error">Motivo do cancelamento é obrigatório.</p>
+          }
+
           <div class="actions">
             <button type="submit" [disabled]="carregando()">Criar</button>
             <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
@@ -111,7 +122,7 @@
       <h2>Consultas cadastradas</h2>
 
       @if (consultaCancelamentoId()) {
-        <div class="cancel-panel">
+        <div class="cancel-panel" id="cancelamento-consulta-panel">
           <h3>Cancelar consulta #{{ consultaCancelamentoId() }}</h3>
           <label>
             <span>Motivo do cancelamento *</span>
@@ -148,11 +159,12 @@
                 <th>Paciente</th>
                 <th>Dentista</th>
                 <th>Descrição</th>
-                <th>Inicio</th>
+                <th>Início</th>
                 <th>Fim</th>
                 <th>Status</th>
+                <th>Anexos</th>
                 <th>Motivo</th>
-                <th>Acoes</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -168,8 +180,22 @@
                       {{ consulta.status }}
                     </span>
                   </td>
+                  <td>
+                    @if (carregandoIndicadoresAnexos()) {
+                      <span class="badge attachment-badge attachment-badge--muted">Verificando</span>
+                    } @else if (consultaPossuiAnexos(consulta.id)) {
+                      <span class="badge attachment-badge attachment-badge--success">
+                        {{ getTotalAnexosConsulta(consulta.id) }} anexo(s)
+                      </span>
+                    } @else {
+                      <span class="badge attachment-badge attachment-badge--muted">Sem anexos</span>
+                    }
+                  </td>
                   <td>{{ consulta.motivoCancelamento || '-' }}</td>
                   <td class="row-actions">
+                    <button type="button" class="small secondary" (click)="abrirAnexos(consulta)">
+                      {{ consultaPossuiAnexos(consulta.id) ? 'Anexos (' + getTotalAnexosConsulta(consulta.id) + ')' : 'Anexos' }}
+                    </button>
                     <button type="button" class="small" (click)="editar(consulta)">Editar</button>
                     @if (consulta.status !== 'CANCELADA') {
                       <button type="button" class="small warning" (click)="abrirCancelamento(consulta)">
@@ -228,7 +254,7 @@
           </label>
 
           <label>
-            <span>Data inicio *</span>
+            <span>Data início *</span>
             <input type="datetime-local" formControlName="dataInicio" />
           </label>
 
@@ -245,6 +271,13 @@
               }
             </select>
           </label>
+
+          @if (deveExibirMotivoCancelamento()) {
+            <label class="full">
+              <span>Motivo do cancelamento *</span>
+              <input type="text" formControlName="motivoCancelamento" />
+            </label>
+          }
 
           @if (form.controls.pacienteId.touched && form.controls.pacienteId.invalid) {
             <p class="field-error">Selecione um paciente.</p>
@@ -270,6 +303,10 @@
             <p class="field-error">Status é obrigatório.</p>
           }
 
+          @if (form.controls.motivoCancelamento.touched && motivoCancelamentoObrigatorioInvalido()) {
+            <p class="field-error">Motivo do cancelamento é obrigatório.</p>
+          }
+
           <div class="actions">
             <button type="submit" [disabled]="carregando()">Atualizar</button>
             <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
@@ -277,6 +314,105 @@
             </button>
           </div>
         </form>
+      </app-edit-modal>
+    }
+
+    @if (consultaAnexosId()) {
+      <app-edit-modal
+        title="Anexos da consulta #{{ consultaAnexosId() }}"
+        subtitle="Gerencie documentos, imagens clínicas, termos e arquivos relacionados à consulta."
+        [loading]="carregandoAnexos() || enviandoArquivo()"
+        (closeModal)="fecharAnexos()"
+      >
+        <div class="attachments-panel">
+          @if (erroAnexos()) {
+            <p class="alert alert-error">{{ erroAnexos() }}</p>
+          }
+
+          @if (sucessoAnexos()) {
+            <p class="alert alert-success">{{ sucessoAnexos() }}</p>
+          }
+
+          <section class="attachment-upload">
+            <label class="full">
+              <span>Arquivo para anexar *</span>
+              <input
+                #arquivoInput
+                type="file"
+                accept="application/pdf,image/png,image/jpeg"
+                (change)="selecionarArquivo($event)"
+              />
+            </label>
+
+            <p class="attachment-hint">Formatos aceitos: PDF, PNG ou JPG. Tamanho máximo: 10MB.</p>
+
+            @if (arquivoSelecionado()) {
+              <div class="attachment-selected">
+                <strong>{{ arquivoSelecionado()?.name }}</strong>
+                <span>{{ formatarTamanhoArquivo(arquivoSelecionado()?.size || 0) }}</span>
+              </div>
+            }
+
+            <div class="actions">
+              <button
+                type="button"
+                (click)="enviarArquivo(arquivoInput)"
+                [disabled]="enviandoArquivo() || carregandoAnexos()"
+              >
+                {{ enviandoArquivo() ? 'Enviando...' : 'Enviar arquivo' }}
+              </button>
+            </div>
+          </section>
+
+          <section class="attachment-list-section">
+            <h3>Arquivos anexados</h3>
+
+            @if (carregandoAnexos()) {
+              <p class="loading-text">Carregando anexos...</p>
+            } @else if (arquivosConsulta().length === 0) {
+              <div class="empty-state compact">
+                <span class="empty-state__icon">+</span>
+                <strong>Nenhum arquivo anexado a esta consulta.</strong>
+                <p>Envie documentos ou imagens para manter o histórico da consulta completo.</p>
+              </div>
+            } @else {
+              <div class="attachment-list">
+                @for (arquivo of arquivosConsulta(); track arquivo.id) {
+                  <article class="attachment-card">
+                    <div class="attachment-card__info">
+                      <strong>{{ arquivo.nomeOriginal }}</strong>
+                      <span>
+                        {{ arquivo.tipoConteudo }} · {{ formatarTamanhoArquivo(arquivo.tamanho) }}
+                      </span>
+                      <small>
+                        Enviado por {{ arquivo.usuarioNome || 'Usuário' }} em {{ formatarDataArquivo(arquivo.dataUpload) }}
+                      </small>
+                    </div>
+
+                    <div class="attachment-card__actions">
+                      <button
+                        type="button"
+                        class="small secondary"
+                        (click)="baixarArquivo(arquivo)"
+                        [disabled]="baixandoArquivoId() === arquivo.id || excluindoArquivoId() === arquivo.id"
+                      >
+                        {{ baixandoArquivoId() === arquivo.id ? 'Baixando...' : 'Baixar' }}
+                      </button>
+                      <button
+                        type="button"
+                        class="small danger"
+                        (click)="excluirArquivo(arquivo)"
+                        [disabled]="excluindoArquivoId() === arquivo.id || baixandoArquivoId() === arquivo.id"
+                      >
+                        {{ excluindoArquivoId() === arquivo.id ? 'Excluindo...' : 'Excluir' }}
+                      </button>
+                    </div>
+                  </article>
+                }
+              </div>
+            }
+          </section>
+        </div>
       </app-edit-modal>
     }
   </div>

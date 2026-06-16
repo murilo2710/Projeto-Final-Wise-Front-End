@@ -1,0 +1,162 @@
+.attachment-badge {
+  white-space: nowrap;
+}
+
+.attachment-badge--success {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.attachment-badge--muted {
+  background: rgba(107, 107, 107, 0.12);
+  color: #525252;
+}
+
+.attachments-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.attachment-upload,
+.attachment-list-section {
+  min-width: 0;
+  border: 1px solid #e6e6e6;
+  border-radius: 22px;
+  padding: 18px;
+  background: #ffffff;
+}
+
+.attachment-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.attachment-upload label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachment-upload label > span {
+  color: #6b6b6b;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.attachment-hint {
+  margin: 0;
+  color: #6b6b6b;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.attachment-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(5, 150, 105, 0.08);
+  color: #047857;
+}
+
+.attachment-selected strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-selected span {
+  flex: 0 0 auto;
+  color: #047857;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.attachment-list-section h3 {
+  margin: 0 0 14px;
+  color: #0c0c0c;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.attachment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.attachment-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  padding: 14px;
+  background: #f8f8f8;
+}
+
+.attachment-card__info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.attachment-card__info strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #0c0c0c;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-card__info span,
+.attachment-card__info small {
+  color: #6b6b6b;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.attachment-card__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 720px) {
+  .attachment-upload,
+  .attachment-list-section {
+    border-radius: 18px;
+    padding: 14px;
+  }
+
+  .attachment-selected,
+  .attachment-card,
+  .attachment-card__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .attachment-selected strong,
+  .attachment-card__info strong {
+    white-space: normal;
+  }
+
+  .attachment-card__actions button {
+    width: 100%;
+  }
+}
