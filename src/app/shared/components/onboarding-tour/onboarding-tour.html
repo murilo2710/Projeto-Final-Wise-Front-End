@@ -1,0 +1,47 @@
+@if (visivel() && alvoRect(); as rect) {
+  <div class="tour-backdrop">
+    <div
+      class="tour-spotlight"
+      [style.top.px]="rect.top - 6"
+      [style.left.px]="rect.left - 6"
+      [style.width.px]="rect.width + 12"
+      [style.height.px]="rect.height + 12"
+    ></div>
+
+    <div
+      class="tour-card"
+      [style.top.px]="cardTop()"
+      [style.left.px]="cardLeft()"
+    >
+      <span
+        class="tour-arrow"
+        [class.tour-arrow--left]="arrowLeft()"
+        [class.tour-arrow--right]="!arrowLeft()"
+        [style.top.px]="arrowTop()"
+      ></span>
+
+      <div class="tour-head">
+        <span class="tour-counter">{{ indice() + 1 }} de {{ total }}</span>
+        <div class="tour-progress" aria-hidden="true">
+          @for (passo of passos; track $index) {
+            <span
+              class="tour-dot"
+              [class.tour-dot--ativo]="$index === indice()"
+              [class.tour-dot--feito]="$index < indice()"
+            ></span>
+          }
+        </div>
+      </div>
+
+      <h3 class="tour-title">{{ passoAtual().titulo }}</h3>
+      <p class="tour-desc">{{ passoAtual().descricao }}</p>
+
+      <div class="tour-actions">
+        <button type="button" class="tour-skip" (click)="pular()">Pular</button>
+        <button type="button" class="tour-next" (click)="proximo()">
+          {{ ehUltimo() ? 'Concluir' : 'Proximo' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
