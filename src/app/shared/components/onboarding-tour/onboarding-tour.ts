@@ -43,12 +43,12 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
     {
       alvo: '[data-tour="logo"]',
       titulo: 'Bem-vindo ao Sistema Odonto!',
-      descricao: 'Vamos fazer um tour rapido pelas principais areas do sistema.'
+      descricao: 'Vamos fazer um tour rápido pelas principais áreas do sistema.'
     },
     {
       alvo: '[data-tour="dashboard"]',
       titulo: 'Seu painel de controle',
-      descricao: 'Acompanhe consultas, pacientes e os principais indicadores da clinica em um so lugar.'
+      descricao: 'Acompanhe consultas, pacientes e os principais indicadores da clínica em um só lugar.'
     },
     {
       alvo: '[data-tour="consultas"]',
@@ -77,8 +77,8 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
     },
     {
       alvo: '[data-tour="relatorios"]',
-      titulo: 'Extraia relatorios',
-      descricao: 'Filtre e analise os atendimentos para tomar decisoes com mais seguranca.'
+      titulo: 'Extraia relatórios',
+      descricao: 'Filtre e analise os atendimentos para tomar decisões com mais segurança.'
     }
   ];
 

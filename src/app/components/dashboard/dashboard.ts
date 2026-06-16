@@ -123,12 +123,12 @@ export class Dashboard implements OnInit {
     this.carregando.set(false);
 
     if (error.status === 0) {
-      this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando.');
+      this.erro.set('Não foi possível conectar ao servidor. Verifique se o backend está em execução.');
       return;
     }
 
     if (error.status === 404) {
-      this.erro.set('Dashboard de consultas nao encontrado.');
+      this.erro.set('Dashboard de consultas não encontrado.');
       return;
     }
 
@@ -137,7 +137,7 @@ export class Dashboard implements OnInit {
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao carregar dashboard.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível carregar o dashboard. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {

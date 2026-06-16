@@ -59,14 +59,14 @@ function notificarErroBackend(
 function getConfigNotificacaoErro(status: number): { titulo: string; mensagemPadrao: string } | null {
   if (status === 409) {
     return {
-      titulo: 'Conflito de regra de negocio',
-      mensagemPadrao: 'A operacao nao pode ser concluida por uma regra do sistema.'
+      titulo: 'Conflito de regra de negócio',
+      mensagemPadrao: 'A operação não pode ser concluída por uma regra do sistema.'
     };
   }
 
   if (status === 400) {
     return {
-      titulo: 'Dados invalidos',
+      titulo: 'Dados inválidos',
       mensagemPadrao: 'Revise os campos informados e tente novamente.'
     };
   }
@@ -74,7 +74,7 @@ function getConfigNotificacaoErro(status: number): { titulo: string; mensagemPad
   if (status === 403) {
     return {
       titulo: 'Acao bloqueada',
-      mensagemPadrao: 'Seu usuario nao tem permissao para executar esta acao.'
+      mensagemPadrao: 'Seu usuário não tem permissão para executar esta ação.'
     };
   }
 

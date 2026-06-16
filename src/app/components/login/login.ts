@@ -20,7 +20,7 @@ export class Login implements OnInit, OnDestroy {
   protected readonly erro = signal('');
   protected readonly sucesso = signal('');
 
-  private readonly tituloCompleto = 'Gestao inteligente\npara sua clinica.';
+  private readonly tituloCompleto = 'Gestão inteligente\npara sua clínica.';
   protected readonly tituloDigitado = signal('');
   private temporizador?: ReturnType<typeof setInterval>;
 
@@ -79,12 +79,12 @@ export class Login implements OnInit, OnDestroy {
         console.error('Erro no login:', error);
 
         if (error.status === 0) {
-          this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.');
+          this.erro.set('Não foi possível conectar ao servidor. Verifique se o backend está em execução.');
           return;
         }
 
         if (error.status >= 500) {
-          this.erro.set('Erro interno no backend ao tentar fazer login. Verifique o console do Spring Boot.');
+          this.erro.set('Não foi possível entrar agora. Tente novamente em alguns instantes.');
           return;
         }
 
@@ -106,6 +106,6 @@ export class Login implements OnInit, OnDestroy {
       return error.error.erro;
     }
 
-    return 'Email ou senha invalidos.';
+    return 'E-mail ou senha inválidos.';
   }
 }

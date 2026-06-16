@@ -63,7 +63,7 @@ export class Especialidades implements OnInit {
     if (id) {
       const confirmado = await this.alertService.confirmar(
         'Atualizar especialidade?',
-        'Deseja salvar as alteracoes desta especialidade?',
+        'Deseja salvar as alterações desta especialidade?',
         'Atualizar'
       );
 
@@ -115,7 +115,7 @@ export class Especialidades implements OnInit {
 
     this.especialidadeService.excluir(especialidade.id).subscribe({
       next: () => {
-        this.sucesso.set('Especialidade excluida com sucesso.');
+        this.sucesso.set('Especialidade excluída com sucesso.');
         this.listarEspecialidades(true);
       },
       error: (error: HttpErrorResponse) => this.tratarErro(error)
@@ -148,13 +148,13 @@ export class Especialidades implements OnInit {
 
     if (error.status === 0) {
       this.erro.set(
-        'Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.'
+        'Não foi possível conectar ao servidor. Verifique se o backend está em execução.'
       );
       return;
     }
 
     if (error.status === 404) {
-      this.erro.set('Especialidade nao encontrada.');
+      this.erro.set('Especialidade não encontrada.');
       return;
     }
 
@@ -166,7 +166,7 @@ export class Especialidades implements OnInit {
     if (error.status === 403) {
       this.erro.set(
         this.getMensagemErro(error) ||
-          'Requisicao bloqueada pelo backend com 403. Verifique SecurityConfig/CSRF.'
+          'Você não tem permissão para executar esta ação.'
       );
       return;
     }
@@ -174,12 +174,12 @@ export class Especialidades implements OnInit {
     if (error.status >= 500) {
       this.erro.set(
         this.getMensagemErro(error) ||
-          'Erro 500 ao chamar /especialidades. Verifique o console do backend.'
+          'Não foi possível concluir a operação agora. Tente novamente em alguns instantes.'
       );
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao comunicar com o backend.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível concluir a operação. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {

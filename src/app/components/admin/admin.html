@@ -2,13 +2,13 @@
   <div class="odonto-page admin-page">
     <section class="page-header">
       <div>
-        <span class="page-header__eyebrow">Administracao</span>
+        <span class="page-header__eyebrow">Administração</span>
         <h1>Painel administrativo</h1>
-        <p class="page-header__sub">Gerencie usuarios, acompanhe estatisticas e monitore atividades do sistema.</p>
+        <p class="page-header__sub">Gerencie usuários, acompanhe estatísticas e monitore atividades do sistema.</p>
       </div>
     </section>
 
-    <div class="section-tabs" role="tablist" aria-label="Navegacao administrativa">
+    <div class="section-tabs" role="tablist" aria-label="Navegação administrativa">
       <button
         type="button"
         class="section-tab"
@@ -27,7 +27,7 @@
         [class.active]="secaoAtiva() === 'usuarios'"
         (click)="selecionarSecao('usuarios')"
       >
-        Usuarios
+        Usuários
       </button>
       <button
         type="button"
@@ -53,17 +53,17 @@
       @case ('visao') {
         <section class="stats-grid">
           <article class="stat-card">
-            <span>Total de usuarios</span>
+            <span>Total de usuários</span>
             <strong>{{ formatarNumero(getTotalDashboard(['totalUsuarios'], totalUsuarios())) }}</strong>
           </article>
 
           <article class="stat-card">
-            <span>Usuarios ativos</span>
+            <span>Usuários ativos</span>
             <strong>{{ formatarNumero(getTotalDashboard(['totalUsuariosAtivos'], usuariosAtivos())) }}</strong>
           </article>
 
           <article class="stat-card">
-            <span>Usuarios inativos</span>
+            <span>Usuários inativos</span>
             <strong>{{ formatarNumero(getTotalDashboard(['totalUsuariosInativos'], usuariosInativos())) }}</strong>
           </article>
 
@@ -126,7 +126,7 @@
               <div class="empty-state compact">
                 <span class="empty-state__icon">!</span>
                 <strong>Nenhum log encontrado</strong>
-                <p>As atividades administrativas aparecerao aqui quando o backend retornar registros.</p>
+                <p>As atividades administrativas aparecerão aqui quando houver registros.</p>
               </div>
             } @else {
               <ul class="admin-log-list">
@@ -146,7 +146,7 @@
       @case ('usuarios') {
         @if (!usuarioEmEdicaoId()) {
           <section class="panel">
-            <h2>Cadastrar usuario</h2>
+            <h2>Cadastrar usuário</h2>
 
             <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
               <label>
@@ -179,11 +179,11 @@
               </label>
 
               @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-                <p class="field-error">Nome e obrigatorio.</p>
+                <p class="field-error">Nome é obrigatório.</p>
               }
 
               @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-                <p class="field-error">CPF e obrigatorio.</p>
+                <p class="field-error">CPF é obrigatório.</p>
               }
 
               @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
@@ -195,7 +195,7 @@
               }
 
               @if (form.controls.senha.touched && form.controls.senha.hasError('required')) {
-                <p class="field-error">Senha e obrigatoria ao criar usuario.</p>
+                <p class="field-error">Senha é obrigatória ao criar usuário.</p>
               }
 
               @if (form.controls.senha.touched && form.controls.senha.hasError('minlength')) {
@@ -213,15 +213,15 @@
         }
 
         <section class="panel">
-          <h2>Usuarios cadastrados</h2>
+          <h2>Usuários cadastrados</h2>
 
           @if (carregando()) {
-            <p class="loading-text">Carregando usuarios...</p>
+            <p class="loading-text">Carregando usuários...</p>
           } @else if (usuarios().length === 0) {
             <div class="empty-state">
               <span class="empty-state__icon">+</span>
-              <strong>Nenhum usuario cadastrado</strong>
-              <p>Adicione usuarios para liberar acessos administrativos ou de dentistas.</p>
+              <strong>Nenhum usuário cadastrado</strong>
+              <p>Adicione usuários para liberar acessos administrativos ou de dentistas.</p>
             </div>
           } @else {
             <div class="table-wrapper">
@@ -235,7 +235,7 @@
                     <th>Perfil</th>
                     <th>Cadastro profissional</th>
                     <th>Ativo</th>
-                    <th>Data criacao</th>
+                    <th>Data criação</th>
                     <th>Ultimo login</th>
                     <th>Acoes</th>
                   </tr>
@@ -292,12 +292,12 @@
 
           <div class="admin-log-filters">
             <label>
-              <span>Usuario</span>
+              <span>Usuário</span>
               <input
                 type="text"
                 [value]="filtroLogUsuario()"
                 (input)="atualizarFiltroLogUsuario($any($event.target).value)"
-                placeholder="Nome do usuario"
+                placeholder="Nome do usuário"
               />
             </label>
 
@@ -379,8 +379,8 @@
 
     @if (secaoAtiva() === 'usuarios' && usuarioEmEdicaoId()) {
       <app-edit-modal
-        title="Editar usuario"
-        subtitle="Atualize dados de acesso, perfil e permissao do usuario."
+        title="Editar usuário"
+        subtitle="Atualize dados de acesso, perfil e permissão do usuário."
         [loading]="carregando()"
         (closeModal)="limparFormulario()"
       >
@@ -415,11 +415,11 @@
           </label>
 
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-            <p class="field-error">Nome e obrigatorio.</p>
+            <p class="field-error">Nome é obrigatório.</p>
           }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-            <p class="field-error">CPF e obrigatorio.</p>
+            <p class="field-error">CPF é obrigatório.</p>
           }
 
           @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {

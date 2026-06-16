@@ -2,9 +2,9 @@
   <div class="odonto-page">
     <section class="page-header">
       <div>
-        <span class="page-header__eyebrow">Gestao</span>
+        <span class="page-header__eyebrow">Gestão</span>
         <h1>Pacientes</h1>
-        <p class="page-header__sub">Cadastre, edite e acompanhe os pacientes da clinica.</p>
+        <p class="page-header__sub">Cadastre, edite e acompanhe os pacientes da clínica.</p>
       </div>
     </section>
 
@@ -42,7 +42,7 @@
           </label>
 
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-            <p class="field-error">Nome e obrigatorio.</p>
+            <p class="field-error">Nome é obrigatório.</p>
           }
 
           @if (form.controls.email.touched && form.controls.email.invalid) {
@@ -50,7 +50,7 @@
           }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-            <p class="field-error">CPF e obrigatorio.</p>
+            <p class="field-error">CPF é obrigatório.</p>
           }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {
@@ -115,7 +115,7 @@
     @if (pacienteEmEdicaoId()) {
       <app-edit-modal
         title="Editar paciente"
-        subtitle="Revise os dados cadastrais antes de salvar as alteracoes."
+        subtitle="Revise os dados cadastrais antes de salvar as alterações."
         [loading]="carregando()"
         (closeModal)="limparFormulario()"
       >
@@ -141,7 +141,7 @@
           </label>
 
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-            <p class="field-error">Nome e obrigatorio.</p>
+            <p class="field-error">Nome é obrigatório.</p>
           }
 
           @if (form.controls.email.touched && form.controls.email.invalid) {
@@ -149,7 +149,7 @@
           }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-            <p class="field-error">CPF e obrigatorio.</p>
+            <p class="field-error">CPF é obrigatório.</p>
           }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {

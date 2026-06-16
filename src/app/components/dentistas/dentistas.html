@@ -2,7 +2,7 @@
   <div class="odonto-page">
     <section class="page-header">
       <div>
-        <span class="page-header__eyebrow">Gestao</span>
+        <span class="page-header__eyebrow">Gestão</span>
         <h1>Dentistas</h1>
         <p class="page-header__sub">Gerencie profissionais, CRO, especialidades e status de atendimento.</p>
       </div>
@@ -29,14 +29,14 @@
               (change)="alternarVinculoUsuario($any($event.target).checked)"
             />
             <span class="switch-track"></span>
-            <span>Vincular usuario existente?</span>
+            <span>Vincular usuário existente?</span>
           </label>
 
           @if (vincularUsuarioExistente()) {
             <label class="full">
-              <span>Usuario dentista *</span>
+              <span>Usuário dentista *</span>
               <select [value]="usuarioVinculadoId()" (change)="selecionarUsuarioVinculado($any($event.target).value)">
-                <option value="0">Selecione um usuario dentista ativo</option>
+                <option value="0">Selecione um usuário dentista ativo</option>
                 @for (usuario of usuariosDentistas(); track usuario.id) {
                   <option [value]="usuario.id">{{ usuario.nome }} - {{ usuario.email }}</option>
                 }
@@ -44,7 +44,7 @@
             </label>
 
             @if (usuarioVinculadoId() <= 0) {
-              <p class="field-error">Selecione um usuario dentista para preencher nome, CPF e email.</p>
+              <p class="field-error">Selecione um usuário dentista para preencher nome, CPF e e-mail.</p>
             }
           }
         }
@@ -108,11 +108,11 @@
         </label>
 
         @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-          <p class="field-error">Nome e obrigatorio.</p>
+          <p class="field-error">Nome é obrigatório.</p>
         }
 
         @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-          <p class="field-error">CPF e obrigatorio.</p>
+          <p class="field-error">CPF é obrigatório.</p>
         }
 
         @if (form.controls.email.touched && form.controls.email.invalid) {
@@ -120,7 +120,7 @@
         }
 
         @if (form.controls.cro.touched && form.controls.cro.hasError('required')) {
-          <p class="field-error">CRO e obrigatorio.</p>
+          <p class="field-error">CRO é obrigatório.</p>
         }
 
         <div class="actions">
@@ -294,11 +294,11 @@
           </label>
 
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-            <p class="field-error">Nome e obrigatorio.</p>
+            <p class="field-error">Nome é obrigatório.</p>
           }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-            <p class="field-error">CPF e obrigatorio.</p>
+            <p class="field-error">CPF é obrigatório.</p>
           }
 
           @if (form.controls.email.touched && form.controls.email.invalid) {
@@ -306,7 +306,7 @@
           }
 
           @if (form.controls.cro.touched && form.controls.cro.hasError('required')) {
-            <p class="field-error">CRO e obrigatorio.</p>
+            <p class="field-error">CRO é obrigatório.</p>
           }
 
           <div class="actions">

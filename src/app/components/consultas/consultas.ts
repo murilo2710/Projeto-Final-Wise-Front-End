@@ -55,13 +55,13 @@ export class Consultas implements OnInit {
     this.pacienteService.listar().subscribe({
       next: (pacientes) =>
         this.pacientes.set([...pacientes].sort((a, b) => a.nome.localeCompare(b.nome))),
-      error: () => this.erro.set('Nao foi possivel carregar pacientes para selecao.')
+      error: () => this.erro.set('Não foi possível carregar pacientes para seleção.')
     });
 
     this.dentistaService.listar().subscribe({
       next: (dentistas) =>
         this.dentistas.set([...dentistas].sort((a, b) => a.nome.localeCompare(b.nome))),
-      error: () => this.erro.set('Nao foi possivel carregar dentistas para selecao.')
+      error: () => this.erro.set('Não foi possível carregar dentistas para seleção.')
     });
   }
 
@@ -93,7 +93,7 @@ export class Consultas implements OnInit {
     if (id) {
       const confirmado = await this.alertService.confirmar(
         'Atualizar consulta?',
-        'Deseja salvar as alteracoes desta consulta?',
+        'Deseja salvar as alterações desta consulta?',
         'Atualizar'
       );
 
@@ -159,7 +159,7 @@ export class Consultas implements OnInit {
 
     const confirmado = await this.alertService.confirmar(
       'Cancelar consulta?',
-      `Deseja cancelar a consulta #${consultaId}? Esta acao registrara o motivo informado.`,
+      `Deseja cancelar a consulta #${consultaId}? Esta ação registrará o motivo informado.`,
       'Cancelar consulta'
     );
 
@@ -196,7 +196,7 @@ export class Consultas implements OnInit {
 
     this.consultaService.excluir(consulta.id).subscribe({
       next: () => {
-        this.sucesso.set('Consulta excluida com sucesso.');
+        this.sucesso.set('Consulta excluída com sucesso.');
         this.listarConsultas(true);
       },
       error: (error: HttpErrorResponse) => this.tratarErro(error)
@@ -261,14 +261,14 @@ export class Consultas implements OnInit {
 
     if (error.status === 0) {
       this.erro.set(
-        'Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.'
+        'Não foi possível conectar ao servidor. Verifique se o backend está em execução.'
       );
       return;
     }
 
     if (error.status === 404) {
       this.erro.set(
-        this.getMensagemErro(error) || 'Consulta ou registro relacionado nao encontrado.'
+        this.getMensagemErro(error) || 'Consulta ou registro relacionado não encontrado.'
       );
       return;
     }
@@ -276,32 +276,33 @@ export class Consultas implements OnInit {
     if (error.status === 409) {
       this.erro.set(
         this.getMensagemErro(error) ||
-          'Regra de negocio violada: conflito de horario, datas invalidas, inativos ou cancelamento sem motivo.'
+          'Regra de negócio violada: conflito de horário, datas inválidas, inativos ou cancelamento sem motivo.'
       );
       return;
     }
 
     if (error.status === 400) {
-      this.erro.set(this.getMensagemErro(error) || 'Dados invalidos. Revise os campos informados.');
+      this.erro.set(this.getMensagemErro(error) || 'Dados inválidos. Revise os campos informados.');
       return;
     }
 
     if (error.status === 403) {
       this.erro.set(
         this.getMensagemErro(error) ||
-          'Requisicao bloqueada pelo backend com 403. Verifique SecurityConfig/CSRF.'
+          'Você não tem permissão para executar esta ação.'
       );
       return;
     }
 
     if (error.status >= 500) {
       this.erro.set(
-        this.getMensagemErro(error) || 'Erro 500 ao chamar /consultas. Verifique o console do backend.'
+        this.getMensagemErro(error) ||
+          'Não foi possível concluir a operação agora. Tente novamente em alguns instantes.'
       );
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao comunicar com o backend.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível concluir a operação. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {

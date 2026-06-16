@@ -184,8 +184,8 @@ export class Admin implements OnInit {
 
     if (id) {
       const confirmado = await this.alertService.confirmar(
-        'Atualizar usuario?',
-        'Deseja salvar as alteracoes deste usuario, incluindo perfil e status?',
+        'Atualizar usuário?',
+        'Deseja salvar as alterações deste usuário, incluindo perfil e status?',
         'Atualizar'
       );
 
@@ -203,7 +203,7 @@ export class Admin implements OnInit {
 
     requisicao.subscribe({
       next: () => {
-        this.sucesso.set(id ? 'Usuario atualizado com sucesso.' : 'Usuario criado com sucesso.');
+        this.sucesso.set(id ? 'Usuário atualizado com sucesso.' : 'Usuário criado com sucesso.');
         this.limparFormulario();
         this.listarUsuarios(true);
         this.listarDentistas();
@@ -233,8 +233,8 @@ export class Admin implements OnInit {
 
   protected async excluir(usuario: UsuarioResponse): Promise<void> {
     const confirmado = await this.alertService.confirmar(
-      'Excluir usuario?',
-      `Deseja excluir o usuario ${usuario.nome}?`,
+      'Excluir usuário?',
+      `Deseja excluir o usuário ${usuario.nome}?`,
       'Excluir'
     );
 
@@ -247,7 +247,7 @@ export class Admin implements OnInit {
 
     this.usuarioService.excluir(usuario.id).subscribe({
       next: () => {
-        this.sucesso.set('Usuario excluido com sucesso.');
+        this.sucesso.set('Usuário excluído com sucesso.');
         this.listarUsuarios(true);
         this.carregarDashboard();
         this.carregarLogs();
@@ -371,7 +371,7 @@ export class Admin implements OnInit {
 
   protected getStatusProfissional(usuario: UsuarioResponse): string {
     if (usuario.perfil !== 'DENTISTA') {
-      return 'Nao se aplica';
+      return 'Não se aplica';
     }
 
     return this.usuarioPossuiDentista(usuario)
@@ -393,7 +393,7 @@ export class Admin implements OnInit {
 
     return {
       id: log.id,
-      usuario: log.usuarioNome || log.usuario || (log.usuarioId ? `Usuario #${log.usuarioId}` : 'Sistema'),
+      usuario: log.usuarioNome || log.usuario || (log.usuarioId ? `Usuário #${log.usuarioId}` : 'Sistema'),
       tipo,
       recurso,
       descricao: log.mensagem || log.descricao || `${tipo} em ${recurso}`,
@@ -452,27 +452,27 @@ export class Admin implements OnInit {
     console.error('Erro no painel administrativo:', error);
 
     if (error.status === 0) {
-      this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.');
+      this.erro.set('Não foi possível conectar ao servidor. Verifique se o backend está em execução.');
       return;
     }
 
     if (error.status === 409) {
-      this.erro.set(this.getMensagemErro(error) || 'Email ou CPF ja cadastrado.');
+      this.erro.set(this.getMensagemErro(error) || 'E-mail ou CPF já cadastrado.');
       return;
     }
 
     if (error.status === 404) {
-      this.erro.set(this.getMensagemErro(error) || 'Usuario nao encontrado.');
+      this.erro.set(this.getMensagemErro(error) || 'Usuário não encontrado.');
       return;
     }
 
     if (error.status === 400) {
-      this.erro.set(this.getMensagemErro(error) || 'Campos invalidos. Revise os dados informados.');
+      this.erro.set(this.getMensagemErro(error) || 'Campos inválidos. Revise os dados informados.');
       return;
     }
 
     if (error.status === 403) {
-      this.erro.set(this.getMensagemErro(error) || 'Voce nao tem permissao para acessar esta acao.');
+      this.erro.set(this.getMensagemErro(error) || 'Você não tem permissão para executar esta ação.');
       return;
     }
 
@@ -481,7 +481,7 @@ export class Admin implements OnInit {
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao comunicar com o backend.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível concluir a operação. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {

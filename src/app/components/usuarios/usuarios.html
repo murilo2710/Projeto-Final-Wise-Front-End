@@ -2,9 +2,9 @@
   <div class="odonto-page">
     <section class="page-header">
       <div>
-        <span class="page-header__eyebrow">Administracao</span>
-        <h1>Usuarios</h1>
-        <p class="page-header__sub">Controle acessos, perfis e status dos usuarios do sistema.</p>
+        <span class="page-header__eyebrow">Administração</span>
+        <h1>Usuários</h1>
+        <p class="page-header__sub">Controle acessos, perfis e status dos usuários do sistema.</p>
       </div>
     </section>
 
@@ -56,11 +56,11 @@
         </label>
 
         @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-          <p class="field-error">Nome e obrigatorio.</p>
+          <p class="field-error">Nome é obrigatório.</p>
         }
 
         @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-          <p class="field-error">CPF e obrigatorio.</p>
+          <p class="field-error">CPF é obrigatório.</p>
         }
 
         @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
@@ -72,7 +72,7 @@
         }
 
         @if (form.controls.senha.touched && form.controls.senha.hasError('required')) {
-          <p class="field-error">Senha e obrigatoria ao criar usuario.</p>
+          <p class="field-error">Senha é obrigatória ao criar usuário.</p>
         }
 
         @if (form.controls.senha.touched && form.controls.senha.hasError('minlength')) {
@@ -91,15 +91,15 @@
     </section>
 
     <section class="panel">
-      <h2>Usuarios cadastrados</h2>
+      <h2>Usuários cadastrados</h2>
 
       @if (carregando()) {
-        <p class="loading-text">Carregando usuarios...</p>
+        <p class="loading-text">Carregando usuários...</p>
       } @else if (usuarios().length === 0) {
         <div class="empty-state">
           <span class="empty-state__icon">+</span>
-          <strong>Nenhum usuario cadastrado</strong>
-          <p>Adicione usuarios para liberar acessos administrativos ou de dentistas.</p>
+          <strong>Nenhum usuário cadastrado</strong>
+          <p>Adicione usuários para liberar acessos administrativos ou de dentistas.</p>
         </div>
       } @else {
         <div class="table-wrapper">
@@ -112,7 +112,7 @@
                 <th>CPF</th>
                 <th>Perfil</th>
                 <th>Ativo</th>
-                <th>Data criacao</th>
+                <th>Data criação</th>
                 <th>Ultimo login</th>
                 <th>Acoes</th>
               </tr>

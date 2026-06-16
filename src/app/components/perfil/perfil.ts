@@ -62,7 +62,7 @@ export class Perfil implements OnInit {
       return 'Dentista';
     }
 
-    return 'Usuario';
+    return 'Usuário';
   }
 
   protected formatarData(valor: string | null | undefined): string {

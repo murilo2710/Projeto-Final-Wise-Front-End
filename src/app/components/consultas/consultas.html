@@ -50,7 +50,7 @@
           </label>
 
           <label class="full">
-            <span>Descricao *</span>
+            <span>Descrição *</span>
             <input type="text" formControlName="descricao" />
           </label>
 
@@ -82,19 +82,19 @@
           }
 
           @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
-            <p class="field-error">Descricao e obrigatoria.</p>
+            <p class="field-error">Descrição é obrigatória.</p>
           }
 
           @if (form.controls.dataInicio.touched && form.controls.dataInicio.hasError('required')) {
-            <p class="field-error">Data de inicio e obrigatoria.</p>
+            <p class="field-error">Data de início é obrigatória.</p>
           }
 
           @if (form.controls.dataFim.touched && form.controls.dataFim.hasError('required')) {
-            <p class="field-error">Data de fim e obrigatoria.</p>
+            <p class="field-error">Data de fim é obrigatória.</p>
           }
 
           @if (form.controls.status.touched && form.controls.status.hasError('required')) {
-            <p class="field-error">Status e obrigatorio.</p>
+            <p class="field-error">Status é obrigatório.</p>
           }
 
           <div class="actions">
@@ -147,7 +147,7 @@
               <tr>
                 <th>Paciente</th>
                 <th>Dentista</th>
-                <th>Descricao</th>
+                <th>Descrição</th>
                 <th>Inicio</th>
                 <th>Fim</th>
                 <th>Status</th>
@@ -189,7 +189,7 @@
     @if (consultaEmEdicaoId()) {
       <app-edit-modal
         title="Editar consulta"
-        subtitle="Atualize paciente, profissional, horario e status da consulta."
+        subtitle="Atualize paciente, profissional, horário e status da consulta."
         [loading]="carregando()"
         (closeModal)="limparFormulario()"
       >
@@ -223,7 +223,7 @@
           </label>
 
           <label class="full">
-            <span>Descricao *</span>
+            <span>Descrição *</span>
             <input type="text" formControlName="descricao" />
           </label>
 
@@ -255,19 +255,19 @@
           }
 
           @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
-            <p class="field-error">Descricao e obrigatoria.</p>
+            <p class="field-error">Descrição é obrigatória.</p>
           }
 
           @if (form.controls.dataInicio.touched && form.controls.dataInicio.hasError('required')) {
-            <p class="field-error">Data de inicio e obrigatoria.</p>
+            <p class="field-error">Data de início é obrigatória.</p>
           }
 
           @if (form.controls.dataFim.touched && form.controls.dataFim.hasError('required')) {
-            <p class="field-error">Data de fim e obrigatoria.</p>
+            <p class="field-error">Data de fim é obrigatória.</p>
           }
 
           @if (form.controls.status.touched && form.controls.status.hasError('required')) {
-            <p class="field-error">Status e obrigatorio.</p>
+            <p class="field-error">Status é obrigatório.</p>
           }
 
           <div class="actions">

@@ -83,7 +83,7 @@ export class Dentistas implements OnInit {
     this.especialidadeService.listar().subscribe({
       next: (especialidades) =>
         this.especialidades.set([...especialidades].sort((a, b) => a.nome.localeCompare(b.nome))),
-      error: () => this.erro.set('Nao foi possivel carregar especialidades para selecao.')
+      error: () => this.erro.set('Não foi possível carregar especialidades para seleção.')
     });
   }
 
@@ -93,7 +93,7 @@ export class Dentistas implements OnInit {
         this.usuarios.set(usuarios);
         this.atualizarUsuariosDentistasDisponiveis();
       },
-      error: () => this.erro.set('Nao foi possivel carregar usuarios dentistas para vinculo.')
+      error: () => this.erro.set('Não foi possível carregar usuários dentistas para vínculo.')
     });
   }
 
@@ -116,7 +116,7 @@ export class Dentistas implements OnInit {
 
   protected async salvar(): Promise<void> {
     if (this.vinculoUsuarioObrigatorioInvalido()) {
-      this.erro.set('Selecione um usuario dentista para vincular.');
+      this.erro.set('Selecione um usuário dentista para vincular.');
       return;
     }
 
@@ -131,7 +131,7 @@ export class Dentistas implements OnInit {
     if (id) {
       const confirmado = await this.alertService.confirmar(
         'Atualizar dentista?',
-        'Deseja salvar as alteracoes deste dentista, incluindo especialidades vinculadas?',
+        'Deseja salvar as alterações deste dentista, incluindo especialidades vinculadas?',
         'Atualizar'
       );
 
@@ -387,12 +387,12 @@ export class Dentistas implements OnInit {
     console.error('Erro na tela de dentistas:', error);
 
     if (error.status === 0) {
-      this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.');
+      this.erro.set('Não foi possível conectar ao servidor. Verifique se o backend está em execução.');
       return;
     }
 
     if (error.status === 404) {
-      this.erro.set('Dentista nao encontrado.');
+      this.erro.set('Dentista não encontrado.');
       return;
     }
 
@@ -404,7 +404,7 @@ export class Dentistas implements OnInit {
     if (error.status === 403) {
       this.erro.set(
         this.getMensagemErro(error) ||
-          'Requisicao bloqueada pelo backend com 403. Verifique SecurityConfig/CSRF ou se o backend esta ocultando a resposta de validacao.'
+          'Você não tem permissão para executar esta ação.'
       );
       return;
     }
@@ -412,12 +412,12 @@ export class Dentistas implements OnInit {
     if (error.status >= 500) {
       this.erro.set(
         this.getMensagemErro(error) ||
-          'Erro 500 ao chamar /dentistas. Verifique se o Spring Boot esta rodando em http://localhost:8080 e veja o console do backend.'
+          'Não foi possível concluir a operação agora. Tente novamente em alguns instantes.'
       );
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao comunicar com o backend.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível concluir a operação. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {

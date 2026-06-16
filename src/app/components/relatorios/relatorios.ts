@@ -166,8 +166,8 @@ export class Relatorios implements OnInit, AfterViewInit, OnDestroy {
 
   protected getDescricaoModoHoras(): string {
     return this.modoHoras() === 'OCUPADAS'
-      ? 'Considera consultas agendadas e finalizadas. Canceladas ficam fora do calculo.'
-      : 'Considera somente consultas finalizadas. Canceladas e agendadas ficam fora do calculo.';
+      ? 'Considera consultas agendadas e finalizadas. Canceladas ficam fora do cálculo.'
+      : 'Considera somente consultas finalizadas. Canceladas e agendadas ficam fora do cálculo.';
   }
 
   protected getQuantidadePacientesGrafico(): number {
@@ -204,7 +204,7 @@ export class Relatorios implements OnInit, AfterViewInit, OnDestroy {
         this.pacientes.set([...pacientes].sort((a, b) => a.nome.localeCompare(b.nome)));
         this.atualizarGraficos();
       },
-      error: () => this.erro.set('Nao foi possivel carregar pacientes.')
+      error: () => this.erro.set('Não foi possível carregar pacientes.')
     });
 
     this.dentistaService.listar().subscribe({
@@ -212,20 +212,20 @@ export class Relatorios implements OnInit, AfterViewInit, OnDestroy {
         this.dentistas.set([...dentistas].sort((a, b) => a.nome.localeCompare(b.nome)));
         this.atualizarGraficos();
       },
-      error: () => this.erro.set('Nao foi possivel carregar dentistas.')
+      error: () => this.erro.set('Não foi possível carregar dentistas.')
     });
 
     this.especialidadeService.listar().subscribe({
       next: (especialidades) =>
         this.especialidades.set([...especialidades].sort((a, b) => a.nome.localeCompare(b.nome))),
-      error: () => this.erro.set('Nao foi possivel carregar especialidades.')
+      error: () => this.erro.set('Não foi possível carregar especialidades.')
     });
 
     if (this.isAdmin()) {
       this.usuarioService.listar().subscribe({
         next: (usuarios) =>
           this.usuarios.set([...usuarios].sort((a, b) => a.nome.localeCompare(b.nome))),
-        error: () => this.erro.set('Nao foi possivel carregar usuarios.')
+        error: () => this.erro.set('Não foi possível carregar usuários.')
       });
     }
   }
@@ -538,7 +538,7 @@ export class Relatorios implements OnInit, AfterViewInit, OnDestroy {
     this.carregando.set(false);
 
     if (error.status === 0) {
-      this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando.');
+      this.erro.set('Não foi possível conectar ao servidor. Verifique se o backend está em execução.');
       return;
     }
 
@@ -548,11 +548,11 @@ export class Relatorios implements OnInit, AfterViewInit, OnDestroy {
     }
 
     if (error.status === 409) {
-      this.erro.set(this.getMensagemErro(error) || 'Conflito ao gerar relatorio.');
+      this.erro.set(this.getMensagemErro(error) || 'Conflito ao gerar relatório.');
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao gerar relatorio.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível gerar o relatório. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {

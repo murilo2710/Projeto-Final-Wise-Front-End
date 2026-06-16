@@ -2,8 +2,8 @@
   <div class="odonto-page">
     <section class="page-header">
       <div>
-        <span class="page-header__eyebrow">Relatorios</span>
-        <h1>Relatorios de Consultas</h1>
+        <span class="page-header__eyebrow">Relatórios</span>
+        <h1>Relatórios de Consultas</h1>
         <p class="page-header__sub">Filtre consultas por pacientes, dentistas, especialidades, status e periodo.</p>
       </div>
     </section>
@@ -18,7 +18,7 @@
 
     <section class="report-stats-grid">
       <article class="report-stat-card">
-        <span>Total no relatorio</span>
+        <span>Total no relatório</span>
         <strong>{{ consultas().length }}</strong>
       </article>
       <article class="report-stat-card">
@@ -71,7 +71,7 @@
 
         @if (isAdmin()) {
           <label>
-            <span>Usuario</span>
+              <span>Usuário</span>
             <select formControlName="usuarioId">
               <option [ngValue]="0">Todos</option>
               @for (usuario of usuarios(); track usuario.id) {
@@ -116,7 +116,7 @@
       <h2>Resultado</h2>
 
       @if (carregando()) {
-        <p class="loading-text">Carregando relatorio...</p>
+        <p class="loading-text">Carregando relatório...</p>
       } @else if (consultas().length === 0) {
         <div class="empty-state">
           <span class="empty-state__icon">?</span>
@@ -131,7 +131,7 @@
                 <th>ID</th>
                 <th>Paciente</th>
                 <th>Dentista</th>
-                <th>Descricao</th>
+                <th>Descrição</th>
                 <th>Inicio</th>
                 <th>Fim</th>
                 <th>Status</th>

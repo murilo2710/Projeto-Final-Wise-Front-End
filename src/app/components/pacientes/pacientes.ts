@@ -63,7 +63,7 @@ export class Pacientes implements OnInit {
     if (id) {
       const confirmado = await this.alertService.confirmar(
         'Atualizar paciente?',
-        'Deseja salvar as alteracoes deste paciente?',
+        'Deseja salvar as alterações deste paciente?',
         'Atualizar'
       );
 
@@ -116,7 +116,7 @@ export class Pacientes implements OnInit {
 
     this.pacienteService.excluir(paciente.id).subscribe({
       next: () => {
-        this.sucesso.set('Paciente excluido com sucesso.');
+        this.sucesso.set('Paciente excluído com sucesso.');
         this.listarPacientes(true);
       },
       error: (error: HttpErrorResponse) => this.tratarErro(error)
@@ -154,12 +154,12 @@ export class Pacientes implements OnInit {
     console.error('Erro na tela de pacientes:', error);
 
     if (error.status === 0) {
-      this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.');
+      this.erro.set('Não foi possível conectar ao servidor. Verifique se o backend está em execução.');
       return;
     }
 
     if (error.status === 404) {
-      this.erro.set('Paciente nao encontrado.');
+      this.erro.set('Paciente não encontrado.');
       return;
     }
 
@@ -171,7 +171,7 @@ export class Pacientes implements OnInit {
     if (error.status === 403) {
       this.erro.set(
         this.getMensagemErro(error) ||
-          'Requisicao bloqueada pelo backend com 403. Verifique SecurityConfig/CSRF ou se o backend esta ocultando a resposta de validacao.'
+        'Você não tem permissão para executar esta ação.'
       );
       return;
     }
@@ -179,12 +179,12 @@ export class Pacientes implements OnInit {
     if (error.status >= 500) {
       this.erro.set(
         this.getMensagemErro(error) ||
-          'Erro 500 ao chamar /pacientes. Verifique se o Spring Boot esta rodando em http://localhost:8080 e veja o console do backend.'
+          'Não foi possível concluir a operação agora. Tente novamente em alguns instantes.'
       );
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao comunicar com o backend.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível concluir a operação. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {

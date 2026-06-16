@@ -116,7 +116,7 @@ export class Materiais implements OnInit {
     this.especialidadeService.listar().subscribe({
       next: (especialidades) =>
         this.especialidades.set([...especialidades].sort((a, b) => a.nome.localeCompare(b.nome))),
-      error: () => this.erro.set('Nao foi possivel carregar especialidades para selecao.')
+      error: () => this.erro.set('Não foi possível carregar especialidades para seleção.')
     });
   }
 
@@ -139,7 +139,7 @@ export class Materiais implements OnInit {
   private carregarMateriaisSelect(): void {
     this.materialService.listar().subscribe({
       next: (materiais) => this.materiaisSelect.set(materiais),
-      error: () => this.erro.set('Nao foi possivel carregar materiais para selecao.')
+      error: () => this.erro.set('Não foi possível carregar materiais para seleção.')
     });
   }
 
@@ -171,7 +171,7 @@ export class Materiais implements OnInit {
     if (id) {
       const confirmado = await this.alertService.confirmar(
         'Atualizar material?',
-        'Deseja salvar as alteracoes deste material, incluindo especialidades vinculadas?',
+        'Deseja salvar as alterações deste material, incluindo especialidades vinculadas?',
         'Atualizar'
       );
 
@@ -210,7 +210,7 @@ export class Materiais implements OnInit {
 
     this.estoqueMovimentacaoService.registrar(this.getMovimentacaoDoFormulario()).subscribe({
       next: () => {
-        this.sucesso.set('Movimentacao registrada com sucesso.');
+        this.sucesso.set('Movimentação registrada com sucesso.');
         this.limparMovimentacaoFormulario();
         this.carregarDashboard(true);
         this.carregarMateriaisSelect();
@@ -415,12 +415,12 @@ export class Materiais implements OnInit {
     console.error('Erro na tela de materiais:', error);
 
     if (error.status === 0) {
-      this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.');
+      this.erro.set('Não foi possível conectar ao servidor. Verifique se o backend está em execução.');
       return;
     }
 
     if (error.status === 404) {
-      this.erro.set(this.getMensagemErro(error) || 'Material nao encontrado.');
+      this.erro.set(this.getMensagemErro(error) || 'Material não encontrado.');
       return;
     }
 
@@ -430,16 +430,16 @@ export class Materiais implements OnInit {
     }
 
     if (error.status === 400) {
-      this.erro.set(this.getMensagemErro(error) || 'Dados invalidos. Revise os campos informados.');
+      this.erro.set(this.getMensagemErro(error) || 'Dados inválidos. Revise os campos informados.');
       return;
     }
 
     if (error.status === 403) {
-      this.erro.set(this.getMensagemErro(error) || 'Voce nao tem permissao para executar esta acao.');
+      this.erro.set(this.getMensagemErro(error) || 'Você não tem permissão para executar esta ação.');
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao comunicar com o backend.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível concluir a operação. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {

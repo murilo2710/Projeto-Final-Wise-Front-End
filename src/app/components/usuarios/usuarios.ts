@@ -69,8 +69,8 @@ export class Usuarios implements OnInit {
 
     if (id) {
       const confirmado = await this.alertService.confirmar(
-        'Atualizar usuario?',
-        'Deseja salvar as alteracoes deste usuario, incluindo perfil e status?',
+        'Atualizar usuário?',
+        'Deseja salvar as alterações deste usuário, incluindo perfil e status?',
         'Atualizar'
       );
 
@@ -88,7 +88,7 @@ export class Usuarios implements OnInit {
 
     requisicao.subscribe({
       next: () => {
-        this.sucesso.set(id ? 'Usuario atualizado com sucesso.' : 'Usuario criado com sucesso.');
+        this.sucesso.set(id ? 'Usuário atualizado com sucesso.' : 'Usuário criado com sucesso.');
         this.limparFormulario();
         this.listarUsuarios(true);
       },
@@ -114,8 +114,8 @@ export class Usuarios implements OnInit {
 
   protected async excluir(usuario: UsuarioResponse): Promise<void> {
     const confirmado = await this.alertService.confirmar(
-      'Excluir usuario?',
-      `Deseja excluir o usuario ${usuario.nome}?`,
+      'Excluir usuário?',
+      `Deseja excluir o usuário ${usuario.nome}?`,
       'Excluir'
     );
 
@@ -128,7 +128,7 @@ export class Usuarios implements OnInit {
 
     this.usuarioService.excluir(usuario.id).subscribe({
       next: () => {
-        this.sucesso.set('Usuario excluido com sucesso.');
+        this.sucesso.set('Usuário excluído com sucesso.');
         this.listarUsuarios(true);
       },
       error: (error: HttpErrorResponse) => this.tratarErro(error)
@@ -190,10 +190,10 @@ export class Usuarios implements OnInit {
 
   private tratarErro(error: HttpErrorResponse): void {
     this.carregando.set(false);
-    console.error('Erro na tela de usuarios:', error);
+    console.error('Erro na tela de usuários:', error);
 
     if (error.status === 0) {
-      this.erro.set('Nao foi possivel conectar ao backend. Verifique se ele esta rodando em http://localhost:8080.');
+      this.erro.set('Não foi possível conectar ao servidor. Verifique se o backend está em execução.');
       return;
     }
 
@@ -203,12 +203,12 @@ export class Usuarios implements OnInit {
     }
 
     if (error.status === 404) {
-      this.erro.set(this.getMensagemErro(error) || 'Usuario nao encontrado.');
+      this.erro.set(this.getMensagemErro(error) || 'Usuário não encontrado.');
       return;
     }
 
     if (error.status === 400) {
-      this.erro.set(this.getMensagemErro(error) || 'Campos invalidos. Revise os dados informados.');
+      this.erro.set(this.getMensagemErro(error) || 'Campos inválidos. Revise os dados informados.');
       return;
     }
 
@@ -217,7 +217,7 @@ export class Usuarios implements OnInit {
       return;
     }
 
-    this.erro.set(this.getMensagemErro(error) || `Erro ${error.status} ao comunicar com o backend.`);
+    this.erro.set(this.getMensagemErro(error) || 'Não foi possível concluir a operação. Tente novamente.');
   }
 
   private getMensagemErro(error: HttpErrorResponse): string {
