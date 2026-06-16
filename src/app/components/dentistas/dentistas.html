@@ -20,7 +20,7 @@
       <h2>{{ dentistaEmEdicaoId() ? 'Editar dentista' : 'Cadastrar dentista' }}</h2>
 
       <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-        @if (!dentistaEmEdicaoId()) {
+        @if (!dentistaEmEdicaoId() && podeVincularUsuarioExistente()) {
           <label class="switch-label full">
             <input
               type="checkbox"

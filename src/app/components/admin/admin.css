@@ -36,6 +36,33 @@
   line-height: 1;
 }
 
+.professional-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.professional-badge.is-success {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+}
+
+.professional-badge.is-warning {
+  background: rgba(245, 158, 11, 0.16);
+  color: #b45309;
+}
+
+.professional-badge.is-neutral {
+  background: rgba(100, 116, 139, 0.14);
+  color: #475569;
+}
+
 .admin-log-list {
   display: flex;
   flex-direction: column;

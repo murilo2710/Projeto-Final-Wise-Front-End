@@ -171,12 +171,6 @@
               </select>
             </label>
 
-            <label class="switch-label">
-              <input type="checkbox" formControlName="ativo" />
-              <span class="switch-track"></span>
-              <span>Ativo</span>
-            </label>
-
             @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
               <p class="field-error">Nome e obrigatorio.</p>
             }
@@ -233,6 +227,7 @@
                     <th>Email</th>
                     <th>CPF</th>
                     <th>Perfil</th>
+                    <th>Cadastro profissional</th>
                     <th>Ativo</th>
                     <th>Data criacao</th>
                     <th>Ultimo login</th>
@@ -247,6 +242,16 @@
                       <td>{{ usuario.email }}</td>
                       <td>{{ usuario.cpf }}</td>
                       <td><span class="badge">{{ usuario.perfil }}</span></td>
+                      <td>
+                        <span
+                          class="professional-badge"
+                          [class.is-success]="getStatusProfissionalClasse(usuario) === 'is-success'"
+                          [class.is-warning]="getStatusProfissionalClasse(usuario) === 'is-warning'"
+                          [class.is-neutral]="getStatusProfissionalClasse(usuario) === 'is-neutral'"
+                        >
+                          {{ getStatusProfissional(usuario) }}
+                        </span>
+                      </td>
                       <td>
                         <span class="badge" [class.badge-danger]="!usuario.ativo">
                           {{ usuario.ativo ? 'Ativo' : 'Inativo' }}

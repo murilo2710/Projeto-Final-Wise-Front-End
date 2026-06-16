@@ -8,6 +8,7 @@ import {
   EspecialidadeService
 } from '../../services/especialidade.service';
 import { UsuarioResponse, UsuarioService } from '../../services/usuario.service';
+import { AuthService } from '../../services/auth.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { AlertService } from '../../shared/services/alert.service';
 
@@ -23,11 +24,13 @@ export class Dentistas implements OnInit {
   private readonly dentistaService = inject(DentistaService);
   private readonly especialidadeService = inject(EspecialidadeService);
   private readonly usuarioService = inject(UsuarioService);
+  private readonly authService = inject(AuthService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly alertService = inject(AlertService);
 
   protected readonly dentistas = signal<DentistaResponse[]>([]);
   protected readonly especialidades = signal<EspecialidadeResponse[]>([]);
+  private readonly usuarios = signal<UsuarioResponse[]>([]);
   protected readonly usuariosDentistas = signal<UsuarioResponse[]>([]);
   protected readonly carregando = signal(false);
   protected readonly erro = signal('');
@@ -49,7 +52,9 @@ export class Dentistas implements OnInit {
 
   ngOnInit(): void {
     this.carregarEspecialidades();
-    this.carregarUsuariosDentistas();
+    if (this.podeVincularUsuarioExistente()) {
+      this.carregarUsuariosDentistas();
+    }
     this.listarDentistas();
   }
 
@@ -63,12 +68,10 @@ export class Dentistas implements OnInit {
 
   private carregarUsuariosDentistas(): void {
     this.usuarioService.listar().subscribe({
-      next: (usuarios) =>
-        this.usuariosDentistas.set(
-          usuarios
-            .filter((usuario) => usuario.perfil === 'DENTISTA' && usuario.ativo)
-            .sort((a, b) => a.nome.localeCompare(b.nome))
-        ),
+      next: (usuarios) => {
+        this.usuarios.set(usuarios);
+        this.atualizarUsuariosDentistasDisponiveis();
+      },
       error: () => this.erro.set('Nao foi possivel carregar usuarios dentistas para vinculo.')
     });
   }
@@ -83,6 +86,7 @@ export class Dentistas implements OnInit {
     this.dentistaService.listar().subscribe({
       next: (dentistas) => {
         this.dentistas.set(dentistas);
+        this.atualizarUsuariosDentistasDisponiveis();
         this.carregando.set(false);
       },
       error: (error: HttpErrorResponse) => this.tratarErro(error)
@@ -194,7 +198,7 @@ export class Dentistas implements OnInit {
   }
 
   protected alternarVinculoUsuario(valor: boolean): void {
-    if (this.dentistaEmEdicaoId()) {
+    if (this.dentistaEmEdicaoId() || !this.podeVincularUsuarioExistente()) {
       return;
     }
 
@@ -231,7 +235,11 @@ export class Dentistas implements OnInit {
   }
 
   protected camposUsuarioBloqueados(): boolean {
-    return this.vincularUsuarioExistente() && !this.dentistaEmEdicaoId();
+    return this.vincularUsuarioExistente() && !this.dentistaEmEdicaoId() && this.podeVincularUsuarioExistente();
+  }
+
+  protected podeVincularUsuarioExistente(): boolean {
+    return this.authService.temPerfil('ADMIN');
   }
 
   private vinculoUsuarioObrigatorioInvalido(): boolean {
@@ -334,6 +342,36 @@ export class Dentistas implements OnInit {
 
   private getEspecialidadeIds(dentista: DentistaResponse): number[] {
     return dentista.especialidades?.map((especialidade) => especialidade.id) ?? [];
+  }
+
+  private atualizarUsuariosDentistasDisponiveis(): void {
+    const dentistas = this.dentistas();
+
+    this.usuariosDentistas.set(
+      this.usuarios()
+        .filter((usuario) => usuario.perfil === 'DENTISTA' && usuario.ativo)
+        .filter((usuario) =>
+          !dentistas.some((dentista) => this.mesmoCpfOuEmail(usuario, dentista))
+        )
+        .sort((a, b) => a.nome.localeCompare(b.nome))
+    );
+  }
+
+  private mesmoCpfOuEmail(usuario: UsuarioResponse, dentista: DentistaResponse): boolean {
+    const usuarioCpf = this.normalizarCpf(usuario.cpf);
+    const dentistaCpf = this.normalizarCpf(dentista.cpf);
+    const usuarioEmail = this.normalizarEmail(usuario.email);
+    const dentistaEmail = this.normalizarEmail(dentista.email);
+
+    return (!!usuarioCpf && usuarioCpf === dentistaCpf) || (!!usuarioEmail && usuarioEmail === dentistaEmail);
+  }
+
+  private normalizarCpf(cpf: string): string {
+    return cpf.replace(/\D/g, '');
+  }
+
+  private normalizarEmail(email: string): string {
+    return email.trim().toLowerCase();
   }
 
   private limparMensagens(): void {

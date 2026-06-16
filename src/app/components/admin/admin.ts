@@ -15,6 +15,7 @@ import {
 } from '../../services/usuario.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { AlertService } from '../../shared/services/alert.service';
+import { DentistaResponse, DentistaService } from '../../services/dentista.service';
 
 type SecaoAdmin = 'visao' | 'usuarios' | 'logs';
 
@@ -36,11 +37,13 @@ interface AdminLog {
 export class Admin implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly usuarioService = inject(UsuarioService);
+  private readonly dentistaService = inject(DentistaService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly alertService = inject(AlertService);
 
   protected readonly secaoAtiva = signal<SecaoAdmin>('visao');
   protected readonly usuarios = signal<UsuarioResponse[]>([]);
+  protected readonly dentistas = signal<DentistaResponse[]>([]);
   protected readonly dashboard = signal<AdminDashboardResponse | null>(null);
   protected readonly logs = signal<AdminLog[]>([]);
   protected readonly carregando = signal(false);
@@ -112,6 +115,7 @@ export class Admin implements OnInit {
 
   protected carregarTudo(): void {
     this.listarUsuarios();
+    this.listarDentistas();
     this.carregarDashboard();
     this.carregarLogs();
   }
@@ -129,6 +133,16 @@ export class Admin implements OnInit {
         this.carregando.set(false);
       },
       error: (error: HttpErrorResponse) => this.tratarErro(error)
+    });
+  }
+
+  protected listarDentistas(): void {
+    this.dentistaService.listar().subscribe({
+      next: (dentistas) => this.dentistas.set(dentistas),
+      error: (error: HttpErrorResponse) => {
+        console.error('Erro ao carregar dentistas para status profissional:', error);
+        this.dentistas.set([]);
+      }
     });
   }
 
@@ -191,6 +205,7 @@ export class Admin implements OnInit {
         this.sucesso.set(id ? 'Usuario atualizado com sucesso.' : 'Usuario criado com sucesso.');
         this.limparFormulario();
         this.listarUsuarios(true);
+        this.listarDentistas();
         this.carregarDashboard();
         this.carregarLogs();
       },
@@ -353,6 +368,24 @@ export class Admin implements OnInit {
     return 'is-sistema';
   }
 
+  protected getStatusProfissional(usuario: UsuarioResponse): string {
+    if (usuario.perfil !== 'DENTISTA') {
+      return 'Nao se aplica';
+    }
+
+    return this.usuarioPossuiDentista(usuario)
+      ? 'Dentista cadastrado'
+      : 'Cadastro profissional pendente';
+  }
+
+  protected getStatusProfissionalClasse(usuario: UsuarioResponse): string {
+    if (usuario.perfil !== 'DENTISTA') {
+      return 'is-neutral';
+    }
+
+    return this.usuarioPossuiDentista(usuario) ? 'is-success' : 'is-warning';
+  }
+
   private normalizarLog(log: AdminLogResponse): AdminLog {
     const tipo = log.tipo || log.acao || 'INFO';
     const recurso = log.recurso || log.categoria || 'SISTEMA';
@@ -385,6 +418,27 @@ export class Admin implements OnInit {
     }
 
     return payload;
+  }
+
+  private usuarioPossuiDentista(usuario: UsuarioResponse): boolean {
+    return this.dentistas().some((dentista) => this.mesmoCpfOuEmail(usuario, dentista));
+  }
+
+  private mesmoCpfOuEmail(usuario: UsuarioResponse, dentista: DentistaResponse): boolean {
+    const usuarioCpf = this.normalizarCpf(usuario.cpf);
+    const dentistaCpf = this.normalizarCpf(dentista.cpf);
+    const usuarioEmail = this.normalizarEmail(usuario.email);
+    const dentistaEmail = this.normalizarEmail(dentista.email);
+
+    return (!!usuarioCpf && usuarioCpf === dentistaCpf) || (!!usuarioEmail && usuarioEmail === dentistaEmail);
+  }
+
+  private normalizarCpf(cpf: string): string {
+    return cpf.replace(/\D/g, '');
+  }
+
+  private normalizarEmail(email: string): string {
+    return email.trim().toLowerCase();
   }
 
   private limparMensagens(): void {
