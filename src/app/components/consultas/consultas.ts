@@ -17,6 +17,10 @@ import { PacienteResponse, PacienteService } from '../../services/paciente.servi
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
+import {
+  dataFimDepoisInicioValidator,
+  textoLivreValidator
+} from '../../shared/validators/form-validators';
 
 @Component({
   selector: 'app-consultas',
@@ -59,12 +63,12 @@ export class Consultas implements OnInit {
   protected readonly form = this.formBuilder.nonNullable.group({
     pacienteId: [0, [Validators.required, Validators.min(1)]],
     dentistaId: [0, [Validators.required, Validators.min(1)]],
-    descricao: ['', [Validators.required]],
+    descricao: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(500), textoLivreValidator('descricaoInvalida')]],
     dataInicio: ['', [Validators.required]],
     dataFim: ['', [Validators.required]],
     status: ['AGENDADA' as StatusConsulta, [Validators.required]],
-    motivoCancelamento: ['']
-  });
+    motivoCancelamento: ['', [Validators.maxLength(500), textoLivreValidator('motivoInvalido')]]
+  }, { validators: [dataFimDepoisInicioValidator('dataInicio', 'dataFim')] });
 
   ngOnInit(): void {
     this.carregarRelacionamentos();
@@ -180,8 +184,13 @@ export class Consultas implements OnInit {
       return;
     }
 
-    if (!motivo) {
-      this.erro.set('Informe o motivo do cancelamento.');
+    if (motivo.length < 5) {
+      this.erro.set('Motivo do cancelamento deve ter pelo menos 5 caracteres.');
+      return;
+    }
+
+    if (motivo.length > 500) {
+      this.erro.set('Motivo do cancelamento deve ter no máximo 500 caracteres.');
       return;
     }
 
@@ -398,7 +407,9 @@ export class Consultas implements OnInit {
   }
 
   protected motivoCancelamentoObrigatorioInvalido(): boolean {
-    return this.deveExibirMotivoCancelamento() && !this.form.controls.motivoCancelamento.value.trim();
+    const motivo = this.form.controls.motivoCancelamento.value.trim();
+
+    return this.deveExibirMotivoCancelamento() && motivo.length < 5;
   }
 
   private getConsultaDoFormulario() {

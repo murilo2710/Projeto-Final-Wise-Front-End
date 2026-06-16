@@ -76,7 +76,7 @@
           @if (deveExibirMotivoCancelamento()) {
             <label class="full">
               <span>Motivo do cancelamento *</span>
-              <input type="text" formControlName="motivoCancelamento" />
+              <input type="text" formControlName="motivoCancelamento" maxlength="500" />
             </label>
           }
 
@@ -91,6 +91,12 @@
           @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
             <p class="field-error">Descrição é obrigatória.</p>
           }
+          @if (form.controls.descricao.touched && (form.controls.descricao.hasError('minlength') || form.controls.descricao.hasError('maxlength'))) {
+            <p class="field-error">Descrição deve ter entre 5 e 500 caracteres.</p>
+          }
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('descricaoInvalida')) {
+            <p class="field-error">Descrição contém caracteres inválidos.</p>
+          }
 
           @if (form.controls.dataInicio.touched && form.controls.dataInicio.hasError('required')) {
             <p class="field-error">Data de início é obrigatória.</p>
@@ -99,13 +105,22 @@
           @if (form.controls.dataFim.touched && form.controls.dataFim.hasError('required')) {
             <p class="field-error">Data de fim é obrigatória.</p>
           }
+          @if ((form.controls.dataInicio.touched || form.controls.dataFim.touched) && form.hasError('dataFimAntesInicio')) {
+            <p class="field-error">Data de fim deve ser depois da data de início.</p>
+          }
 
           @if (form.controls.status.touched && form.controls.status.hasError('required')) {
             <p class="field-error">Status é obrigatório.</p>
           }
 
           @if (form.controls.motivoCancelamento.touched && motivoCancelamentoObrigatorioInvalido()) {
-            <p class="field-error">Motivo do cancelamento é obrigatório.</p>
+            <p class="field-error">Motivo do cancelamento deve ter pelo menos 5 caracteres.</p>
+          }
+          @if (form.controls.motivoCancelamento.touched && form.controls.motivoCancelamento.hasError('maxlength')) {
+            <p class="field-error">Motivo do cancelamento deve ter no máximo 500 caracteres.</p>
+          }
+          @if (form.controls.motivoCancelamento.touched && form.controls.motivoCancelamento.hasError('motivoInvalido')) {
+            <p class="field-error">Motivo do cancelamento contém caracteres inválidos.</p>
           }
 
           <div class="actions">
@@ -128,6 +143,7 @@
             <span>Motivo do cancelamento *</span>
             <input
               type="text"
+              maxlength="500"
               [value]="motivoCancelamento()"
               (input)="atualizarMotivoCancelamento($any($event.target).value)"
             />
@@ -275,7 +291,7 @@
           @if (deveExibirMotivoCancelamento()) {
             <label class="full">
               <span>Motivo do cancelamento *</span>
-              <input type="text" formControlName="motivoCancelamento" />
+              <input type="text" formControlName="motivoCancelamento" maxlength="500" />
             </label>
           }
 
@@ -290,6 +306,12 @@
           @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
             <p class="field-error">Descrição é obrigatória.</p>
           }
+          @if (form.controls.descricao.touched && (form.controls.descricao.hasError('minlength') || form.controls.descricao.hasError('maxlength'))) {
+            <p class="field-error">Descrição deve ter entre 5 e 500 caracteres.</p>
+          }
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('descricaoInvalida')) {
+            <p class="field-error">Descrição contém caracteres inválidos.</p>
+          }
 
           @if (form.controls.dataInicio.touched && form.controls.dataInicio.hasError('required')) {
             <p class="field-error">Data de início é obrigatória.</p>
@@ -298,13 +320,22 @@
           @if (form.controls.dataFim.touched && form.controls.dataFim.hasError('required')) {
             <p class="field-error">Data de fim é obrigatória.</p>
           }
+          @if ((form.controls.dataInicio.touched || form.controls.dataFim.touched) && form.hasError('dataFimAntesInicio')) {
+            <p class="field-error">Data de fim deve ser depois da data de início.</p>
+          }
 
           @if (form.controls.status.touched && form.controls.status.hasError('required')) {
             <p class="field-error">Status é obrigatório.</p>
           }
 
           @if (form.controls.motivoCancelamento.touched && motivoCancelamentoObrigatorioInvalido()) {
-            <p class="field-error">Motivo do cancelamento é obrigatório.</p>
+            <p class="field-error">Motivo do cancelamento deve ter pelo menos 5 caracteres.</p>
+          }
+          @if (form.controls.motivoCancelamento.touched && form.controls.motivoCancelamento.hasError('maxlength')) {
+            <p class="field-error">Motivo do cancelamento deve ter no máximo 500 caracteres.</p>
+          }
+          @if (form.controls.motivoCancelamento.touched && form.controls.motivoCancelamento.hasError('motivoInvalido')) {
+            <p class="field-error">Motivo do cancelamento contém caracteres inválidos.</p>
           }
 
           <div class="actions">

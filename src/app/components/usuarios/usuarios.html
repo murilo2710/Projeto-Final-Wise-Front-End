@@ -27,7 +27,7 @@
 
         <label>
           <span>CPF *</span>
-          <input type="text" formControlName="cpf" />
+          <input type="text" formControlName="cpf" maxlength="14" />
         </label>
 
         <label>
@@ -58,17 +58,23 @@
         @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
           <p class="field-error">Nome é obrigatório.</p>
         }
+        @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+          <p class="field-error">Nome deve ter entre 3 e 120 caracteres.</p>
+        }
+        @if (form.controls.nome.touched && form.controls.nome.hasError('nomePessoa')) {
+          <p class="field-error">Nome deve conter apenas letras e espaços.</p>
+        }
 
         @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
           <p class="field-error">CPF é obrigatório.</p>
         }
 
-        @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
-          <p class="field-error">CPF deve ter 11 digitos numericos.</p>
+        @if (form.controls.cpf.touched && form.controls.cpf.hasError('cpfInvalido')) {
+          <p class="field-error">Informe um CPF válido.</p>
         }
 
         @if (form.controls.email.touched && form.controls.email.invalid) {
-          <p class="field-error">Informe um email valido.</p>
+          <p class="field-error">Informe um e-mail válido com até 120 caracteres.</p>
         }
 
         @if (form.controls.senha.touched && form.controls.senha.hasError('required')) {
@@ -123,7 +129,7 @@
                   <td>#{{ usuario.id }}</td>
                   <td>{{ usuario.nome }}</td>
                   <td>{{ usuario.email }}</td>
-                  <td>{{ usuario.cpf }}</td>
+                  <td>{{ formatarCpf(usuario.cpf) }}</td>
                   <td><span class="badge">{{ usuario.perfil }}</span></td>
                   <td>
                     <span class="badge" [class.badge-danger]="!usuario.ativo">

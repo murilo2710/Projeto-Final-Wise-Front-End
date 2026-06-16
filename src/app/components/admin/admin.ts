@@ -17,6 +17,11 @@ import { AppLayoutComponent } from '../../shared/components/app-layout/app-layou
 import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
 import { DentistaResponse, DentistaService } from '../../services/dentista.service';
+import {
+  cpfValidator,
+  nomePessoaValidator
+} from '../../shared/validators/form-validators';
+import { formatarCpf, somenteDigitosCpf } from '../../shared/utils/cpf';
 
 type SecaoAdmin = 'visao' | 'usuarios' | 'logs';
 
@@ -57,11 +62,12 @@ export class Admin implements OnInit {
   protected readonly filtroLogRecurso = signal('');
   protected readonly filtroLogData = signal('');
   protected readonly perfis: PerfilUsuario[] = ['ADMIN', 'DENTISTA'];
+  protected readonly formatarCpf = formatarCpf;
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    nome: ['', [Validators.required]],
-    cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-    email: ['', [Validators.required, Validators.email]],
+    nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120), nomePessoaValidator()]],
+    cpf: ['', [Validators.required, cpfValidator()]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(120)]],
     senha: ['', [Validators.required, Validators.minLength(6)]],
     perfil: ['ADMIN' as PerfilUsuario, [Validators.required]],
     ativo: [true]
@@ -221,7 +227,7 @@ export class Admin implements OnInit {
     this.form.controls.senha.updateValueAndValidity();
     this.form.setValue({
       nome: usuario.nome,
-      cpf: usuario.cpf,
+      cpf: formatarCpf(usuario.cpf),
       email: usuario.email,
       senha: '',
       perfil: usuario.perfil,
@@ -403,7 +409,7 @@ export class Admin implements OnInit {
 
   private getUsuarioDoFormulario(): UsuarioRequest {
     const usuario = this.form.getRawValue();
-    const cpfSomenteDigitos = usuario.cpf.replace(/\D/g, '');
+    const cpfSomenteDigitos = somenteDigitosCpf(usuario.cpf);
     const senha = usuario.senha.trim();
 
     const payload: UsuarioRequest = {
@@ -435,7 +441,7 @@ export class Admin implements OnInit {
   }
 
   private normalizarCpf(cpf: string): string {
-    return cpf.replace(/\D/g, '');
+    return somenteDigitosCpf(cpf);
   }
 
   private normalizarEmail(email: string): string {

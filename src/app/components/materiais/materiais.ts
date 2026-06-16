@@ -13,6 +13,11 @@ import { MaterialResponse, MaterialService } from '../../services/material.servi
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
+import {
+  materialNomeValidator,
+  textoLivreValidator,
+  unidadeMedidaValidator
+} from '../../shared/validators/form-validators';
 
 type FiltroStatusMaterial = 'TODOS' | 'ATIVOS' | 'INATIVOS' | 'BAIXO_ESTOQUE';
 type AbaEstoque = 'DASHBOARD' | 'MATERIAIS' | 'MOVIMENTACOES';
@@ -68,9 +73,9 @@ export class Materiais implements OnInit {
   );
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    nome: ['', [Validators.required]],
-    descricao: ['', [Validators.required]],
-    unidadeMedida: ['UNIDADE', [Validators.required]],
+    nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120), materialNomeValidator()]],
+    descricao: ['', [Validators.required, Validators.maxLength(500), textoLivreValidator('descricaoInvalida')]],
+    unidadeMedida: ['UNIDADE', [Validators.required, unidadeMedidaValidator()]],
     quantidadeAtual: [0, [Validators.required, Validators.min(0)]],
     quantidadeMinima: [0, [Validators.required, Validators.min(0)]],
     ativo: [true],
@@ -80,8 +85,8 @@ export class Materiais implements OnInit {
   protected readonly movimentacaoForm = this.formBuilder.nonNullable.group({
     materialId: [0, [Validators.required, Validators.min(1)]],
     tipo: ['ENTRADA' as TipoMovimentacaoEstoque, [Validators.required]],
-    quantidade: [1, [Validators.required, Validators.min(0)]],
-    motivo: ['', [Validators.required]]
+    quantidade: [1, [Validators.required, Validators.min(1)]],
+    motivo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(500), textoLivreValidator('motivoInvalido')]]
   });
 
   ngOnInit(): void {
@@ -447,6 +452,52 @@ export class Materiais implements OnInit {
       return error.error;
     }
 
-    return error.error?.message ?? error.error?.mensagem ?? error.error?.erro ?? '';
+    const mensagens = this.extrairMensagens(error.error);
+
+    return mensagens.join(' | ');
+  }
+
+  private extrairMensagens(valor: unknown): string[] {
+    if (!valor) {
+      return [];
+    }
+
+    if (typeof valor === 'string') {
+      return valor.trim() ? [valor] : [];
+    }
+
+    if (Array.isArray(valor)) {
+      return valor.flatMap((item) => this.extrairMensagens(item));
+    }
+
+    if (typeof valor !== 'object') {
+      return [];
+    }
+
+    const objeto = valor as Record<string, unknown>;
+    const camposConhecidos = [
+      'message',
+      'mensagem',
+      'erro',
+      'error',
+      'detail',
+      'details',
+      'errors',
+      'fieldErrors',
+      'validationErrors',
+      'violations'
+    ];
+
+    const mensagensConhecidas = camposConhecidos.flatMap((campo) =>
+      this.extrairMensagens(objeto[campo])
+    );
+
+    if (mensagensConhecidas.length > 0) {
+      return mensagensConhecidas;
+    }
+
+    return Object.entries(objeto).flatMap(([campo, mensagem]) =>
+      this.extrairMensagens(mensagem).map((texto) => `${campo}: ${texto}`)
+    );
   }
 }

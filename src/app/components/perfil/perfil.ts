@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService, PerfilUsuario } from '../../services/auth.service';
 import { PerfilResponse, PerfilService } from '../../services/perfil.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { formatarCpf } from '../../shared/utils/cpf';
 
 @Component({
   selector: 'app-perfil',
@@ -19,6 +20,7 @@ export class Perfil implements OnInit {
   protected readonly usuario = this.authService.usuario;
   protected readonly detalhes = signal<PerfilResponse | null>(null);
   protected readonly carregando = signal(false);
+  protected readonly formatarCpf = formatarCpf;
 
   protected readonly iniciais = computed(() => {
     const nome = (this.detalhes()?.nome ?? this.usuario()?.nome)?.trim();

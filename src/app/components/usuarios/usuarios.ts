@@ -10,6 +10,11 @@ import {
 } from '../../services/usuario.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { AlertService } from '../../shared/services/alert.service';
+import {
+  cpfValidator,
+  nomePessoaValidator
+} from '../../shared/validators/form-validators';
+import { formatarCpf, somenteDigitosCpf } from '../../shared/utils/cpf';
 
 @Component({
   selector: 'app-usuarios',
@@ -28,11 +33,12 @@ export class Usuarios implements OnInit {
   protected readonly sucesso = signal('');
   protected readonly usuarioEmEdicaoId = signal<number | null>(null);
   protected readonly perfis: PerfilUsuario[] = ['ADMIN', 'DENTISTA'];
+  protected readonly formatarCpf = formatarCpf;
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    nome: ['', [Validators.required]],
-    cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-    email: ['', [Validators.required, Validators.email]],
+    nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120), nomePessoaValidator()]],
+    cpf: ['', [Validators.required, cpfValidator()]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(120)]],
     senha: ['', [Validators.required, Validators.minLength(6)]],
     perfil: ['ADMIN' as PerfilUsuario, [Validators.required]],
     ativo: [true]
@@ -103,7 +109,7 @@ export class Usuarios implements OnInit {
     this.form.controls.senha.updateValueAndValidity();
     this.form.setValue({
       nome: usuario.nome,
-      cpf: usuario.cpf,
+      cpf: formatarCpf(usuario.cpf),
       email: usuario.email,
       senha: '',
       perfil: usuario.perfil,
@@ -165,7 +171,7 @@ export class Usuarios implements OnInit {
 
   private getUsuarioDoFormulario(): UsuarioRequest {
     const usuario = this.form.getRawValue();
-    const cpfSomenteDigitos = usuario.cpf.replace(/\D/g, '');
+    const cpfSomenteDigitos = somenteDigitosCpf(usuario.cpf);
     const senha = usuario.senha.trim();
 
     const payload: UsuarioRequest = {
@@ -198,7 +204,7 @@ export class Usuarios implements OnInit {
     }
 
     if (error.status === 409) {
-      this.erro.set(this.getMensagemErro(error) || 'Email ou CPF ja cadastrado.');
+      this.erro.set(this.getMensagemErro(error) || 'E-mail ou CPF já cadastrado.');
       return;
     }
 

@@ -56,7 +56,7 @@
 
         <label>
           <span>CPF *</span>
-          <input type="text" formControlName="cpf" [readonly]="camposUsuarioBloqueados()" />
+          <input type="text" formControlName="cpf" maxlength="14" [readonly]="camposUsuarioBloqueados()" />
         </label>
 
         <label>
@@ -110,17 +110,32 @@
         @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
           <p class="field-error">Nome é obrigatório.</p>
         }
+        @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+          <p class="field-error">Nome deve ter entre 3 e 120 caracteres.</p>
+        }
+        @if (form.controls.nome.touched && form.controls.nome.hasError('nomePessoa')) {
+          <p class="field-error">Nome deve conter apenas letras e espaços.</p>
+        }
 
         @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
           <p class="field-error">CPF é obrigatório.</p>
         }
+        @if (form.controls.cpf.touched && form.controls.cpf.hasError('cpfInvalido')) {
+          <p class="field-error">Informe um CPF válido.</p>
+        }
 
         @if (form.controls.email.touched && form.controls.email.invalid) {
-          <p class="field-error">Informe um email valido.</p>
+          <p class="field-error">Informe um e-mail válido com até 120 caracteres.</p>
         }
 
         @if (form.controls.cro.touched && form.controls.cro.hasError('required')) {
           <p class="field-error">CRO é obrigatório.</p>
+        }
+        @if (form.controls.cro.touched && (form.controls.cro.hasError('minlength') || form.controls.cro.hasError('maxlength'))) {
+          <p class="field-error">CRO deve ter entre 4 e 20 caracteres.</p>
+        }
+        @if (form.controls.cro.touched && form.controls.cro.hasError('croInvalido')) {
+          <p class="field-error">CRO deve conter apenas letras, números e separadores válidos.</p>
         }
 
         <div class="actions">
@@ -197,7 +212,7 @@
                 <tr>
                   <td>#{{ dentista.id }}</td>
                   <td>{{ dentista.nome }}</td>
-                  <td>{{ dentista.cpf }}</td>
+                  <td>{{ formatarCpf(dentista.cpf) }}</td>
                   <td>{{ dentista.email }}</td>
                   <td>{{ dentista.cro }}</td>
                   <td>{{ getNomesEspecialidades(dentista) }}</td>
@@ -242,7 +257,7 @@
 
           <label>
             <span>CPF *</span>
-            <input type="text" formControlName="cpf" [readonly]="camposUsuarioBloqueados()" />
+            <input type="text" formControlName="cpf" maxlength="14" [readonly]="camposUsuarioBloqueados()" />
           </label>
 
           <label>
@@ -296,17 +311,32 @@
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
             <p class="field-error">Nome é obrigatório.</p>
           }
+          @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+            <p class="field-error">Nome deve ter entre 3 e 120 caracteres.</p>
+          }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('nomePessoa')) {
+            <p class="field-error">Nome deve conter apenas letras e espaços.</p>
+          }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
             <p class="field-error">CPF é obrigatório.</p>
           }
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('cpfInvalido')) {
+            <p class="field-error">Informe um CPF válido.</p>
+          }
 
           @if (form.controls.email.touched && form.controls.email.invalid) {
-            <p class="field-error">Informe um email valido.</p>
+            <p class="field-error">Informe um e-mail válido com até 120 caracteres.</p>
           }
 
           @if (form.controls.cro.touched && form.controls.cro.hasError('required')) {
             <p class="field-error">CRO é obrigatório.</p>
+          }
+          @if (form.controls.cro.touched && (form.controls.cro.hasError('minlength') || form.controls.cro.hasError('maxlength'))) {
+            <p class="field-error">CRO deve ter entre 4 e 20 caracteres.</p>
+          }
+          @if (form.controls.cro.touched && form.controls.cro.hasError('croInvalido')) {
+            <p class="field-error">CRO deve conter apenas letras, números e separadores válidos.</p>
           }
 
           <div class="actions">

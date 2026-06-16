@@ -12,6 +12,12 @@ import { AuthService } from '../../services/auth.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
+import {
+  cpfValidator,
+  croValidator,
+  nomePessoaValidator
+} from '../../shared/validators/form-validators';
+import { formatarCpf, somenteDigitosCpf } from '../../shared/utils/cpf';
 
 type FiltroStatusDentista = 'ATIVOS' | 'INATIVOS' | 'TODOS';
 
@@ -41,6 +47,7 @@ export class Dentistas implements OnInit {
   protected readonly especialidadesDropdownAberto = signal(false);
   protected readonly vincularUsuarioExistente = signal(false);
   protected readonly usuarioVinculadoId = signal(0);
+  protected readonly formatarCpf = formatarCpf;
   protected readonly dentistasFiltrados = computed(() => {
     const filtro = this.filtroStatus();
 
@@ -63,10 +70,10 @@ export class Dentistas implements OnInit {
   });
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    nome: ['', [Validators.required]],
-    cpf: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    cro: ['', [Validators.required]],
+    nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120), nomePessoaValidator()]],
+    cpf: ['', [Validators.required, cpfValidator()]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(120)]],
+    cro: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20), croValidator()]],
     ativo: [true],
     especialidadeIds: [[] as number[]]
   });
@@ -162,7 +169,7 @@ export class Dentistas implements OnInit {
     this.dentistaEmEdicaoId.set(dentista.id);
     this.form.setValue({
       nome: dentista.nome,
-      cpf: dentista.cpf,
+      cpf: formatarCpf(dentista.cpf),
       email: dentista.email,
       cro: dentista.cro,
       ativo: dentista.ativo,
@@ -190,7 +197,7 @@ export class Dentistas implements OnInit {
 
     this.dentistaService.atualizar(dentista.id, {
       nome: dentista.nome,
-      cpf: dentista.cpf,
+      cpf: somenteDigitosCpf(dentista.cpf),
       email: dentista.email,
       cro: dentista.cro,
       ativo: novoStatus,
@@ -250,7 +257,7 @@ export class Dentistas implements OnInit {
 
     this.form.patchValue({
       nome: usuario.nome,
-      cpf: usuario.cpf,
+      cpf: formatarCpf(usuario.cpf),
       email: usuario.email
     });
   }
@@ -335,7 +342,7 @@ export class Dentistas implements OnInit {
 
     return {
       nome: dentista.nome.trim(),
-      cpf: dentista.cpf.trim(),
+      cpf: somenteDigitosCpf(dentista.cpf),
       email: dentista.email.trim(),
       cro: dentista.cro.trim(),
       ativo: dentista.ativo,
@@ -370,7 +377,7 @@ export class Dentistas implements OnInit {
   }
 
   private normalizarCpf(cpf: string): string {
-    return cpf.replace(/\D/g, '');
+    return somenteDigitosCpf(cpf);
   }
 
   private normalizarEmail(email: string): string {
@@ -397,7 +404,7 @@ export class Dentistas implements OnInit {
     }
 
     if (error.status === 409) {
-      this.erro.set(this.getMensagemErro(error) || 'Email, CPF ou CRO ja cadastrado.');
+      this.erro.set(this.getMensagemErro(error) || 'E-mail, CPF ou CRO já cadastrado.');
       return;
     }
 

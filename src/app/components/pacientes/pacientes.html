@@ -44,17 +44,29 @@
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
             <p class="field-error">Nome é obrigatório.</p>
           }
+          @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+            <p class="field-error">Nome deve ter entre 3 e 120 caracteres.</p>
+          }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('nomePessoa')) {
+            <p class="field-error">Nome deve conter apenas letras e espaços.</p>
+          }
 
           @if (form.controls.email.touched && form.controls.email.invalid) {
-            <p class="field-error">Informe um email valido.</p>
+            <p class="field-error">Informe um e-mail válido com até 120 caracteres.</p>
           }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
             <p class="field-error">CPF é obrigatório.</p>
           }
 
-          @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {
-            <p class="field-error">CPF deve ter no maximo 14 caracteres.</p>
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('cpfInvalido')) {
+            <p class="field-error">Informe um CPF válido.</p>
+          }
+          @if (form.controls.telefone.touched && (form.controls.telefone.hasError('minlength') || form.controls.telefone.hasError('maxlength'))) {
+            <p class="field-error">Telefone deve ter entre 8 e 20 caracteres.</p>
+          }
+          @if (form.controls.telefone.touched && form.controls.telefone.hasError('telefoneInvalido')) {
+            <p class="field-error">Telefone deve conter apenas números e separadores válidos.</p>
           }
 
           <div class="actions">
@@ -98,7 +110,7 @@
                   <td>#{{ paciente.id }}</td>
                   <td>{{ paciente.nome }}</td>
                   <td>{{ paciente.email }}</td>
-                  <td>{{ paciente.cpf }}</td>
+                  <td>{{ formatarCpf(paciente.cpf) }}</td>
                   <td>{{ paciente.telefone || '-' }}</td>
                   <td class="row-actions">
                     <button type="button" class="small" (click)="editar(paciente)">Editar</button>
@@ -143,17 +155,29 @@
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
             <p class="field-error">Nome é obrigatório.</p>
           }
+          @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+            <p class="field-error">Nome deve ter entre 3 e 120 caracteres.</p>
+          }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('nomePessoa')) {
+            <p class="field-error">Nome deve conter apenas letras e espaços.</p>
+          }
 
           @if (form.controls.email.touched && form.controls.email.invalid) {
-            <p class="field-error">Informe um email valido.</p>
+            <p class="field-error">Informe um e-mail válido com até 120 caracteres.</p>
           }
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
             <p class="field-error">CPF é obrigatório.</p>
           }
 
-          @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {
-            <p class="field-error">CPF deve ter no maximo 14 caracteres.</p>
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('cpfInvalido')) {
+            <p class="field-error">Informe um CPF válido.</p>
+          }
+          @if (form.controls.telefone.touched && (form.controls.telefone.hasError('minlength') || form.controls.telefone.hasError('maxlength'))) {
+            <p class="field-error">Telefone deve ter entre 8 e 20 caracteres.</p>
+          }
+          @if (form.controls.telefone.touched && form.controls.telefone.hasError('telefoneInvalido')) {
+            <p class="field-error">Telefone deve conter apenas números e separadores válidos.</p>
           }
 
           <div class="actions">

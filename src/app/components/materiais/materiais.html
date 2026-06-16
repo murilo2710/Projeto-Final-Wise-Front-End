@@ -98,7 +98,7 @@
               <div class="empty-state compact">
                 <span class="empty-state__icon">+</span>
                 <strong>Nenhum material em baixo estoque</strong>
-                <p>Os materiais estao acima da quantidade minima cadastrada.</p>
+                <p>Os materiais estão acima da quantidade mínima cadastrada.</p>
               </div>
             } @else {
               <div class="table-wrapper inventory-dashboard-table">
@@ -277,7 +277,7 @@
           </label>
 
           <label>
-            <span>Quantidade minima *</span>
+            <span>Quantidade mínima *</span>
             <input type="number" formControlName="quantidadeMinima" min="0" />
           </label>
 
@@ -322,13 +322,28 @@
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
             <p class="field-error">Nome é obrigatório.</p>
           }
+          @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+            <p class="field-error">Nome deve ter entre 3 e 120 caracteres.</p>
+          }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('materialNomeInvalido')) {
+            <p class="field-error">Nome do material deve conter apenas letras, números e separadores válidos.</p>
+          }
 
           @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
             <p class="field-error">Descrição é obrigatória.</p>
           }
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('maxlength')) {
+            <p class="field-error">Descrição deve ter no máximo 500 caracteres.</p>
+          }
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('descricaoInvalida')) {
+            <p class="field-error">Descrição contém caracteres inválidos.</p>
+          }
 
           @if (form.controls.unidadeMedida.touched && form.controls.unidadeMedida.hasError('required')) {
             <p class="field-error">Unidade de medida é obrigatória.</p>
+          }
+          @if (form.controls.unidadeMedida.touched && form.controls.unidadeMedida.hasError('unidadeMedidaInvalida')) {
+            <p class="field-error">Unidade de medida deve conter apenas letras, espaço ou barra.</p>
           }
 
           @if (form.controls.quantidadeAtual.touched && form.controls.quantidadeAtual.invalid) {
@@ -336,7 +351,7 @@
           }
 
           @if (form.controls.quantidadeMinima.touched && form.controls.quantidadeMinima.invalid) {
-            <p class="field-error">Quantidade minima deve ser zero ou maior.</p>
+            <p class="field-error">Quantidade mínima deve ser zero ou maior.</p>
           }
 
           <div class="actions">
@@ -418,7 +433,7 @@
                   <th>Nome</th>
                   <th>Unidade</th>
                   <th>Qtd. atual</th>
-                  <th>Qtd. minima</th>
+                  <th>Qtd. mínima</th>
                   <th>Especialidades</th>
                   <th>Status</th>
                   <th>Estoque</th>
@@ -493,7 +508,7 @@
 
           <label>
             <span>Quantidade *</span>
-            <input type="number" formControlName="quantidade" min="0" />
+            <input type="number" formControlName="quantidade" min="1" />
           </label>
 
           <label>
@@ -510,11 +525,17 @@
           }
 
           @if (movimentacaoForm.controls.quantidade.touched && movimentacaoForm.controls.quantidade.invalid) {
-            <p class="field-error">Quantidade deve ser zero ou maior.</p>
+            <p class="field-error">Quantidade deve ser maior que zero.</p>
           }
 
           @if (movimentacaoForm.controls.motivo.touched && movimentacaoForm.controls.motivo.hasError('required')) {
             <p class="field-error">Motivo é obrigatório.</p>
+          }
+          @if (movimentacaoForm.controls.motivo.touched && (movimentacaoForm.controls.motivo.hasError('minlength') || movimentacaoForm.controls.motivo.hasError('maxlength'))) {
+            <p class="field-error">Motivo deve ter entre 5 e 500 caracteres.</p>
+          }
+          @if (movimentacaoForm.controls.motivo.touched && movimentacaoForm.controls.motivo.hasError('motivoInvalido')) {
+            <p class="field-error">Motivo contém caracteres inválidos.</p>
           }
 
           <div class="actions">
@@ -639,7 +660,7 @@
           </label>
 
           <label>
-            <span>Quantidade minima *</span>
+            <span>Quantidade mínima *</span>
             <input type="number" formControlName="quantidadeMinima" min="0" />
           </label>
 
@@ -684,13 +705,28 @@
           @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
             <p class="field-error">Nome é obrigatório.</p>
           }
+          @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+            <p class="field-error">Nome deve ter entre 3 e 120 caracteres.</p>
+          }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('materialNomeInvalido')) {
+            <p class="field-error">Nome do material deve conter apenas letras, números e separadores válidos.</p>
+          }
 
           @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
             <p class="field-error">Descrição é obrigatória.</p>
           }
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('maxlength')) {
+            <p class="field-error">Descrição deve ter no máximo 500 caracteres.</p>
+          }
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('descricaoInvalida')) {
+            <p class="field-error">Descrição contém caracteres inválidos.</p>
+          }
 
           @if (form.controls.unidadeMedida.touched && form.controls.unidadeMedida.hasError('required')) {
             <p class="field-error">Unidade de medida é obrigatória.</p>
+          }
+          @if (form.controls.unidadeMedida.touched && form.controls.unidadeMedida.hasError('unidadeMedidaInvalida')) {
+            <p class="field-error">Unidade de medida deve conter apenas letras, espaço ou barra.</p>
           }
 
           @if (form.controls.quantidadeAtual.touched && form.controls.quantidadeAtual.invalid) {
@@ -698,7 +734,7 @@
           }
 
           @if (form.controls.quantidadeMinima.touched && form.controls.quantidadeMinima.invalid) {
-            <p class="field-error">Quantidade minima deve ser zero ou maior.</p>
+            <p class="field-error">Quantidade mínima deve ser zero ou maior.</p>
           }
 
           <div class="actions">

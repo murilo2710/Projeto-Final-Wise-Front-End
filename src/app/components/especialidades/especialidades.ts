@@ -9,6 +9,7 @@ import {
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
+import { especialidadeValidator } from '../../shared/validators/form-validators';
 
 @Component({
   selector: 'app-especialidades',
@@ -28,7 +29,7 @@ export class Especialidades implements OnInit {
   protected readonly especialidadeEmEdicaoId = signal<number | null>(null);
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    nome: ['', [Validators.required, Validators.maxLength(100)]]
+    nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), especialidadeValidator()]]
   });
 
   ngOnInit(): void {

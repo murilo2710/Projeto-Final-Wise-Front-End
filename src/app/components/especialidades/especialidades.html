@@ -30,8 +30,11 @@
             <p class="field-error">Nome é obrigatório.</p>
           }
 
-          @if (form.controls.nome.touched && form.controls.nome.hasError('maxlength')) {
-            <p class="field-error">Nome deve ter no maximo 100 caracteres.</p>
+          @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+            <p class="field-error">Nome deve ter entre 3 e 100 caracteres.</p>
+          }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('especialidadeInvalida')) {
+            <p class="field-error">Especialidade deve conter apenas letras, espaços e hífen.</p>
           }
 
           <div class="actions">
@@ -102,8 +105,11 @@
             <p class="field-error">Nome é obrigatório.</p>
           }
 
-          @if (form.controls.nome.touched && form.controls.nome.hasError('maxlength')) {
-            <p class="field-error">Nome deve ter no maximo 100 caracteres.</p>
+          @if (form.controls.nome.touched && (form.controls.nome.hasError('minlength') || form.controls.nome.hasError('maxlength'))) {
+            <p class="field-error">Nome deve ter entre 3 e 100 caracteres.</p>
+          }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('especialidadeInvalida')) {
+            <p class="field-error">Especialidade deve conter apenas letras, espaços e hífen.</p>
           }
 
           <div class="actions">

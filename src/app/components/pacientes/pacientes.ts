@@ -6,6 +6,12 @@ import { PacienteResponse, PacienteService } from '../../services/paciente.servi
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
+import {
+  cpfValidator,
+  nomePessoaValidator,
+  telefoneValidator
+} from '../../shared/validators/form-validators';
+import { formatarCpf, somenteDigitosCpf } from '../../shared/utils/cpf';
 
 @Component({
   selector: 'app-pacientes',
@@ -23,12 +29,13 @@ export class Pacientes implements OnInit {
   protected readonly erro = signal('');
   protected readonly sucesso = signal('');
   protected readonly pacienteEmEdicaoId = signal<number | null>(null);
+  protected readonly formatarCpf = formatarCpf;
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    nome: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    cpf: ['', [Validators.required, Validators.maxLength(14)]],
-    telefone: ['']
+    nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(120), nomePessoaValidator()]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(120)]],
+    cpf: ['', [Validators.required, cpfValidator()]],
+    telefone: ['', [Validators.minLength(8), Validators.maxLength(20), telefoneValidator()]]
   });
 
   ngOnInit(): void {
@@ -94,7 +101,7 @@ export class Pacientes implements OnInit {
     this.form.setValue({
       nome: paciente.nome,
       email: paciente.email,
-      cpf: paciente.cpf,
+      cpf: formatarCpf(paciente.cpf),
       telefone: paciente.telefone ?? ''
     });
     this.limparMensagens();
@@ -139,7 +146,7 @@ export class Pacientes implements OnInit {
     return {
       nome: paciente.nome.trim(),
       email: paciente.email.trim(),
-      cpf: paciente.cpf.trim(),
+      cpf: somenteDigitosCpf(paciente.cpf),
       telefone: paciente.telefone.trim()
     };
   }
@@ -164,7 +171,7 @@ export class Pacientes implements OnInit {
     }
 
     if (error.status === 409) {
-      this.erro.set(this.getMensagemErro(error) || 'Email ou CPF ja cadastrado.');
+      this.erro.set(this.getMensagemErro(error) || 'E-mail ou CPF já cadastrado.');
       return;
     }
 
