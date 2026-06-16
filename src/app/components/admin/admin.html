@@ -12,6 +12,8 @@
       <button
         type="button"
         class="section-tab"
+        role="tab"
+        [attr.aria-selected]="secaoAtiva() === 'visao'"
         [class.active]="secaoAtiva() === 'visao'"
         (click)="selecionarSecao('visao')"
       >
@@ -20,6 +22,8 @@
       <button
         type="button"
         class="section-tab"
+        role="tab"
+        [attr.aria-selected]="secaoAtiva() === 'usuarios'"
         [class.active]="secaoAtiva() === 'usuarios'"
         (click)="selecionarSecao('usuarios')"
       >
@@ -28,6 +32,8 @@
       <button
         type="button"
         class="section-tab"
+        role="tab"
+        [attr.aria-selected]="secaoAtiva() === 'logs'"
         [class.active]="secaoAtiva() === 'logs'"
         (click)="selecionarSecao('logs')"
       >
