@@ -202,10 +202,10 @@
           <article class="card appointments-card">
             <div class="card-header">
               <h2>Proximas consultas</h2>
-              <span class="card-sub">{{ getProximasConsultas().length }} agendada(s)</span>
+              <span class="card-sub">{{ proximasConsultas().length }} agendada(s)</span>
             </div>
 
-            @if (getProximasConsultas().length === 0) {
+            @if (proximasConsultas().length === 0) {
               <div class="dashboard-empty-state">
                 <span class="dashboard-empty-state__icon">+</span>
                 <strong>Nenhuma consulta futura encontrada</strong>
@@ -213,7 +213,7 @@
               </div>
             } @else {
               <div class="appointments-grid">
-                @for (consulta of getProximasConsultas(); track consulta.id) {
+                @for (consulta of proximasConsultas(); track consulta.id) {
                   <article class="appointment-card">
                     <div class="appointment-head">
                       <span class="cell-id">#{{ consulta.id }}</span>

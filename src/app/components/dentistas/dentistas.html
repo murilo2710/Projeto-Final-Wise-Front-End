@@ -76,6 +76,7 @@
               type="button"
               class="specialty-dropdown__trigger"
               (click)="alternarEspecialidadesDropdown()"
+              aria-haspopup="listbox"
               [attr.aria-expanded]="especialidadesDropdownAberto()"
             >
               <span>{{ getResumoEspecialidadesSelecionadas() }}</span>
@@ -170,7 +171,7 @@
 
       @if (carregando()) {
         <p class="loading-text">Carregando dentistas...</p>
-      } @else if (getDentistasFiltrados().length === 0) {
+      } @else if (dentistasFiltrados().length === 0) {
         <div class="empty-state">
           <span class="empty-state__icon">+</span>
           <strong>Nenhum dentista nesta aba</strong>
@@ -192,7 +193,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (dentista of getDentistasFiltrados(); track dentista.id) {
+              @for (dentista of dentistasFiltrados(); track dentista.id) {
                 <tr>
                   <td>#{{ dentista.id }}</td>
                   <td>{{ dentista.nome }}</td>
@@ -261,6 +262,7 @@
                 type="button"
                 class="specialty-dropdown__trigger"
                 (click)="alternarEspecialidadesDropdown()"
+                aria-haspopup="listbox"
                 [attr.aria-expanded]="especialidadesDropdownAberto()"
               >
                 <span>{{ getResumoEspecialidadesSelecionadas() }}</span>

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { EspecialidadeResponse, EspecialidadeService } from '../../services/especialidade.service';
@@ -49,6 +49,23 @@ export class Materiais implements OnInit {
   protected readonly filtroMovimentacaoTipo = signal<TipoMovimentacaoEstoque | ''>('');
   protected readonly unidadesMedida = ['UNIDADE', 'CAIXA', 'PACOTE', 'ML', 'L', 'G', 'KG'];
   protected readonly tiposMovimentacao: TipoMovimentacaoEstoque[] = ['ENTRADA', 'SAIDA', 'AJUSTE'];
+  protected readonly movimentacoesFiltradas = computed(() => {
+    const materialId = this.filtroMovimentacaoMaterialId();
+    const tipo = this.filtroMovimentacaoTipo();
+
+    return this.movimentacoes().filter((movimentacao) => {
+      const correspondeMaterial = !materialId || movimentacao.materialId === materialId;
+      const correspondeTipo = !tipo || movimentacao.tipo === tipo;
+
+      return correspondeMaterial && correspondeTipo;
+    });
+  });
+  protected readonly materiaisBaixoEstoqueDashboard = computed(
+    () => this.dashboard()?.materiaisBaixoEstoque ?? []
+  );
+  protected readonly ultimasMovimentacoesDashboard = computed(
+    () => this.dashboard()?.ultimasMovimentacoes ?? []
+  );
 
   protected readonly form = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required]],
@@ -326,23 +343,17 @@ export class Materiais implements OnInit {
     this.filtroMovimentacaoTipo.set(valor as TipoMovimentacaoEstoque | '');
   }
 
-  protected getMovimentacoesFiltradas(): EstoqueMovimentacaoResponse[] {
-    const materialId = this.filtroMovimentacaoMaterialId();
-    const tipo = this.filtroMovimentacaoTipo();
-
-    return this.movimentacoes().filter((movimentacao) => {
-      const correspondeMaterial = !materialId || movimentacao.materialId === materialId;
-      const correspondeTipo = !tipo || movimentacao.tipo === tipo;
-
-      return correspondeMaterial && correspondeTipo;
-    });
-  }
-
   protected formatarData(valor: string): string {
+    const data = new Date(valor);
+
+    if (Number.isNaN(data.getTime())) {
+      return valor || '-';
+    }
+
     return new Intl.DateTimeFormat('pt-BR', {
       dateStyle: 'short',
       timeStyle: 'short'
-    }).format(new Date(valor));
+    }).format(data);
   }
 
   protected getNomesEspecialidades(material: MaterialResponse): string {

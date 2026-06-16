@@ -12,6 +12,8 @@
       <button
         type="button"
         class="section-tab"
+        role="tab"
+        [attr.aria-selected]="abaAtiva() === 'DASHBOARD'"
         [class.active]="abaAtiva() === 'DASHBOARD'"
         (click)="alterarAba('DASHBOARD')"
       >
@@ -20,6 +22,8 @@
       <button
         type="button"
         class="section-tab"
+        role="tab"
+        [attr.aria-selected]="abaAtiva() === 'MATERIAIS'"
         [class.active]="abaAtiva() === 'MATERIAIS'"
         (click)="alterarAba('MATERIAIS')"
       >
@@ -28,6 +32,8 @@
       <button
         type="button"
         class="section-tab"
+        role="tab"
+        [attr.aria-selected]="abaAtiva() === 'MOVIMENTACOES'"
         [class.active]="abaAtiva() === 'MOVIMENTACOES'"
         (click)="alterarAba('MOVIMENTACOES')"
       >
@@ -88,7 +94,7 @@
           <section class="panel">
             <h2>Materiais em baixo estoque</h2>
 
-            @if (resumo.materiaisBaixoEstoque.length === 0) {
+            @if (materiaisBaixoEstoqueDashboard().length === 0) {
               <div class="empty-state compact">
                 <span class="empty-state__icon">+</span>
                 <strong>Nenhum material em baixo estoque</strong>
@@ -107,7 +113,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for (material of resumo.materiaisBaixoEstoque; track material.id) {
+                    @for (material of materiaisBaixoEstoqueDashboard(); track material.id) {
                       <tr>
                         <td>{{ material.nome }}</td>
                         <td>{{ material.quantidadeAtual }}</td>
@@ -123,7 +129,7 @@
               </div>
 
               <div class="inventory-mobile-list">
-                @for (material of resumo.materiaisBaixoEstoque; track material.id) {
+                @for (material of materiaisBaixoEstoqueDashboard(); track material.id) {
                   <article class="inventory-mobile-item">
                     <div class="inventory-mobile-item__head">
                       <strong>{{ material.nome }}</strong>
@@ -152,7 +158,7 @@
           <section class="panel">
             <h2>Ultimas movimentacoes</h2>
 
-            @if (resumo.ultimasMovimentacoes.length === 0) {
+            @if (ultimasMovimentacoesDashboard().length === 0) {
               <div class="empty-state compact">
                 <span class="empty-state__icon">+</span>
                 <strong>Nenhuma movimentacao recente</strong>
@@ -173,7 +179,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for (movimentacao of resumo.ultimasMovimentacoes; track movimentacao.id) {
+                    @for (movimentacao of ultimasMovimentacoesDashboard(); track movimentacao.id) {
                       <tr>
                         <td>{{ movimentacao.materialNome }}</td>
                         <td>
@@ -197,7 +203,7 @@
               </div>
 
               <div class="inventory-mobile-list">
-                @for (movimentacao of resumo.ultimasMovimentacoes; track movimentacao.id) {
+                @for (movimentacao of ultimasMovimentacoesDashboard(); track movimentacao.id) {
                   <article class="inventory-mobile-item">
                     <div class="inventory-mobile-item__head">
                       <strong>{{ movimentacao.materialNome }}</strong>
@@ -282,6 +288,7 @@
                 type="button"
                 class="specialty-dropdown__trigger"
                 (click)="alternarEspecialidadesDropdown()"
+                aria-haspopup="listbox"
                 [attr.aria-expanded]="especialidadesDropdownAberto()"
               >
                 <span>{{ getResumoEspecialidadesSelecionadas() }}</span>
@@ -550,7 +557,7 @@
 
         @if (carregandoMovimentacoes()) {
           <p class="loading-text">Carregando movimentacoes...</p>
-        } @else if (getMovimentacoesFiltradas().length === 0) {
+        } @else if (movimentacoesFiltradas().length === 0) {
           <div class="empty-state">
             <span class="empty-state__icon">+</span>
             <strong>Nenhuma movimentacao encontrada</strong>
@@ -572,7 +579,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (movimentacao of getMovimentacoesFiltradas(); track movimentacao.id) {
+                @for (movimentacao of movimentacoesFiltradas(); track movimentacao.id) {
                   <tr>
                     <td>{{ movimentacao.materialNome }}</td>
                     <td>
@@ -643,6 +650,7 @@
                 type="button"
                 class="specialty-dropdown__trigger"
                 (click)="alternarEspecialidadesDropdown()"
+                aria-haspopup="listbox"
                 [attr.aria-expanded]="especialidadesDropdownAberto()"
               >
                 <span>{{ getResumoEspecialidadesSelecionadas() }}</span>

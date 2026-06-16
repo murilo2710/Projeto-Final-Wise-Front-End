@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -41,6 +41,26 @@ export class Dentistas implements OnInit {
   protected readonly especialidadesDropdownAberto = signal(false);
   protected readonly vincularUsuarioExistente = signal(false);
   protected readonly usuarioVinculadoId = signal(0);
+  protected readonly dentistasFiltrados = computed(() => {
+    const filtro = this.filtroStatus();
+
+    if (filtro === 'TODOS') {
+      return this.dentistas();
+    }
+
+    return this.dentistas().filter((dentista) =>
+      filtro === 'ATIVOS' ? dentista.ativo : !dentista.ativo
+    );
+  });
+  protected readonly totaisPorFiltro = computed<Record<FiltroStatusDentista, number>>(() => {
+    const dentistas = this.dentistas();
+
+    return {
+      TODOS: dentistas.length,
+      ATIVOS: dentistas.filter((dentista) => dentista.ativo).length,
+      INATIVOS: dentistas.filter((dentista) => !dentista.ativo).length
+    };
+  });
 
   protected readonly form = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required]],
@@ -292,30 +312,12 @@ export class Dentistas implements OnInit {
     return `${nomes.length} especialidades selecionadas`;
   }
 
-  protected getDentistasFiltrados(): DentistaResponse[] {
-    const filtro = this.filtroStatus();
-
-    if (filtro === 'TODOS') {
-      return this.dentistas();
-    }
-
-    return this.dentistas().filter((dentista) =>
-      filtro === 'ATIVOS' ? dentista.ativo : !dentista.ativo
-    );
-  }
-
   protected alterarFiltroStatus(filtro: FiltroStatusDentista): void {
     this.filtroStatus.set(filtro);
   }
 
   protected getTotalPorFiltro(filtro: FiltroStatusDentista): number {
-    if (filtro === 'TODOS') {
-      return this.dentistas().length;
-    }
-
-    return this.dentistas().filter((dentista) =>
-      filtro === 'ATIVOS' ? dentista.ativo : !dentista.ativo
-    ).length;
+    return this.totaisPorFiltro()[filtro];
   }
 
   protected getNomesEspecialidades(dentista: DentistaResponse): string {

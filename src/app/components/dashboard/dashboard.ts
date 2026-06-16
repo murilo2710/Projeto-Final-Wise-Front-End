@@ -73,6 +73,13 @@ export class Dashboard implements OnInit {
     return { total, segments };
   });
 
+  protected readonly proximasConsultas = computed<ConsultaResponse[]>(() =>
+    [...(this.dashboard()?.proximasConsultas ?? [])]
+      .filter((consulta) => consulta.status === 'AGENDADA')
+      .sort((a, b) => new Date(a.dataInicio).getTime() - new Date(b.dataInicio).getTime())
+      .slice(0, 5)
+  );
+
   ngOnInit(): void {
     this.carregarDashboard();
   }
@@ -88,13 +95,6 @@ export class Dashboard implements OnInit {
       },
       error: (error: HttpErrorResponse) => this.tratarErro(error)
     });
-  }
-
-  protected getProximasConsultas(): ConsultaResponse[] {
-    return [...(this.dashboard()?.proximasConsultas ?? [])]
-      .filter((consulta) => consulta.status === 'AGENDADA')
-      .sort((a, b) => new Date(a.dataInicio).getTime() - new Date(b.dataInicio).getTime())
-      .slice(0, 5);
   }
 
   protected formatarData(valor: string): string {
