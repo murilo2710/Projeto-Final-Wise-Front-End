@@ -161,12 +161,47 @@
 
 @media (max-width: 760px) {
   .tour-card {
-    left: 20px !important;
-    right: 20px;
-    width: auto;
+    width: min(340px, calc(100vw - 24px));
+    max-width: calc(100vw - 24px);
+    border-radius: 16px;
+    padding: 16px 18px 18px;
   }
 
   .tour-arrow {
     display: none;
+  }
+
+  .tour-title {
+    font-size: 18px;
+  }
+
+  .tour-desc {
+    margin-bottom: 18px;
+    font-size: 13.5px;
+  }
+
+  .tour-actions {
+    gap: 8px;
+  }
+
+  .tour-skip,
+  .tour-next {
+    min-height: 40px;
+    padding: 10px 16px;
+    font-size: 13.5px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tour-card {
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
+    padding: 15px;
+  }
+
+  .tour-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
   }
 }

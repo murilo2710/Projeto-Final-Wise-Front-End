@@ -95,7 +95,7 @@
                 <p>Os materiais estao acima da quantidade minima cadastrada.</p>
               </div>
             } @else {
-              <div class="table-wrapper">
+              <div class="table-wrapper inventory-dashboard-table">
                 <table class="compact-table">
                   <thead>
                     <tr>
@@ -121,6 +121,31 @@
                   </tbody>
                 </table>
               </div>
+
+              <div class="inventory-mobile-list">
+                @for (material of resumo.materiaisBaixoEstoque; track material.id) {
+                  <article class="inventory-mobile-item">
+                    <div class="inventory-mobile-item__head">
+                      <strong>{{ material.nome }}</strong>
+                      <span class="badge badge-warning">Baixo estoque</span>
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>Atual</dt>
+                        <dd>{{ material.quantidadeAtual }}</dd>
+                      </div>
+                      <div>
+                        <dt>Minima</dt>
+                        <dd>{{ material.quantidadeMinima }}</dd>
+                      </div>
+                      <div>
+                        <dt>Unidade</dt>
+                        <dd>{{ material.unidadeMedida }}</dd>
+                      </div>
+                    </dl>
+                  </article>
+                }
+              </div>
             }
           </section>
 
@@ -134,7 +159,7 @@
                 <p>As entradas, saidas e ajustes aparecerao aqui.</p>
               </div>
             } @else {
-              <div class="table-wrapper">
+              <div class="table-wrapper inventory-dashboard-table">
                 <table class="compact-table">
                   <thead>
                     <tr>
@@ -169,6 +194,45 @@
                     }
                   </tbody>
                 </table>
+              </div>
+
+              <div class="inventory-mobile-list">
+                @for (movimentacao of resumo.ultimasMovimentacoes; track movimentacao.id) {
+                  <article class="inventory-mobile-item">
+                    <div class="inventory-mobile-item__head">
+                      <strong>{{ movimentacao.materialNome }}</strong>
+                      <span
+                        class="badge"
+                        [class.badge-danger]="movimentacao.tipo === 'SAIDA'"
+                        [class.badge-warning]="movimentacao.tipo === 'AJUSTE'"
+                      >
+                        {{ movimentacao.tipo }}
+                      </span>
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>Qtd.</dt>
+                        <dd>{{ movimentacao.quantidade }}</dd>
+                      </div>
+                      <div>
+                        <dt>Anterior</dt>
+                        <dd>{{ movimentacao.estoqueAnterior }}</dd>
+                      </div>
+                      <div>
+                        <dt>Atual</dt>
+                        <dd>{{ movimentacao.estoqueAtual }}</dd>
+                      </div>
+                      <div>
+                        <dt>Usuario</dt>
+                        <dd>{{ movimentacao.usuarioNome }}</dd>
+                      </div>
+                      <div>
+                        <dt>Data</dt>
+                        <dd>{{ formatarData(movimentacao.dataMovimentacao) }}</dd>
+                      </div>
+                    </dl>
+                  </article>
+                }
               </div>
             }
           </section>

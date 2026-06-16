@@ -10,13 +10,15 @@ import {
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 
+import { AuthService } from '../../../services/auth.service';
+
 interface PassoTour {
   alvo: string;
   titulo: string;
   descricao: string;
 }
 
-const STORAGE_KEY = 'sistemaodonto.onboarding.v1';
+const STORAGE_KEY_PREFIX = 'sistemaodonto.onboarding.v1';
 
 @Component({
   selector: 'app-onboarding-tour',
@@ -26,6 +28,7 @@ const STORAGE_KEY = 'sistemaodonto.onboarding.v1';
 })
 export class OnboardingTourComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
   private routerSub?: Subscription;
 
   protected readonly visivel = signal(false);
@@ -84,10 +87,6 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
   protected readonly ehUltimo = computed(() => this.indice() === this.total - 1);
 
   ngOnInit(): void {
-    if (this.jaViu()) {
-      return;
-    }
-
     this.routerSub = this.router.events
       .pipe(filter((evento): evento is NavigationEnd => evento instanceof NavigationEnd))
       .subscribe((evento) => this.avaliarRota(evento.urlAfterRedirects));
@@ -123,7 +122,7 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
   }
 
   private avaliarRota(url: string): void {
-    if (this.visivel() || this.jaViu() || url.startsWith('/login')) {
+    if (this.visivel() || this.jaViu() || url.startsWith('/login') || !this.authService.usuario()) {
       return;
     }
 
@@ -164,6 +163,15 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
     const centro = rect.top + rect.height / 2;
 
     this.alvoRect.set(rect);
+
+    if (this.isMobile()) {
+      this.cardTop.set(Math.max(12, rect.top - 260));
+      this.cardLeft.set(12);
+      this.arrowTop.set(0);
+      this.arrowLeft.set(false);
+      return true;
+    }
+
     this.cardTop.set(Math.max(14, centro - 110));
     this.cardLeft.set(rect.right + 22);
     this.arrowTop.set(centro - this.cardTop());
@@ -184,6 +192,25 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
     const largura = card.offsetWidth;
     const centroAlvo = rect.top + rect.height / 2;
 
+    if (this.isMobile()) {
+      const left = Math.min(
+        Math.max(margem, rect.left + rect.width / 2 - largura / 2),
+        Math.max(margem, window.innerWidth - largura - margem)
+      );
+      const espacoAcima = rect.top - margem;
+      const espacoAbaixo = window.innerHeight - rect.bottom - margem;
+      const precisaFicarAcima = espacoAcima >= altura + 18 || espacoAcima > espacoAbaixo;
+      const top = precisaFicarAcima
+        ? Math.max(margem, rect.top - altura - 18)
+        : Math.min(rect.bottom + 18, window.innerHeight - altura - margem);
+
+      this.cardTop.set(top);
+      this.cardLeft.set(left);
+      this.arrowTop.set(0);
+      this.arrowLeft.set(false);
+      return;
+    }
+
     const topMaximo = Math.max(margem, window.innerHeight - altura - margem);
     const top = Math.min(Math.max(centroAlvo - altura / 2, margem), topMaximo);
     const seta = Math.min(Math.max(centroAlvo - top, 22), altura - 22);
@@ -202,12 +229,20 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
     this.arrowLeft.set(setaEsquerda);
   }
 
+  private isMobile(): boolean {
+    return window.matchMedia('(max-width: 760px)').matches;
+  }
+
   private finalizar(): void {
     this.visivel.set(false);
     this.liberarScroll();
 
     try {
-      localStorage.setItem(STORAGE_KEY, '1');
+      const chave = this.getStorageKey();
+
+      if (chave) {
+        localStorage.setItem(chave, '1');
+      }
     } catch {
       // Se o navegador bloquear o localStorage, o tour so deixa de persistir.
     }
@@ -225,9 +260,20 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
 
   private jaViu(): boolean {
     try {
-      return localStorage.getItem(STORAGE_KEY) === '1';
+      const chave = this.getStorageKey();
+      return !!chave && localStorage.getItem(chave) === '1';
     } catch {
       return false;
     }
+  }
+
+  private getStorageKey(): string | null {
+    const usuario = this.authService.usuario();
+
+    if (!usuario) {
+      return null;
+    }
+
+    return `${STORAGE_KEY_PREFIX}.${usuario.id || usuario.email}`;
   }
 }

@@ -7,7 +7,7 @@
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 14px;
 }
 
@@ -228,25 +228,44 @@
 }
 
 @media (max-width: 980px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .admin-log-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
   .admin-log-filters {
     grid-template-columns: 1fr;
   }
 
   .timeline-tempo {
     margin-left: 0;
+  }
+}
+
+@media (max-width: 430px) {
+  .stat-card {
+    min-height: 104px;
+    padding: 16px;
+  }
+
+  .stat-card strong {
+    font-size: 1.65rem;
+  }
+
+  .timeline-item {
+    grid-template-columns: 36px 1fr;
+    gap: 12px;
+  }
+
+  .timeline-marker {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+
+  .timeline-item::before {
+    top: 36px;
+    left: 17px;
   }
 }
