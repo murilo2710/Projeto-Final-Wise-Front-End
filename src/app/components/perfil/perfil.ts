@@ -2,7 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService, PerfilUsuario } from '../../services/auth.service';
-import { UsuarioResponse, UsuarioService } from '../../services/usuario.service';
+import { PerfilResponse, PerfilService } from '../../services/perfil.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
 
 @Component({
@@ -13,15 +13,15 @@ import { AppLayoutComponent } from '../../shared/components/app-layout/app-layou
 })
 export class Perfil implements OnInit {
   private readonly authService = inject(AuthService);
-  private readonly usuarioService = inject(UsuarioService);
+  private readonly perfilService = inject(PerfilService);
   private readonly router = inject(Router);
 
   protected readonly usuario = this.authService.usuario;
-  protected readonly detalhes = signal<UsuarioResponse | null>(null);
+  protected readonly detalhes = signal<PerfilResponse | null>(null);
   protected readonly carregando = signal(false);
 
   protected readonly iniciais = computed(() => {
-    const nome = this.usuario()?.nome?.trim();
+    const nome = (this.detalhes()?.nome ?? this.usuario()?.nome)?.trim();
 
     if (!nome) {
       return '?';
@@ -42,7 +42,7 @@ export class Perfil implements OnInit {
     }
 
     this.carregando.set(true);
-    this.usuarioService.buscarPorId(logado.id).subscribe({
+    this.perfilService.buscarPerfil().subscribe({
       next: (detalhes) => {
         this.detalhes.set(detalhes);
         this.carregando.set(false);

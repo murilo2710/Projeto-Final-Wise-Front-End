@@ -15,9 +15,9 @@
         <div class="perfil-avatar">{{ iniciais() }}</div>
 
         <div class="perfil-id">
-          <h2>{{ user.nome }}</h2>
-          <p>{{ user.email }}</p>
-          <span class="badge">{{ perfilLabel(user.perfil) }}</span>
+          <h2>{{ detalhes()?.nome ?? user.nome }}</h2>
+          <p>{{ detalhes()?.email ?? user.email }}</p>
+          <span class="badge">{{ perfilLabel(detalhes()?.perfil ?? user.perfil) }}</span>
         </div>
       </section>
 
@@ -36,7 +36,7 @@
 
           <div class="perfil-field">
             <span>Email</span>
-            <strong>{{ user.email }}</strong>
+            <strong>{{ detalhes()?.email ?? user.email }}</strong>
           </div>
 
           <div class="perfil-field">
@@ -46,7 +46,7 @@
 
           <div class="perfil-field">
             <span>Perfil de acesso</span>
-            <strong>{{ perfilLabel(user.perfil) }}</strong>
+            <strong>{{ perfilLabel(detalhes()?.perfil ?? user.perfil) }}</strong>
           </div>
 
           <div class="perfil-field">
@@ -60,7 +60,7 @@
 
           <div class="perfil-field">
             <span>ID do usuario</span>
-            <strong>#{{ user.id }}</strong>
+            <strong>#{{ detalhes()?.id ?? user.id }}</strong>
           </div>
 
           <div class="perfil-field">
