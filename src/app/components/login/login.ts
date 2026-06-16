@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
@@ -20,10 +20,38 @@ export class Login {
   protected readonly erro = signal('');
   protected readonly sucesso = signal('');
 
+  private readonly tituloCompleto = 'Gestao inteligente\npara sua clinica.';
+  protected readonly tituloDigitado = signal('');
+  private temporizador?: ReturnType<typeof setInterval>;
+
   protected readonly form = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     senha: ['', [Validators.required]]
   });
+
+  ngOnInit(): void {
+    let posicao = 0;
+
+    this.temporizador = setInterval(() => {
+      posicao += 1;
+      this.tituloDigitado.set(this.tituloCompleto.slice(0, posicao));
+
+      if (posicao >= this.tituloCompleto.length) {
+        this.pararDigitacao();
+      }
+    }, 75);
+  }
+
+  ngOnDestroy(): void {
+    this.pararDigitacao();
+  }
+
+  private pararDigitacao(): void {
+    if (this.temporizador) {
+      clearInterval(this.temporizador);
+      this.temporizador = undefined;
+    }
+  }
 
   protected entrar(): void {
     if (this.form.invalid) {

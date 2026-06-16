@@ -2,6 +2,7 @@
   <div class="auth-container">
     <div class="form-panel">
       <div class="form-content">
+        <img class="auth-logo" src="/assets/logo.png" alt="Sistema Odonto" draggable="false" />
         <h1>Bem-Vindo</h1>
         <p class="subtitle">Insira suas credenciais para acessar o painel.</p>
 
@@ -11,7 +12,7 @@
             id="login-email"
             type="email"
             formControlName="email"
-            placeholder="seu@email.com"
+            placeholder="Digite seu e-mail"
             autocomplete="email"
           />
 
@@ -24,7 +25,7 @@
             id="login-pass"
             type="password"
             formControlName="senha"
-            placeholder="********"
+            placeholder="Digite sua senha"
             autocomplete="current-password"
           />
 
@@ -52,7 +53,7 @@
 
     <div class="overlay-panel">
       <div class="overlay-body">
-        <h2 class="overlay-title">Gestao inteligente<br />para sua clinica.</h2>
+        <h2 class="overlay-title">{{ tituloDigitado() }}<span class="type-caret"></span></h2>
         <p class="overlay-desc">
           Pacientes, consultas, dentistas e especialidades, tudo organizado em um so lugar.
         </p>
