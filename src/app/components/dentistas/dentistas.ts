@@ -10,13 +10,14 @@ import {
 import { UsuarioResponse, UsuarioService } from '../../services/usuario.service';
 import { AuthService } from '../../services/auth.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
 
 type FiltroStatusDentista = 'ATIVOS' | 'INATIVOS' | 'TODOS';
 
 @Component({
   selector: 'app-dentistas',
-  imports: [ReactiveFormsModule, AppLayoutComponent],
+  imports: [ReactiveFormsModule, AppLayoutComponent, EditModalComponent],
   templateUrl: './dentistas.html',
   styleUrl: './dentistas.css'
 })

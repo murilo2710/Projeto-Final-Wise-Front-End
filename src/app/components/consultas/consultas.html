@@ -16,96 +16,96 @@
       <p class="alert alert-success">{{ sucesso() }}</p>
     }
 
-    <section class="panel">
-      <h2>{{ consultaEmEdicaoId() ? 'Editar consulta' : 'Criar consulta' }}</h2>
+    @if (!consultaEmEdicaoId()) {
+      <section class="panel">
+        <h2>Criar consulta</h2>
 
-      <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-        <label>
-          <span>Paciente *</span>
-          @if (pacientes().length > 0) {
-            <select formControlName="pacienteId">
-              <option [ngValue]="0">Selecione</option>
-              @for (paciente of pacientes(); track paciente.id) {
-                <option [ngValue]="paciente.id">{{ paciente.nome }} (#{{ paciente.id }})</option>
-              }
-            </select>
-          } @else {
-            <input type="number" formControlName="pacienteId" min="1" placeholder="Informe o ID do paciente" />
-          }
-        </label>
-
-        <label>
-          <span>Dentista *</span>
-          @if (dentistas().length > 0) {
-            <select formControlName="dentistaId">
-              <option [ngValue]="0">Selecione</option>
-              @for (dentista of dentistas(); track dentista.id) {
-                <option [ngValue]="dentista.id">{{ dentista.nome }} (#{{ dentista.id }})</option>
-              }
-            </select>
-          } @else {
-            <input type="number" formControlName="dentistaId" min="1" placeholder="Informe o ID do dentista" />
-          }
-        </label>
-
-        <label class="full">
-          <span>Descricao *</span>
-          <input type="text" formControlName="descricao" />
-        </label>
-
-        <label>
-          <span>Data inicio *</span>
-          <input type="datetime-local" formControlName="dataInicio" />
-        </label>
-
-        <label>
-          <span>Data fim *</span>
-          <input type="datetime-local" formControlName="dataFim" />
-        </label>
-
-        <label>
-          <span>Status *</span>
-          <select formControlName="status">
-            @for (status of statusOptions; track status) {
-              <option [value]="status">{{ status }}</option>
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label>
+            <span>Paciente *</span>
+            @if (pacientes().length > 0) {
+              <select formControlName="pacienteId">
+                <option [ngValue]="0">Selecione</option>
+                @for (paciente of pacientes(); track paciente.id) {
+                  <option [ngValue]="paciente.id">{{ paciente.nome }} (#{{ paciente.id }})</option>
+                }
+              </select>
+            } @else {
+              <input type="number" formControlName="pacienteId" min="1" placeholder="Informe o ID do paciente" />
             }
-          </select>
-        </label>
+          </label>
 
-        @if (form.controls.pacienteId.touched && form.controls.pacienteId.invalid) {
-          <p class="field-error">Selecione um paciente.</p>
-        }
+          <label>
+            <span>Dentista *</span>
+            @if (dentistas().length > 0) {
+              <select formControlName="dentistaId">
+                <option [ngValue]="0">Selecione</option>
+                @for (dentista of dentistas(); track dentista.id) {
+                  <option [ngValue]="dentista.id">{{ dentista.nome }} (#{{ dentista.id }})</option>
+                }
+              </select>
+            } @else {
+              <input type="number" formControlName="dentistaId" min="1" placeholder="Informe o ID do dentista" />
+            }
+          </label>
 
-        @if (form.controls.dentistaId.touched && form.controls.dentistaId.invalid) {
-          <p class="field-error">Selecione um dentista.</p>
-        }
+          <label class="full">
+            <span>Descricao *</span>
+            <input type="text" formControlName="descricao" />
+          </label>
 
-        @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
-          <p class="field-error">Descricao e obrigatoria.</p>
-        }
+          <label>
+            <span>Data inicio *</span>
+            <input type="datetime-local" formControlName="dataInicio" />
+          </label>
 
-        @if (form.controls.dataInicio.touched && form.controls.dataInicio.hasError('required')) {
-          <p class="field-error">Data de inicio e obrigatoria.</p>
-        }
+          <label>
+            <span>Data fim *</span>
+            <input type="datetime-local" formControlName="dataFim" />
+          </label>
 
-        @if (form.controls.dataFim.touched && form.controls.dataFim.hasError('required')) {
-          <p class="field-error">Data de fim e obrigatoria.</p>
-        }
+          <label>
+            <span>Status *</span>
+            <select formControlName="status">
+              @for (status of statusOptions; track status) {
+                <option [value]="status">{{ status }}</option>
+              }
+            </select>
+          </label>
 
-        @if (form.controls.status.touched && form.controls.status.hasError('required')) {
-          <p class="field-error">Status e obrigatorio.</p>
-        }
+          @if (form.controls.pacienteId.touched && form.controls.pacienteId.invalid) {
+            <p class="field-error">Selecione um paciente.</p>
+          }
 
-        <div class="actions">
-          <button type="submit" [disabled]="carregando()">
-            {{ consultaEmEdicaoId() ? 'Atualizar' : 'Criar' }}
-          </button>
-          <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
-            Limpar
-          </button>
-        </div>
-      </form>
-    </section>
+          @if (form.controls.dentistaId.touched && form.controls.dentistaId.invalid) {
+            <p class="field-error">Selecione um dentista.</p>
+          }
+
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
+            <p class="field-error">Descricao e obrigatoria.</p>
+          }
+
+          @if (form.controls.dataInicio.touched && form.controls.dataInicio.hasError('required')) {
+            <p class="field-error">Data de inicio e obrigatoria.</p>
+          }
+
+          @if (form.controls.dataFim.touched && form.controls.dataFim.hasError('required')) {
+            <p class="field-error">Data de fim e obrigatoria.</p>
+          }
+
+          @if (form.controls.status.touched && form.controls.status.hasError('required')) {
+            <p class="field-error">Status e obrigatorio.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Criar</button>
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Limpar
+            </button>
+          </div>
+        </form>
+      </section>
+    }
 
     <section class="panel">
       <h2>Consultas cadastradas</h2>
@@ -185,5 +185,99 @@
         </div>
       }
     </section>
+
+    @if (consultaEmEdicaoId()) {
+      <app-edit-modal
+        title="Editar consulta"
+        subtitle="Atualize paciente, profissional, horario e status da consulta."
+        [loading]="carregando()"
+        (closeModal)="limparFormulario()"
+      >
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label>
+            <span>Paciente *</span>
+            @if (pacientes().length > 0) {
+              <select formControlName="pacienteId">
+                <option [ngValue]="0">Selecione</option>
+                @for (paciente of pacientes(); track paciente.id) {
+                  <option [ngValue]="paciente.id">{{ paciente.nome }} (#{{ paciente.id }})</option>
+                }
+              </select>
+            } @else {
+              <input type="number" formControlName="pacienteId" min="1" placeholder="Informe o ID do paciente" />
+            }
+          </label>
+
+          <label>
+            <span>Dentista *</span>
+            @if (dentistas().length > 0) {
+              <select formControlName="dentistaId">
+                <option [ngValue]="0">Selecione</option>
+                @for (dentista of dentistas(); track dentista.id) {
+                  <option [ngValue]="dentista.id">{{ dentista.nome }} (#{{ dentista.id }})</option>
+                }
+              </select>
+            } @else {
+              <input type="number" formControlName="dentistaId" min="1" placeholder="Informe o ID do dentista" />
+            }
+          </label>
+
+          <label class="full">
+            <span>Descricao *</span>
+            <input type="text" formControlName="descricao" />
+          </label>
+
+          <label>
+            <span>Data inicio *</span>
+            <input type="datetime-local" formControlName="dataInicio" />
+          </label>
+
+          <label>
+            <span>Data fim *</span>
+            <input type="datetime-local" formControlName="dataFim" />
+          </label>
+
+          <label>
+            <span>Status *</span>
+            <select formControlName="status">
+              @for (status of statusOptions; track status) {
+                <option [value]="status">{{ status }}</option>
+              }
+            </select>
+          </label>
+
+          @if (form.controls.pacienteId.touched && form.controls.pacienteId.invalid) {
+            <p class="field-error">Selecione um paciente.</p>
+          }
+
+          @if (form.controls.dentistaId.touched && form.controls.dentistaId.invalid) {
+            <p class="field-error">Selecione um dentista.</p>
+          }
+
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
+            <p class="field-error">Descricao e obrigatoria.</p>
+          }
+
+          @if (form.controls.dataInicio.touched && form.controls.dataInicio.hasError('required')) {
+            <p class="field-error">Data de inicio e obrigatoria.</p>
+          }
+
+          @if (form.controls.dataFim.touched && form.controls.dataFim.hasError('required')) {
+            <p class="field-error">Data de fim e obrigatoria.</p>
+          }
+
+          @if (form.controls.status.touched && form.controls.status.hasError('required')) {
+            <p class="field-error">Status e obrigatorio.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Atualizar</button>
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </app-edit-modal>
+    }
   </div>
 </app-layout>

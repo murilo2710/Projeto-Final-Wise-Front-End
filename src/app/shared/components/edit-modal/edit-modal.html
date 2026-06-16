@@ -1,0 +1,21 @@
+<div class="edit-modal-backdrop" role="presentation" (click)="fechar()">
+  <section class="edit-modal" role="dialog" aria-modal="true" [attr.aria-label]="title" (click)="$event.stopPropagation()">
+    <header class="edit-modal__header">
+      <div>
+        <span class="edit-modal__eyebrow">Edicao</span>
+        <h2>{{ title }}</h2>
+        @if (subtitle) {
+          <p>{{ subtitle }}</p>
+        }
+      </div>
+
+      <button type="button" class="edit-modal__close" (click)="fechar()" [disabled]="loading" aria-label="Fechar modal">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </header>
+
+    <div class="edit-modal__body">
+      <ng-content />
+    </div>
+  </section>
+</div>

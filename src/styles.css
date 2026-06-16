@@ -102,6 +102,10 @@ app-root {
   font-family: "Lufga", sans-serif;
 }
 
+.swal2-container {
+  z-index: 2000;
+}
+
 .odonto-alert__title {
   color: #0c0c0c;
   font-size: 1.35rem;

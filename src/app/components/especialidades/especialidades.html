@@ -16,34 +16,34 @@
       <p class="alert alert-success">{{ sucesso() }}</p>
     }
 
-    <section class="panel">
-      <h2>{{ especialidadeEmEdicaoId() ? 'Editar especialidade' : 'Cadastrar especialidade' }}</h2>
+    @if (!especialidadeEmEdicaoId()) {
+      <section class="panel">
+        <h2>Cadastrar especialidade</h2>
 
-      <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-        <label class="full">
-          <span>Nome *</span>
-          <input type="text" formControlName="nome" maxlength="100" />
-        </label>
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label class="full">
+            <span>Nome *</span>
+            <input type="text" formControlName="nome" maxlength="100" />
+          </label>
 
-        @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-          <p class="field-error">Nome e obrigatorio.</p>
-        }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+            <p class="field-error">Nome e obrigatorio.</p>
+          }
 
-        @if (form.controls.nome.touched && form.controls.nome.hasError('maxlength')) {
-          <p class="field-error">Nome deve ter no maximo 100 caracteres.</p>
-        }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('maxlength')) {
+            <p class="field-error">Nome deve ter no maximo 100 caracteres.</p>
+          }
 
-        <div class="actions">
-          <button type="submit" [disabled]="carregando()">
-            {{ especialidadeEmEdicaoId() ? 'Atualizar' : 'Criar' }}
-          </button>
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Criar</button>
 
-          <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
-            Limpar
-          </button>
-        </div>
-      </form>
-    </section>
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Limpar
+            </button>
+          </div>
+        </form>
+      </section>
+    }
 
     <section class="panel">
       <h2>Especialidades cadastradas</h2>
@@ -84,5 +84,37 @@
         </div>
       }
     </section>
+
+    @if (especialidadeEmEdicaoId()) {
+      <app-edit-modal
+        title="Editar especialidade"
+        subtitle="Atualize o nome da especialidade usada nos cadastros e filtros."
+        [loading]="carregando()"
+        (closeModal)="limparFormulario()"
+      >
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label class="full">
+            <span>Nome *</span>
+            <input type="text" formControlName="nome" maxlength="100" />
+          </label>
+
+          @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+            <p class="field-error">Nome e obrigatorio.</p>
+          }
+
+          @if (form.controls.nome.touched && form.controls.nome.hasError('maxlength')) {
+            <p class="field-error">Nome deve ter no maximo 100 caracteres.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Atualizar</button>
+
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </app-edit-modal>
+    }
   </div>
 </app-layout>

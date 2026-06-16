@@ -10,11 +10,12 @@ import {
 import { DentistaResponse, DentistaService } from '../../services/dentista.service';
 import { PacienteResponse, PacienteService } from '../../services/paciente.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-consultas',
-  imports: [ReactiveFormsModule, AppLayoutComponent],
+  imports: [ReactiveFormsModule, AppLayoutComponent, EditModalComponent],
   templateUrl: './consultas.html',
   styleUrl: './consultas.css'
 })

@@ -241,8 +241,9 @@
     }
 
     @if (abaAtiva() === 'MATERIAIS') {
-      <section class="panel">
-        <h2>{{ materialEmEdicaoId() ? 'Editar material' : 'Cadastrar material' }}</h2>
+      @if (!materialEmEdicaoId()) {
+        <section class="panel">
+          <h2>Cadastrar material</h2>
 
         <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
           <label>
@@ -340,7 +341,8 @@
             </button>
           </div>
         </form>
-      </section>
+        </section>
+      }
 
       <section class="panel">
         <h2>Materiais cadastrados</h2>
@@ -595,6 +597,110 @@
           </div>
         }
       </section>
+    }
+
+    @if (abaAtiva() === 'MATERIAIS' && materialEmEdicaoId()) {
+      <app-edit-modal
+        title="Editar material"
+        subtitle="Atualize dados de estoque, unidade de medida e especialidades vinculadas."
+        [loading]="carregando()"
+        (closeModal)="limparFormulario()"
+      >
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label>
+            <span>Nome *</span>
+            <input type="text" formControlName="nome" />
+          </label>
+
+          <label>
+            <span>Unidade de medida *</span>
+            <select formControlName="unidadeMedida">
+              @for (unidade of unidadesMedida; track unidade) {
+                <option [value]="unidade">{{ unidade }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="full">
+            <span>Descricao *</span>
+            <input type="text" formControlName="descricao" />
+          </label>
+
+          <label>
+            <span>Quantidade atual *</span>
+            <input type="number" formControlName="quantidadeAtual" min="0" />
+          </label>
+
+          <label>
+            <span>Quantidade minima *</span>
+            <input type="number" formControlName="quantidadeMinima" min="0" />
+          </label>
+
+          <label class="specialty-field">
+            <span>Especialidades</span>
+            <div class="specialty-dropdown">
+              <button
+                type="button"
+                class="specialty-dropdown__trigger"
+                (click)="alternarEspecialidadesDropdown()"
+                [attr.aria-expanded]="especialidadesDropdownAberto()"
+              >
+                <span>{{ getResumoEspecialidadesSelecionadas() }}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+
+              @if (especialidadesDropdownAberto()) {
+                <div class="specialty-dropdown__menu">
+                  @if (especialidades().length === 0) {
+                    <p class="specialty-dropdown__empty">Nenhuma especialidade cadastrada.</p>
+                  } @else {
+                    @for (especialidade of especialidades(); track especialidade.id) {
+                      <label class="specialty-option">
+                        <input
+                          type="checkbox"
+                          [checked]="especialidadeSelecionada(especialidade.id)"
+                          (change)="alternarEspecialidade(especialidade.id)"
+                        />
+                        <span>{{ especialidade.nome }}</span>
+                      </label>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          </label>
+
+          @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+            <p class="field-error">Nome e obrigatorio.</p>
+          }
+
+          @if (form.controls.descricao.touched && form.controls.descricao.hasError('required')) {
+            <p class="field-error">Descricao e obrigatoria.</p>
+          }
+
+          @if (form.controls.unidadeMedida.touched && form.controls.unidadeMedida.hasError('required')) {
+            <p class="field-error">Unidade de medida e obrigatoria.</p>
+          }
+
+          @if (form.controls.quantidadeAtual.touched && form.controls.quantidadeAtual.invalid) {
+            <p class="field-error">Quantidade atual deve ser zero ou maior.</p>
+          }
+
+          @if (form.controls.quantidadeMinima.touched && form.controls.quantidadeMinima.invalid) {
+            <p class="field-error">Quantidade minima deve ser zero ou maior.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Atualizar</button>
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </app-edit-modal>
     }
   </div>
 </app-layout>

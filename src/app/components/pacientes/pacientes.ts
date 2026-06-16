@@ -4,11 +4,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { PacienteResponse, PacienteService } from '../../services/paciente.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-pacientes',
-  imports: [ReactiveFormsModule, AppLayoutComponent],
+  imports: [ReactiveFormsModule, AppLayoutComponent, EditModalComponent],
   templateUrl: './pacientes.html',
   styleUrl: './pacientes.css'
 })

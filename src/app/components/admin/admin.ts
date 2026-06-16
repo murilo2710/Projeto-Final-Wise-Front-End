@@ -14,6 +14,7 @@ import {
   UsuarioService
 } from '../../services/usuario.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
 import { DentistaResponse, DentistaService } from '../../services/dentista.service';
 
@@ -30,7 +31,7 @@ interface AdminLog {
 
 @Component({
   selector: 'app-admin',
-  imports: [ReactiveFormsModule, AppLayoutComponent],
+  imports: [ReactiveFormsModule, AppLayoutComponent, EditModalComponent],
   templateUrl: './admin.html',
   styleUrl: './admin.css'
 })

@@ -7,11 +7,12 @@ import {
   EspecialidadeService
 } from '../../services/especialidade.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-especialidades',
-  imports: [ReactiveFormsModule, AppLayoutComponent],
+  imports: [ReactiveFormsModule, AppLayoutComponent, EditModalComponent],
   templateUrl: './especialidades.html',
   styleUrl: './especialidades.css'
 })

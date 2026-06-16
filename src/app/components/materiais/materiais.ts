@@ -11,6 +11,7 @@ import {
 } from '../../services/estoque-movimentacao.service';
 import { MaterialResponse, MaterialService } from '../../services/material.service';
 import { AppLayoutComponent } from '../../shared/components/app-layout/app-layout';
+import { EditModalComponent } from '../../shared/components/edit-modal/edit-modal';
 import { AlertService } from '../../shared/services/alert.service';
 
 type FiltroStatusMaterial = 'TODOS' | 'ATIVOS' | 'INATIVOS' | 'BAIXO_ESTOQUE';
@@ -18,7 +19,7 @@ type AbaEstoque = 'DASHBOARD' | 'MATERIAIS' | 'MOVIMENTACOES';
 
 @Component({
   selector: 'app-materiais',
-  imports: [ReactiveFormsModule, AppLayoutComponent],
+  imports: [ReactiveFormsModule, AppLayoutComponent, EditModalComponent],
   templateUrl: './materiais.html',
   styleUrl: './materiais.css'
 })

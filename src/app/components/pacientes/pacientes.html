@@ -16,57 +16,57 @@
       <p class="alert alert-success">{{ sucesso() }}</p>
     }
 
-    <section class="panel">
-      <h2>{{ pacienteEmEdicaoId() ? 'Editar paciente' : 'Cadastrar paciente' }}</h2>
+    @if (!pacienteEmEdicaoId()) {
+      <section class="panel">
+        <h2>Cadastrar paciente</h2>
 
-      <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-        <label>
-          <span>Nome *</span>
-          <input type="text" formControlName="nome" />
-        </label>
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label>
+            <span>Nome *</span>
+            <input type="text" formControlName="nome" />
+          </label>
 
-        <label>
-          <span>Email *</span>
-          <input type="email" formControlName="email" />
-        </label>
+          <label>
+            <span>Email *</span>
+            <input type="email" formControlName="email" />
+          </label>
 
-        <label>
-          <span>CPF *</span>
-          <input type="text" formControlName="cpf" maxlength="14" />
-        </label>
+          <label>
+            <span>CPF *</span>
+            <input type="text" formControlName="cpf" maxlength="14" />
+          </label>
 
-        <label>
-          <span>Telefone</span>
-          <input type="text" formControlName="telefone" />
-        </label>
+          <label>
+            <span>Telefone</span>
+            <input type="text" formControlName="telefone" />
+          </label>
 
-        @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-          <p class="field-error">Nome e obrigatorio.</p>
-        }
+          @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+            <p class="field-error">Nome e obrigatorio.</p>
+          }
 
-        @if (form.controls.email.touched && form.controls.email.invalid) {
-          <p class="field-error">Informe um email valido.</p>
-        }
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            <p class="field-error">Informe um email valido.</p>
+          }
 
-        @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-          <p class="field-error">CPF e obrigatorio.</p>
-        }
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+            <p class="field-error">CPF e obrigatorio.</p>
+          }
 
-        @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {
-          <p class="field-error">CPF deve ter no maximo 14 caracteres.</p>
-        }
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {
+            <p class="field-error">CPF deve ter no maximo 14 caracteres.</p>
+          }
 
-        <div class="actions">
-          <button type="submit" [disabled]="carregando()">
-            {{ pacienteEmEdicaoId() ? 'Atualizar' : 'Criar' }}
-          </button>
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Criar</button>
 
-          <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
-            Limpar
-          </button>
-        </div>
-      </form>
-    </section>
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Limpar
+            </button>
+          </div>
+        </form>
+      </section>
+    }
 
     <section class="panel">
       <h2>Pacientes cadastrados</h2>
@@ -111,5 +111,60 @@
         </div>
       }
     </section>
+
+    @if (pacienteEmEdicaoId()) {
+      <app-edit-modal
+        title="Editar paciente"
+        subtitle="Revise os dados cadastrais antes de salvar as alteracoes."
+        [loading]="carregando()"
+        (closeModal)="limparFormulario()"
+      >
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label>
+            <span>Nome *</span>
+            <input type="text" formControlName="nome" />
+          </label>
+
+          <label>
+            <span>Email *</span>
+            <input type="email" formControlName="email" />
+          </label>
+
+          <label>
+            <span>CPF *</span>
+            <input type="text" formControlName="cpf" maxlength="14" />
+          </label>
+
+          <label>
+            <span>Telefone</span>
+            <input type="text" formControlName="telefone" />
+          </label>
+
+          @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+            <p class="field-error">Nome e obrigatorio.</p>
+          }
+
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            <p class="field-error">Informe um email valido.</p>
+          }
+
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+            <p class="field-error">CPF e obrigatorio.</p>
+          }
+
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('maxlength')) {
+            <p class="field-error">CPF deve ter no maximo 14 caracteres.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Atualizar</button>
+
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </app-edit-modal>
+    }
   </div>
 </app-layout>

@@ -138,73 +138,73 @@
       }
 
       @case ('usuarios') {
-        <section class="panel">
-          <h2>{{ usuarioEmEdicaoId() ? 'Editar usuario' : 'Cadastrar usuario' }}</h2>
+        @if (!usuarioEmEdicaoId()) {
+          <section class="panel">
+            <h2>Cadastrar usuario</h2>
 
-          <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-            <label>
-              <span>Nome *</span>
-              <input type="text" formControlName="nome" />
-            </label>
+            <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+              <label>
+                <span>Nome *</span>
+                <input type="text" formControlName="nome" />
+              </label>
 
-            <label>
-              <span>CPF *</span>
-              <input type="text" formControlName="cpf" />
-            </label>
+              <label>
+                <span>CPF *</span>
+                <input type="text" formControlName="cpf" />
+              </label>
 
-            <label>
-              <span>Email *</span>
-              <input type="email" formControlName="email" />
-            </label>
+              <label>
+                <span>Email *</span>
+                <input type="email" formControlName="email" />
+              </label>
 
-            <label>
-              <span>Senha *</span>
-              <input type="password" formControlName="senha" />
-            </label>
+              <label>
+                <span>Senha *</span>
+                <input type="password" formControlName="senha" />
+              </label>
 
-            <label>
-              <span>Perfil *</span>
-              <select formControlName="perfil">
-                @for (perfil of perfis; track perfil) {
-                  <option [value]="perfil">{{ perfil }}</option>
-                }
-              </select>
-            </label>
+              <label>
+                <span>Perfil *</span>
+                <select formControlName="perfil">
+                  @for (perfil of perfis; track perfil) {
+                    <option [value]="perfil">{{ perfil }}</option>
+                  }
+                </select>
+              </label>
 
-            @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
-              <p class="field-error">Nome e obrigatorio.</p>
-            }
+              @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+                <p class="field-error">Nome e obrigatorio.</p>
+              }
 
-            @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
-              <p class="field-error">CPF e obrigatorio.</p>
-            }
+              @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+                <p class="field-error">CPF e obrigatorio.</p>
+              }
 
-            @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
-              <p class="field-error">CPF deve ter 11 digitos numericos.</p>
-            }
+              @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
+                <p class="field-error">CPF deve ter 11 digitos numericos.</p>
+              }
 
-            @if (form.controls.email.touched && form.controls.email.invalid) {
-              <p class="field-error">Informe um email valido.</p>
-            }
+              @if (form.controls.email.touched && form.controls.email.invalid) {
+                <p class="field-error">Informe um email valido.</p>
+              }
 
-            @if (form.controls.senha.touched && form.controls.senha.hasError('required')) {
-              <p class="field-error">Senha e obrigatoria ao criar usuario.</p>
-            }
+              @if (form.controls.senha.touched && form.controls.senha.hasError('required')) {
+                <p class="field-error">Senha e obrigatoria ao criar usuario.</p>
+              }
 
-            @if (form.controls.senha.touched && form.controls.senha.hasError('minlength')) {
-              <p class="field-error">Senha deve ter ao menos 6 caracteres.</p>
-            }
+              @if (form.controls.senha.touched && form.controls.senha.hasError('minlength')) {
+                <p class="field-error">Senha deve ter ao menos 6 caracteres.</p>
+              }
 
-            <div class="actions">
-              <button type="submit" [disabled]="carregando()">
-                {{ usuarioEmEdicaoId() ? 'Atualizar' : 'Criar' }}
-              </button>
-              <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
-                Limpar
-              </button>
-            </div>
-          </form>
-        </section>
+              <div class="actions">
+                <button type="submit" [disabled]="carregando()">Criar</button>
+                <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+                  Limpar
+                </button>
+              </div>
+            </form>
+          </section>
+        }
 
         <section class="panel">
           <h2>Usuarios cadastrados</h2>
@@ -369,6 +369,73 @@
           }
         </section>
       }
+    }
+
+    @if (secaoAtiva() === 'usuarios' && usuarioEmEdicaoId()) {
+      <app-edit-modal
+        title="Editar usuario"
+        subtitle="Atualize dados de acesso, perfil e permissao do usuario."
+        [loading]="carregando()"
+        (closeModal)="limparFormulario()"
+      >
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label>
+            <span>Nome *</span>
+            <input type="text" formControlName="nome" />
+          </label>
+
+          <label>
+            <span>CPF *</span>
+            <input type="text" formControlName="cpf" />
+          </label>
+
+          <label>
+            <span>Email *</span>
+            <input type="email" formControlName="email" />
+          </label>
+
+          <label>
+            <span>Senha</span>
+            <input type="password" formControlName="senha" placeholder="Preencha apenas se quiser alterar" />
+          </label>
+
+          <label>
+            <span>Perfil *</span>
+            <select formControlName="perfil">
+              @for (perfil of perfis; track perfil) {
+                <option [value]="perfil">{{ perfil }}</option>
+              }
+            </select>
+          </label>
+
+          @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+            <p class="field-error">Nome e obrigatorio.</p>
+          }
+
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+            <p class="field-error">CPF e obrigatorio.</p>
+          }
+
+          @if (form.controls.cpf.touched && (form.controls.cpf.hasError('minlength') || form.controls.cpf.hasError('maxlength'))) {
+            <p class="field-error">CPF deve ter 11 digitos numericos.</p>
+          }
+
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            <p class="field-error">Informe um email valido.</p>
+          }
+
+          @if (form.controls.senha.touched && form.controls.senha.hasError('minlength')) {
+            <p class="field-error">Senha deve ter ao menos 6 caracteres.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Atualizar</button>
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </app-edit-modal>
     }
   </div>
 </app-layout>

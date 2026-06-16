@@ -16,8 +16,9 @@
       <p class="alert alert-success">{{ sucesso() }}</p>
     }
 
-    <section class="panel">
-      <h2>{{ dentistaEmEdicaoId() ? 'Editar dentista' : 'Cadastrar dentista' }}</h2>
+    @if (!dentistaEmEdicaoId()) {
+      <section class="panel">
+        <h2>Cadastrar dentista</h2>
 
       <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
         @if (!dentistaEmEdicaoId() && podeVincularUsuarioExistente()) {
@@ -131,7 +132,8 @@
           </button>
         </div>
       </form>
-    </section>
+      </section>
+    }
 
     <section class="panel">
       <h2>Dentistas cadastrados</h2>
@@ -223,5 +225,97 @@
 
       }
     </section>
+
+    @if (dentistaEmEdicaoId()) {
+      <app-edit-modal
+        title="Editar dentista"
+        subtitle="Atualize dados profissionais, CRO, status e especialidades vinculadas."
+        [loading]="carregando()"
+        (closeModal)="limparFormulario()"
+      >
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <label>
+            <span>Nome *</span>
+            <input type="text" formControlName="nome" [readonly]="camposUsuarioBloqueados()" />
+          </label>
+
+          <label>
+            <span>CPF *</span>
+            <input type="text" formControlName="cpf" [readonly]="camposUsuarioBloqueados()" />
+          </label>
+
+          <label>
+            <span>Email *</span>
+            <input type="email" formControlName="email" [readonly]="camposUsuarioBloqueados()" />
+          </label>
+
+          <label>
+            <span>CRO *</span>
+            <input type="text" formControlName="cro" />
+          </label>
+
+          <label class="specialty-field">
+            <span>Especialidades</span>
+            <div class="specialty-dropdown">
+              <button
+                type="button"
+                class="specialty-dropdown__trigger"
+                (click)="alternarEspecialidadesDropdown()"
+                [attr.aria-expanded]="especialidadesDropdownAberto()"
+              >
+                <span>{{ getResumoEspecialidadesSelecionadas() }}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+
+              @if (especialidadesDropdownAberto()) {
+                <div class="specialty-dropdown__menu">
+                  @if (especialidades().length === 0) {
+                    <p class="specialty-dropdown__empty">Nenhuma especialidade cadastrada.</p>
+                  } @else {
+                    @for (especialidade of especialidades(); track especialidade.id) {
+                      <label class="specialty-option">
+                        <input
+                          type="checkbox"
+                          [checked]="especialidadeSelecionada(especialidade.id)"
+                          (change)="alternarEspecialidade(especialidade.id)"
+                        />
+                        <span>{{ especialidade.nome }}</span>
+                      </label>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          </label>
+
+          @if (form.controls.nome.touched && form.controls.nome.hasError('required')) {
+            <p class="field-error">Nome e obrigatorio.</p>
+          }
+
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+            <p class="field-error">CPF e obrigatorio.</p>
+          }
+
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            <p class="field-error">Informe um email valido.</p>
+          }
+
+          @if (form.controls.cro.touched && form.controls.cro.hasError('required')) {
+            <p class="field-error">CRO e obrigatorio.</p>
+          }
+
+          <div class="actions">
+            <button type="submit" [disabled]="carregando()">Atualizar</button>
+
+            <button type="button" class="secondary" (click)="limparFormulario()" [disabled]="carregando()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </app-edit-modal>
+    }
   </div>
 </app-layout>
