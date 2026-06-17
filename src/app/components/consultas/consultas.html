@@ -365,14 +365,21 @@
           }
 
           <section class="attachment-upload">
-            <label class="full">
-              <span>Arquivo para anexar *</span>
+            <label class="attachment-file-field full">
+              <span class="attachment-file-field__label">Arquivo para anexar *</span>
               <input
                 #arquivoInput
                 type="file"
+                class="attachment-file-field__input"
                 accept="application/pdf,image/png,image/jpeg"
                 (change)="selecionarArquivo($event)"
               />
+              <span class="attachment-file-field__control">
+                <span class="attachment-file-field__button">Selecionar arquivo</span>
+                <span class="attachment-file-field__name">
+                  {{ arquivoSelecionado()?.name || 'Nenhum arquivo selecionado' }}
+                </span>
+              </span>
             </label>
 
             <p class="attachment-hint">Formatos aceitos: PDF, PNG ou JPG. Tamanho máximo: 10MB.</p>

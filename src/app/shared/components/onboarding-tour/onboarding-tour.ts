@@ -42,7 +42,7 @@ export class OnboardingTourComponent implements OnInit, OnDestroy {
   protected readonly passos: PassoTour[] = [
     {
       alvo: '[data-tour="logo"]',
-      titulo: 'Bem-vindo ao Sistema Odonto!',
+      titulo: 'Bem-vindo ao OdontoFlow!',
       descricao: 'Vamos fazer um tour rápido pelas principais áreas do sistema.'
     },
     {

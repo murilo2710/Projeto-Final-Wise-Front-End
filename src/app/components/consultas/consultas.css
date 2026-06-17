@@ -47,6 +47,55 @@
   line-height: 1.35;
 }
 
+.attachment-file-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachment-file-field__input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.attachment-file-field__control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid #d8d8d8;
+  border-radius: 18px;
+  padding: 6px;
+}
+
+.attachment-file-field:hover .attachment-file-field__control,
+.attachment-file-field__input:focus-visible + .attachment-file-field__control {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+}
+
+.attachment-file-field__button {
+  flex: 0 0 auto;
+  border-radius: 14px;
+  padding: 12px 16px;
+  background: #059669;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.attachment-file-field__name {
+  min-width: 0;
+  overflow: hidden;
+  color: #525252;
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .attachment-hint {
   margin: 0;
   color: #6b6b6b;
@@ -151,7 +200,18 @@
     flex-direction: column;
   }
 
+  .attachment-file-field__control {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 8px;
+  }
+
+  .attachment-file-field__button {
+    text-align: center;
+  }
+
   .attachment-selected strong,
+  .attachment-file-field__name,
   .attachment-card__info strong {
     white-space: normal;
   }
